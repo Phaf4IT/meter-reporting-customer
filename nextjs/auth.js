@@ -1,7 +1,7 @@
 import NextAuth from "next-auth"
 import {XataAdapter} from "@auth/xata-adapter"
-import {XataClient} from "src/xata"
-import {sendVerificationRequest} from "./lib/authSendRequest"
+import {XataClient} from "@/lib/xata"
+import {sendVerificationRequest} from "@/lib/authSendRequest"
 
 const client = new XataClient()
 
