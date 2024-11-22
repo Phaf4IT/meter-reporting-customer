@@ -1,0 +1,6 @@
+{
+  "databaseURL": "https://RDBreed-s-workspace-8jibml.eu-west-1.xata.sh/db/auth-meter-report",
+  "codegen": {
+    "output": "src/xata.ts"
+  }
+}
