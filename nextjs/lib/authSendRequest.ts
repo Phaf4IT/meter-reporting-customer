@@ -14,15 +14,11 @@ export async function sendVerificationRequest(email: string, url: string) {
                 },
             ],
         }),
-        headers: {
-            // Authentication will also vary from provider to provider, please see their docs.
-            Authorization: `Bearer ${process.env.SENDGRID_API}`,
-            "Content-Type": "application/json",
-        },
         method: "POST",
     })
 
     if (!response.ok) {
+        console.log(response)
         const {errors} = await response.json()
         throw new Error(JSON.stringify(errors))
     }
