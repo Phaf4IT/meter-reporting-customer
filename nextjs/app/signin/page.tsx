@@ -1,6 +1,6 @@
-import {signIn} from "../../auth.ts"
+import {signIn} from "@/auth"
 
-export function SignIn() {
+export default function SignIn() {
     return (
         <form
             action={async (formData) => {
