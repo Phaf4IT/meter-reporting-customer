@@ -1,4 +1,5 @@
 export async function sendVerificationRequest(email: string, url: string) {
+    console.log("Sending verification request...");
     // Call the cloud Email provider API for sending emails
     const response = await fetch("https://api.mailchannels.net/tx/v1/send", {
         // The body format will vary depending on provider, please see their documentation
