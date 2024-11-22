@@ -1,4 +1,4 @@
-import {signIn} from "../auth.ts"
+import {signIn} from "../../auth.ts"
 
 export function SignIn() {
     return (
