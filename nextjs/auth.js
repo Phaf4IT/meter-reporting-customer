@@ -10,7 +10,7 @@ export const {handlers, auth, signIn, signOut} = NextAuth({
     providers: [
         ForwardEmail({
       // If your environment variable is named differently than default
-      apiKey: AUTH_FORWARDEMAIL_KEY,
+      apiKey: process.env.AUTH_FORWARDEMAIL_KEY,
       from: "no-reply@raffeltje.nl"
     }),
     ],
