@@ -39,7 +39,7 @@ export async function sendVerificationRequest(config: Config) {
             throw new Error(JSON.stringify(errors))
         } else {
             console.log(response)
-            const {body} = await response.json()
+            const body = await response.text()
             console.log(body)
         }
     } else {
