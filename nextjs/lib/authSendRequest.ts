@@ -37,6 +37,8 @@ export async function sendVerificationRequest(config: Config) {
             console.log(response)
             const {errors} = await response.json()
             throw new Error(JSON.stringify(errors))
+        } else {
+            console.log(response)
         }
     } else {
         console.error(`Not sending for mail address ${config.identifier}`)
