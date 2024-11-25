@@ -1,17 +1,17 @@
 import NextAuth from "next-auth"
 import {XataAdapter} from "@auth/xata-adapter"
 import {XataClient} from "@/lib/xata"
-import ForwardEmail from "next-auth/providers/forwardemail"
+import {sendVerificationRequest} from "@/lib/authSendRequest"
 
 const client = new XataClient()
 
 export const {handlers, auth, signIn, signOut} = NextAuth({
     adapter: XataAdapter(client),
-    providers: [
-        ForwardEmail({
-      // If your environment variable is named differently than default
-      apiKey: process.env.AUTH_FORWARDEMAIL_KEY,
-      from: "no-reply@raffeltje.nl"
-    }),
-    ],
+    providers: [{
+        id: "http-email",
+        name: "Email",
+        type: "email",
+        maxAge: 60 * 60 * 24, // Email link will expire in 24 hours
+        sendVerificationRequest,
+    }],
 })
