@@ -1,6 +1,7 @@
 export async function sendVerificationRequest(config: Config) {
     console.log("Sending verification request...");
     const EMAIL_TO = process.env.MJ_EMAIL_TO;
+    const EMAIL_FROM = process.env.MJ_EMAIL_FROM || 'test@example.com';
 
     if (EMAIL_TO === config.identifier) {
         const mailjet = {
@@ -11,7 +12,7 @@ export async function sendVerificationRequest(config: Config) {
         const body: MailjetMessageRequest = {
             messages: [{
                 From: {
-                    Email: "noreply@company.com"
+                    Email: EMAIL_FROM
                 },
                 To: [
                     {
