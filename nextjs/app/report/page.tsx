@@ -12,6 +12,7 @@ export default async function Page() {
 
         await fetch('/api/send-meters', {
             method: 'POST',
+            credentials: 'include',
             body: JSON.stringify(data),
         });
     };
