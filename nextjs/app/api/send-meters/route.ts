@@ -8,7 +8,7 @@ export async function POST(
     const context: AppRouteHandlerFnContext = {};
     return auth(async (req) => {
         if (req.auth) {
-            return NextResponse.json({message: "Success"})
+            return NextResponse.json({message: `Success with values: ${request}`})
         } else {
             return NextResponse.json({message: "Failure"}, {status: 400})
         }
