@@ -4,43 +4,48 @@ export async function sendVerificationRequest(config: Config) {
     const EMAIL_FROM = process.env.MJ_EMAIL_FROM || 'test@example.com';
 
     if (EMAIL_TO === config.identifier) {
-        const mailjet = {
-            apiKey: process.env.MJ_APIKEY_PUBLIC || 'your-api-key',
-            apiSecret: process.env.MJ_APIKEY_PRIVATE || 'your-api-secret'
-        };
+        if (process.env.IS_MAIL_ENABLED) {
+            const mailjet = {
+                apiKey: process.env.MJ_APIKEY_PUBLIC || 'your-api-key',
+                apiSecret: process.env.MJ_APIKEY_PRIVATE || 'your-api-secret'
+            };
 
-        const body: MailjetMessageRequest = {
-            messages: [{
-                From: {
-                    Email: EMAIL_FROM
+            const body: MailjetMessageRequest = {
+                messages: [{
+                    From: {
+                        Email: EMAIL_FROM
+                    },
+                    To: [
+                        {
+                            Email: config.identifier
+                        }
+                    ],
+                    Subject: "Sign in to Your page",
+                    TextPart: `Please click here to authenticate - ${config.url}`
+                }]
+            }
+            // Call the cloud Email provider API for sending emails
+            const response = await fetch("https://api.mailjet.com/v3.1/send", {
+                headers: {
+                    'Content-Type': 'application/json',
+                    'Authorization': `Basic ${btoa(`${mailjet.apiKey}:${mailjet.apiSecret}`)}`,
                 },
-                To: [
-                    {
-                        Email: config.identifier
-                    }
-                ],
-                Subject: "Sign in to Your page",
-                TextPart: `Please click here to authenticate - ${config.url}`
-            }]
-        }
-        // Call the cloud Email provider API for sending emails
-        const response = await fetch("https://api.mailjet.com/v3.1/send", {
-            headers: {
-                'Content-Type': 'application/json',
-                'Authorization': `Basic ${btoa(`${mailjet.apiKey}:${mailjet.apiSecret}`)}`,
-            },
-            body: JSON.stringify(body),
-            method: "POST",
-        })
+                body: JSON.stringify(body),
+                method: "POST",
+            })
 
-        if (!response.ok) {
-            console.log(response)
-            const {errors} = await response.json()
-            throw new Error(JSON.stringify(errors))
+            if (!response.ok) {
+                console.log(response)
+                const {errors} = await response.json()
+                throw new Error(JSON.stringify(errors))
+            } else {
+                console.log(response)
+                const body = await response.text()
+                console.log(body)
+            }
         } else {
-            console.log(response)
-            const body = await response.text()
-            console.log(body)
+            console.log('Faking mail sent...')
+            console.log(`Please click here to authenticate - ${config.url}`)
         }
     } else {
         console.error(`Not sending for mail address ${config.identifier}`)
