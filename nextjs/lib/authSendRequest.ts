@@ -4,7 +4,7 @@ export async function sendVerificationRequest(config: Config) {
     const EMAIL_FROM = process.env.MJ_EMAIL_FROM || 'test@example.com';
 
     if (EMAIL_TO === config.identifier) {
-        if (process.env.IS_MAIL_ENABLED) {
+        if (process.env.IS_MAIL_ENABLED === 'true') {
             const mailjet = {
                 apiKey: process.env.MJ_APIKEY_PUBLIC || 'your-api-key',
                 apiSecret: process.env.MJ_APIKEY_PRIVATE || 'your-api-secret'
