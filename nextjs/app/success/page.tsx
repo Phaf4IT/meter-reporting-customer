@@ -2,6 +2,8 @@
 
 import {useTranslations} from 'next-intl';
 import {useSearchParams} from 'next/navigation';
+import {useEffect} from "react";
+import {signout} from "@/app/success/signout";
 
 export default function SuccessPage() {
     const t = useTranslations('success');
@@ -9,6 +11,16 @@ export default function SuccessPage() {
     const gas = searchParams.get('gas');
     const water = searchParams.get('water');
     const light = searchParams.get('light');
+
+    useEffect(() => {
+        const logoutUser = async () => {
+            // Wacht 3 seconden (of een andere gewenste tijd) voor uitloggen
+            await new Promise((resolve) => setTimeout(resolve, 3000));
+            await signout();
+        };
+
+        logoutUser();
+    }, []);
 
     return (
         <div className="min-h-screen flex flex-col items-center justify-center bg-cyan-950">
