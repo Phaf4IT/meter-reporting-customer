@@ -1,0 +1,16 @@
+{
+  "form": {
+    "title": "Voer je meterstanden in",
+    "gas": "Gasverbruik (m³)",
+    "water": "Waterverbruik (m³)",
+    "light": "Elektriciteitsverbruik (kWh)",
+    "submit": "Opslaan"
+  },
+  "success": {
+    "title": "Bedankt!",
+    "message": "Je gegevens zijn succesvol opgeslagen.",
+    "gas": "Gasverbruik",
+    "water": "Waterverbruik",
+    "light": "Elektriciteitsverbruik"
+  }
+}

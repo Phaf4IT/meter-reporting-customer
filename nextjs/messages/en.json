@@ -1,0 +1,16 @@
+{
+  "form": {
+    "title": "Enter your meter readings",
+    "gas": "Gas usage (m³)",
+    "water": "Water usage (m³)",
+    "light": "Electricity usage (kWh)",
+    "submit": "Save"
+  },
+  "success": {
+    "title": "Thank you!",
+    "message": "Your data has been saved successfully.",
+    "gas": "Gas usage",
+    "water": "Water usage",
+    "light": "Electricity usage"
+  }
+}
