@@ -1,12 +1,10 @@
 import NextAuth from "next-auth"
-import {XataAdapter} from "@auth/xata-adapter"
-import {XataClient} from "@/lib/xata"
 import {sendVerificationRequest} from "@/lib/authSendRequest"
+import getAdapter from "@/auth-adapter";
 
-const client = new XataClient()
 
 export const {handlers, auth, signIn, signOut} = NextAuth({
-    adapter: XataAdapter(client),
+    adapter: getAdapter(),
     callbacks: {
         authorized: async ({auth}) => {
             // Logged in users are authenticated, otherwise redirect to login page
@@ -29,4 +27,5 @@ export const {handlers, auth, signIn, signOut} = NextAuth({
         {
             maxAge: 4 * 60 * 60 // 4 hours
         }
-})
+});
+
