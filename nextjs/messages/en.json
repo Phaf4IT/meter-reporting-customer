@@ -12,5 +12,44 @@
     "gas": "Gas usage",
     "water": "Water usage",
     "light": "Electricity usage"
+  },
+  "admin": {
+    "campaign": {
+      "pageTitle": "Manage Campaigns",
+      "startDateLabel": "Start Date",
+      "endDateLabel": "End Date",
+      "repeatLabel": "Repeat every:",
+      "day": "Day",
+      "month": "Month",
+      "year": "Year",
+      "futureCampaignLabel": "Future Campaign:",
+      "optional": "Optional",
+      "saveButton": "Save",
+      "saveError": "Failed to save campaign.",
+      "saveSuccess": "Campaign saved successfully!"
+    },
+    "customer": {
+      "manageCustomers": "Manage Customers",
+      "newCustomer": "New Customer",
+      "email": "Email",
+      "name": "Name",
+      "address": "Address",
+      "firstName": "First Name",
+      "middleName": "Middle Name",
+      "lastName": "Last Name",
+      "streetLines": "Street Lines",
+      "addStreetLine": "+ Add a Street Line",
+      "postalCode": "Postal Code",
+      "city": "City",
+      "country": "Country",
+      "province": "Province",
+      "phoneNumber": "Phone Number",
+      "actions": "Actions",
+      "edit": "Edit",
+      "delete": "Delete",
+      "save": "Save",
+      "cancel": "Cancel",
+      "removeStreetLine": "Remove Street Line"
+    }
   }
 }

@@ -12,5 +12,53 @@
     "gas": "Gasverbruik",
     "water": "Waterverbruik",
     "light": "Elektriciteitsverbruik"
+  },
+  "admin": {
+    "meter": {
+      "pageTitle": "Meterwaardes",
+      "customer": "Klant",
+      "gas": "Gas (m³)",
+      "water": "Water (m³)",
+      "light": "Licht (kWh)",
+      "date": "Datum",
+      "noMetersFound": "Geen meterwaardes gevonden"
+    },
+    "campaign": {
+      "pageTitle": "Campagnes Beheren",
+      "startDateLabel": "Startdatum",
+      "endDateLabel": "Einddatum",
+      "repeatLabel": "Herhalen elke:",
+      "day": "Dag",
+      "month": "Maand",
+      "year": "Jaar",
+      "futureCampaignLabel": "Toekomstige Campagne:",
+      "optional": "Optioneel",
+      "saveButton": "Opslaan",
+      "saveError": "Het opslaan van de campagne is mislukt.",
+      "saveSuccess": "Campagne succesvol opgeslagen!"
+    },
+    "customer": {
+      "manageCustomers": "Klanten Beheren",
+      "newCustomer": "Nieuwe Klant",
+      "email": "Email",
+      "address": "Adres",
+      "name": "Naam",
+      "firstName": "Voornaam",
+      "middleName": "Tussenvoegsel",
+      "lastName": "Achternaam",
+      "streetLines": "Straatregels",
+      "addStreetLine": "+ Voeg een straatregel toe",
+      "postalCode": "Postcode",
+      "city": "Stad",
+      "country": "Land",
+      "province": "Provincie",
+      "phoneNumber": "Telefoonnummer",
+      "actions": "Acties",
+      "edit": "Bewerken",
+      "delete": "Verwijderen",
+      "save": "Opslaan",
+      "cancel": "Annuleren",
+      "removeStreetLine": "Verwijder straatregel"
+    }
   }
 }
