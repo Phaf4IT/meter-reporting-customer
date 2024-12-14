@@ -24,7 +24,7 @@ export async function sendVerificationRequest(config: Config) {
                     TextPart: `Please click here to authenticate - ${config.url}`
                 }]
             }
-            // Call the cloud Email provider API for sending emails
+
             const response = await fetch("https://api.mailjet.com/v3.1/send", {
                 headers: {
                     'Content-Type': 'application/json',
@@ -35,13 +35,8 @@ export async function sendVerificationRequest(config: Config) {
             })
 
             if (!response.ok) {
-                console.log(response)
                 const {errors} = await response.json()
                 throw new Error(JSON.stringify(errors))
-            } else {
-                console.log(response)
-                const body = await response.text()
-                console.log(body)
             }
         } else {
             console.log('Faking mail sent...')
@@ -53,9 +48,7 @@ export async function sendVerificationRequest(config: Config) {
 }
 
 interface Config {
-    // emailaddress to
     identifier: string;
-    // activation url
     url: string
 }
 

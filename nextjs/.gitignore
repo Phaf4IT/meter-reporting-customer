@@ -38,3 +38,6 @@ yarn-error.log*
 # typescript
 *.tsbuildinfo
 next-env.d.ts
+/old
+/db_data
+/docker/database/scheme/postgres/3. data.sql

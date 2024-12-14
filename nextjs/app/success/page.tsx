@@ -3,7 +3,7 @@
 import {useTranslations} from 'next-intl';
 import {useSearchParams} from 'next/navigation';
 import {useEffect} from "react";
-import {signout} from "@/app/success/signout";
+import {signOutAction} from "@/app/success/signOutAction";
 
 export default function SuccessPage() {
     const t = useTranslations('success');
@@ -16,9 +16,8 @@ export default function SuccessPage() {
         const logoutUser = async () => {
             // Wacht 3 seconden (of een andere gewenste tijd) voor uitloggen
             await new Promise((resolve) => setTimeout(resolve, 3000));
-            await signout();
+            await signOutAction();
         };
-
         logoutUser();
     }, []);
 
