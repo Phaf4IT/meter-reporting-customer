@@ -1,22 +1,18 @@
 'use client';
 
 import {useEffect, useState} from 'react';
-import {Meter} from "@/app/admin/meter/getMetersAction";
+import {Meter} from "@/app/admin/meter/meter";
 import AdminLayout from '../adminlayout';
 import {useTranslations} from 'next-intl';
+import {getMeters} from "@/app/admin/meter/client";
 
 export default function MetersPage() {
     const [meters, setMeters] = useState<Meter[]>([]);
     const t = useTranslations('admin.meter');  // Gebruik de namespace 'admin.meter'
 
     useEffect(() => {
-        async function fetchMeters() {
-            const response = await fetch('/api/admin/meters');
-            const data = await response.json();
-            setMeters(data);
-        }
-
-        fetchMeters();
+        getMeters()
+            .then(meters => setMeters(meters));
     }, []);
 
     return (
