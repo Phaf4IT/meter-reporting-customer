@@ -1,7 +1,7 @@
 import React from 'react';
 import Dialog from 'rc-dialog';
-import 'rc-dialog/assets/index.css'; // Vergeet niet de CSS te importeren
-import '../dialog-styles.css'; // Vergeet niet de CSS te importeren
+import '../dialog-styles.css';
+import 'rc-dialog/assets/index.css';
 
 interface ConfirmationDialogProps {
     isOpen: boolean;
@@ -45,7 +45,7 @@ const ConfirmationDialog: React.FC<ConfirmationDialogProps> = ({
             }
             animation="zoom"
             maskAnimation="fade"
-            className="bg-cyan-900 text-white p-6 rounded shadow-md max-w-lg mx-auto"
+            className="bg-cyan-900"
         >
             <h3 className="text-lg font-bold">{title}</h3>
             <p className="my-4">{message}</p>

@@ -1,17 +1,17 @@
 /* Voeg deze stijl toe aan je global stylesheet of in een CSS-modules bestand */
 .rc-dialog {
     position: relative;
-    background-color: #1e293b;
     border-radius: 8px;
     color: white;
 }
 .rc-dialog-content{
-    background-color: hsla(0, 0%, 0%, 0.33);
+    background-color: initial!important;
 }
 
 .rc-dialog-header {
     font-size: 1.25rem;
     font-weight: bold;
+    background-color: initial!important;
 }
 
 .rc-dialog-footer {

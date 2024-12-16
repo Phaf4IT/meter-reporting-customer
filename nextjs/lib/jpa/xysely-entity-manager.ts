@@ -23,8 +23,6 @@ export abstract class XyselyEntityManager<T extends Entity> extends EntityManage
     async create(entity: T): Promise<T> {
         const fields = entity.getFieldAndValues();
         const tableName = entity.getTableName();
-
-        
         const result = await this.db
             .insertInto(tableName)
             .values(fields)
