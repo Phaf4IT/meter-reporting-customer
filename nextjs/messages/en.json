@@ -88,6 +88,24 @@
       "save": "Save",
       "cancel": "Cancel",
       "removeStreetLine": "Remove Street Line"
+    },
+    "measureValue": {
+      "manageMeasureValues": "Manage Measure Values",
+      "newMeasureValue": "New Measure Value",
+      "name": "Name",
+      "unit": "Unit",
+      "type": "Type",
+      "defaultValue": "Default Value",
+      "isEditable": "Is Editable",
+      "save": "Save",
+      "cancel": "Cancel",
+      "delete": "Delete",
+      "edit": "Edit",
+      "deleteConfirmationTitle": "Delete Measure Value?",
+      "deleteConfirmationMessage": "Are you sure you want to delete this measure value?",
+      "confirmDeleteButton": "Confirm Delete",
+      "cancelButton": "Cancel",
+      "undefined": "-"
     }
   }
 }

@@ -75,11 +75,12 @@ CREATE INDEX if not exists non_active_customer_company_email ON non_active_custo
 CREATE TABLE IF NOT EXISTS measure_value
 (
     name          TEXT         NOT NULL,
-    measure_unit  TEXT         NOT NULL,
+    translations  json         NOT NULL,
+    measure_unit  TEXT         NULL,
     type          VARCHAR(255) NOT NULL,
     is_editable   BOOLEAN      NOT NULL,
     default_value TEXT         NULL,
-    company       varchar(255)[],
+    company       varchar(255),
     PRIMARY KEY (name, company)
 );
 

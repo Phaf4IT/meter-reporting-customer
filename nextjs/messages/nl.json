@@ -105,6 +105,36 @@
       "cancelButton": "Annuleren",
       "confirmDeleteButton": "Ja, verwijderen",
       "customerEmails": "Klant-e-mails (optioneel)"
+    },
+    "measureValue": {
+      "manageMeasureValues": "Beheer Meetwaarden",
+      "newMeasureValue": "Nieuwe Meetwaarde",
+      "name": "Naam",
+      "unit": "Eenheid",
+      "type": "Type",
+      "defaultValue": "Standaardwaarde",
+      "isEditable": "Is Bewerkbaar",
+      "save": "Opslaan",
+      "cancel": "Annuleren",
+      "delete": "Verwijderen",
+      "edit": "Bewerken",
+      "deleteConfirmationTitle": "Verwijder Meetwaarde?",
+      "deleteConfirmationMessage": "Weet je zeker dat je deze meetwaarde wilt verwijderen?",
+      "confirmDeleteButton": "Bevestig Verwijderen",
+      "cancelButton": "Annuleren",
+      "measureValueType": {
+        "BOOLEAN": "Ja/Nee",
+        "TEXT": "Tekst",
+        "NUMBER": "Nummer",
+        "unknown": "N/A"
+      },
+      "actions": "Acties",
+      "translations": "Vertalingen",
+      "remove": "Verwijderen",
+      "locale": "Locale (bijvoorbeeld nl-NL)",
+      "translationValue": "Vertaling",
+      "addTranslation": "Voeg vertaling toe",
+      "undefined": "-"
     }
   }
 }

@@ -1,4 +1,4 @@
-import {MeasureValue} from "@/app/admin/measure_value/measureValue";
+import {MeasureValue} from "@/app/admin/measure-value/measureValue";
 
 export class Campaign {
     constructor(readonly customerEmails: string[],

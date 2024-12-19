@@ -102,13 +102,9 @@ export abstract class XyselyEntityManager<T extends Entity> extends EntityManage
         const primaryKeys = this.entityClass.getPrimaryKeys();
         const tableName = this.entityClass.getTableName();
         const fields = entity.getFieldAndValues();
-        console.log(tableName)
-        console.log(fields)
-        console.log(primaryKeys)
 
         let query = this.db.updateTable(tableName).set(fields);
 
-        
         primaryKeys.forEach((key: any) => {
             query = query.where(key, '=', (entity as any)[key]);
         });
