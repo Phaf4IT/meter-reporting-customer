@@ -1,5 +1,6 @@
 import {DragDropContext, Draggable, Droppable} from '@hello-pangea/dnd';
 import {MeasureValue} from "@/app/admin/measure-value/measureValue";
+import {useTranslations} from "next-intl";
 
 interface MeasureValuesSelectorProps {
     t: (key: string) => string;
@@ -51,6 +52,7 @@ const MeasureValuesSelector = ({
 
         setSelectedMeasures(reorderedSelectedMeasures);
     };
+    const mT = useTranslations('admin.measureValue'); // Hier pak je de vertalingen voor measurevalues
 
     return (
         <div>
@@ -77,7 +79,8 @@ const MeasureValuesSelector = ({
                                                 className="form-checkbox h-5 w-5 text-cyan-500"
                                             />
                                             <label htmlFor={measureValue.name} className="flex-grow">
-                                                {measureValue.name} ({measureValue.unit})
+                                                {measureValue.name} {measureValue.unit ?
+                                                `(${measureValue.unit})` : ''} - {mT(`measureValueType.${measureValue.type}`)}
                                             </label>
                                             <span className="cursor-move text-gray-300">☰</span>
                                         </div>
