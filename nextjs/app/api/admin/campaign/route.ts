@@ -2,7 +2,7 @@ import {NextRequest, NextResponse} from 'next/server';
 import {createCampaign} from "@/app/api/admin/campaign/createCampaignAction";
 import {auth} from "@/auth";
 import {getCampaigns} from "@/app/api/admin/campaign/getCampaignsAction";
-import {Campaign} from "@/app/admin/campaign/campaign";
+import {campaignFromJson} from "@/app/admin/campaign/campaign";
 import {deleteCampaign} from "@/app/api/admin/campaign/_database/campaignRepository";
 
 export async function POST(
@@ -16,7 +16,7 @@ export async function POST(
     }
     try {
         const data = await request.json();
-        const campaign = await createCampaign(Campaign.fromJSON(data), session.user.company);
+        const campaign = await createCampaign(campaignFromJson(data), session.user.company);
 
         return NextResponse.json(campaign);
     } catch (err) {
@@ -36,7 +36,7 @@ export async function DELETE(
     }
     try {
         const data = await request.json();
-        await deleteCampaign(Campaign.fromJSON(data), session.user.company);
+        await deleteCampaign(campaignFromJson(data), session.user.company);
 
         return NextResponse.json({});
     } catch (err) {

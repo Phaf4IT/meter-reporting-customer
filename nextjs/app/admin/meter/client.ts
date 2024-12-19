@@ -1,4 +1,4 @@
-import {Meter} from "@/app/admin/meter/meter";
+import {Meter, meterFromJson} from "@/app/admin/meter/meter";
 
 export async function getMeters(): Promise<Meter[]> {
     const data = await fetch("/api/admin/meter", {
@@ -6,5 +6,5 @@ export async function getMeters(): Promise<Meter[]> {
         credentials: "include"
     });
     const customers = await data.json();
-    return customers.map((customerData: any) => Meter.fromJSON(customerData))
+    return customers.map((customerData: any) => meterFromJson(customerData))
 }

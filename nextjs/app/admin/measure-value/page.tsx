@@ -3,7 +3,7 @@ import React, {useEffect, useState} from 'react';
 import AdminLayout from "@/app/admin/adminlayout";
 import {useTranslations} from "next-intl";
 import ConfirmationDialog from "@/components/admin/confirmation-dialog";
-import {MeasureValue} from "@/app/admin/measure-value/measureValue";
+import {emptyMeasureValue, MeasureValue} from "@/app/admin/measure-value/measureValue";
 import {deleteMeasureValue, getMeasureValues, saveMeasureValue} from "@/app/admin/measure-value/client";
 import MeasureValueForm from "@/components/admin/measure_value/measure-value-form";
 import {languageSuggestions} from "@/components/admin/measure_value/language-suggestions";
@@ -73,7 +73,7 @@ export default function MeasureValuesPage() {
                 ) : (
                     <>
                         <button
-                            onClick={() => openEditor(new MeasureValue('', [], '', '', true, ''), true)}
+                            onClick={() => openEditor(emptyMeasureValue(), true)}
                             className="bg-blue-500 text-white px-4 py-2 mb-4 rounded hover:bg-blue-600"
                         >
                             {t('newMeasureValue')}

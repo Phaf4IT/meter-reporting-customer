@@ -2,7 +2,7 @@ import {NextRequest, NextResponse} from 'next/server';
 import {auth} from "@/auth";
 import {getMeasureValues} from "@/app/api/admin/measure-value/getMeasureValuesAction";
 import {createMeasureValue} from "@/app/api/admin/measure-value/createMeasureValueAction";
-import {MeasureValue} from "@/app/admin/measure-value/measureValue";
+import {measureValueFromJson} from "@/app/admin/measure-value/measureValue";
 import {updateMeasureValue} from "@/app/api/admin/measure-value/updateMeasureValueAction";
 import {deleteMeasureValue} from "@/app/api/admin/measure-value/deleteMeasureValueAction";
 
@@ -17,7 +17,7 @@ export async function POST(
     }
     try {
         const data = await request.json();
-        const measureValue = await createMeasureValue(MeasureValue.fromJSON(data), session.user.company);
+        const measureValue = await createMeasureValue(measureValueFromJson(data), session.user.company);
 
         return NextResponse.json(measureValue);
     } catch (err) {
@@ -37,7 +37,7 @@ export async function PUT(
     }
     try {
         const data = await request.json();
-        const measureValue = await updateMeasureValue(MeasureValue.fromJSON(data), session.user.company);
+        const measureValue = await updateMeasureValue(measureValueFromJson(data), session.user.company);
 
         return NextResponse.json(measureValue);
     } catch (err) {
@@ -73,7 +73,7 @@ export async function DELETE(
     }
     try {
         const data = await request.json();
-        await deleteMeasureValue(MeasureValue.fromJSON(data), session.user.company);
+        await deleteMeasureValue(measureValueFromJson(data), session.user.company);
 
         return NextResponse.json({});
     } catch (err) {

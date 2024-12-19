@@ -1,6 +1,13 @@
 import {getEntityManager} from "@/lib/jpa/entity-fetcher";
 import {MeasureValueTable} from "@/app/api/admin/measure-value/_database/measureValueTable";
-import {MeasureValue, MeasureValueTranslation} from "@/app/admin/measure-value/measureValue";
+import {
+    getMeasureValueType,
+    getMeasureValueTypeName,
+    getTranslations,
+    getTranslationsAsRecords,
+    MeasureValue
+} from "@/app/admin/measure-value/measureValue";
+
 
 export async function findMeasureValues(company: string) {
     return getEntityManager(MeasureValueTable)
@@ -8,62 +15,50 @@ export async function findMeasureValues(company: string) {
             company: company
         })
         .then((measureValues) =>
-            measureValues.map((measureValueTable: MeasureValueTable) => {
-                return new MeasureValue(
-                    measureValueTable.name,
-                    MeasureValueTranslation.getTranslations(measureValueTable.translations),
-                    measureValueTable.measureUnit,
-                    measureValueTable.type,
-                    measureValueTable.isEditable,
-                    measureValueTable.defaultValue);
-            })
+            measureValues.map((measureValueTable: MeasureValueTable) => mapTableToDomain(measureValueTable))
         );
 
 }
 
 export async function saveMeasureValue(measureValue: MeasureValue, company: string) {
     return getEntityManager(MeasureValueTable)
-        .create(new MeasureValueTable(
-            measureValue.name,
-            measureValue.getTranslations(),
-            measureValue.unit,
-            measureValue.getType(),
-            measureValue.isEditable,
-            measureValue.defaultValue,
-            company))
-        .then(measureValueTable => new MeasureValue(
-            measureValueTable.name,
-            MeasureValueTranslation.getTranslations(measureValueTable.translations),
-            measureValueTable.measureUnit,
-            measureValueTable.type,
-            measureValueTable.isEditable,
-            measureValueTable.defaultValue)
+        .create(mapDomainToTable(measureValue, company))
+        .then(measureValueTable => mapTableToDomain(measureValueTable)
         )
 }
 
 
 export async function updateMeasureValue(measureValue: MeasureValue, company: string) {
     return getEntityManager(MeasureValueTable)
-        .update(new MeasureValueTable(
-            measureValue.name,
-            measureValue.getTranslations(),
-            measureValue.unit,
-            measureValue.getType(),
-            measureValue.isEditable,
-            measureValue.defaultValue,
-            company))
+        .update(mapDomainToTable(measureValue, company))
         .then(() => measureValue)
 }
 
+
 export async function deleteMeasureValue(measureValue: MeasureValue, company: string) {
     return getEntityManager(MeasureValueTable)
-        .delete(new MeasureValueTable(
-            measureValue.name,
-            measureValue.getTranslations(),
-            measureValue.unit,
-            measureValue.getType(),
-            measureValue.isEditable,
-            measureValue.defaultValue,
-            company)
+        .delete(mapDomainToTable(measureValue, company)
         );
+}
+
+function mapTableToDomain(measureValueTable: MeasureValueTable): MeasureValue {
+    return {
+        name: measureValueTable.name,
+        translations: getTranslations(measureValueTable.translations),
+        unit: measureValueTable.measureUnit,
+        type: getMeasureValueType(measureValueTable.type),
+        isEditable: measureValueTable.isEditable,
+        defaultValue: measureValueTable.defaultValue
+    };
+}
+
+function mapDomainToTable(measureValue: MeasureValue, company: string) {
+    return new MeasureValueTable(
+        measureValue.name,
+        getTranslationsAsRecords(measureValue),
+        measureValue.unit,
+        getMeasureValueTypeName(measureValue),
+        measureValue.isEditable,
+        measureValue.defaultValue,
+        company);
 }
