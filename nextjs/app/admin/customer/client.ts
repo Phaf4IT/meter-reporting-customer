@@ -1,5 +1,5 @@
 'use client';
-import {Customer} from "@/app/admin/customer/customer";
+import {Customer, customerFromJson} from "@/app/admin/customer/customer";
 
 export async function getCustomers(): Promise<Customer[]> {
     const data = await fetch("/api/admin/customer", {
@@ -7,7 +7,7 @@ export async function getCustomers(): Promise<Customer[]> {
         credentials: "include"
     });
     const customers = await data.json();
-    return customers.map((customerData: any) => Customer.fromJSON(customerData))
+    return customers.map((customerData: any) => customerFromJson(customerData))
 }
 
 export async function saveCustomer(customer: Customer, isNew: boolean): Promise<Customer> {
@@ -22,7 +22,7 @@ export async function saveCustomer(customer: Customer, isNew: boolean): Promise<
     }
 
     const newCustomer = await response.json();
-    return Customer.fromJSON(newCustomer);
+    return customerFromJson(newCustomer);
 }
 
 export async function deleteCustomer(customer: Customer): Promise<Response> {

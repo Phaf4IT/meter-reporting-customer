@@ -104,7 +104,13 @@
       "deleteConfirmationMessage": "Weet je zeker dat je deze klant wilt verwijderen? Deze actie kan niet ongedaan worden gemaakt.",
       "cancelButton": "Annuleren",
       "confirmDeleteButton": "Ja, verwijderen",
-      "customerEmails": "Klant-e-mails (optioneel)"
+      "customerEmails": "Klant-e-mails (optioneel)",
+      "title": "Aanhef",
+      "selectTitle": "Selecteer een titel",
+      "none": "Geen",
+      "mr": "Meneer",
+      "mrs": "Mevrouw",
+      "family": "Familie"
     },
     "measureValue": {
       "manageMeasureValues": "Beheer Meetwaarden",

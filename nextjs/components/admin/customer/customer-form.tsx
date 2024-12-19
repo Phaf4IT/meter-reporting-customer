@@ -19,6 +19,7 @@ export default function CustomerForm({
     const [formData, setFormData] = useState<Customer>({
         ...customer,
         streetLines: customer.streetLines || [],
+        title: customer.title || "",
     });
 
     const t = useTranslations('admin.customer');
@@ -50,17 +51,38 @@ export default function CustomerForm({
 
     const getStreetLineLabel = (index: number) => {
         if (index == 0) {
-            return 'address'
+            return 'address';
         } else if (index == 1) {
-            return 'addressAdditional'
+            return 'addressAdditional';
         } else {
-            return 'addressOther'
+            return 'addressOther';
         }
     }
 
     return (
         <form onSubmit={handleSubmit}
               className="w-full max-w-lg bg-cyan-900 text-white p-6 rounded shadow-md space-y-6">
+            {/* Titel van de klant */}
+            <div className="flex flex-wrap -mx-3 mb-6">
+                <div className="w-full px-3">
+                    <label className="block uppercase tracking-wide text-gray-200 text-s font-bold mb-2"
+                           htmlFor="title">
+                        {t('title')}
+                    </label>
+                    <select
+                        id="title"
+                        value={formData.title}
+                        onChange={(e) => setFormData({...formData, title: e.target.value})}
+                        className="appearance-none block w-full bg-cyan-800 text-white border border-gray-500 rounded py-3 px-4 leading-tight focus:outline-none focus:border-cyan-400"
+                    >
+                        <option value="">{t('none')}</option>
+                        <option value="mr">{t('mr')}</option>
+                        <option value="mrs">{t('mrs')}</option>
+                        <option value="family">{t('family')}</option>
+                    </select>
+                </div>
+            </div>
+
             {/* Email, First Name, etc. */}
             <div className="flex flex-wrap -mx-3 mb-6">
                 <div className="w-full md:w-1/2 px-3 mb-6 md:mb-0">

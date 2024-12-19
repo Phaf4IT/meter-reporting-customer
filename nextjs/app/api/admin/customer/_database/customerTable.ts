@@ -7,30 +7,30 @@ import {EntityClass} from "@/lib/jpa/decorator/entity-class.decorator";
 export class CustomerTable extends Entity {
     @PrimaryKey
     @Field()
-    email: string; 
+    email: string;
     @Field()
-    title: string | undefined; 
+    title: string | undefined;
     @Field("first_name")
-    firstName: string; 
+    firstName: string;
     @Field("middle_name")
-    middleName: string | undefined; 
+    middleName: string | undefined;
     @Field("last_name")
-    lastName: string; 
+    lastName: string;
     @Field("street_lines")
-    streetLines: string[]; 
+    streetLines: string[];
     @Field("postal_code")
-    postalCode: string; 
+    postalCode: string;
     @Field("city")
-    city: string; 
+    city: string;
     @Field("country")
-    country: string; 
+    country: string;
     @Field("state_or_province")
-    stateOrProvince: string; 
+    stateOrProvinceCode: string;
     @Field("phone_number")
-    phoneNumber: string; 
+    phoneNumber: string;
     @PrimaryKey
     @Field("company")
-    company: string; 
+    company: string;
 
     constructor(
         email: string,
@@ -56,7 +56,7 @@ export class CustomerTable extends Entity {
         this.postalCode = postalCode;
         this.city = city;
         this.country = country;
-        this.stateOrProvince = stateOrProvince;
+        this.stateOrProvinceCode = stateOrProvince;
         this.phoneNumber = phoneNumber;
         this.company = company;
     }

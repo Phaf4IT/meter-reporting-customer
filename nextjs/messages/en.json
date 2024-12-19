@@ -87,7 +87,13 @@
       "delete": "Delete",
       "save": "Save",
       "cancel": "Cancel",
-      "removeStreetLine": "Remove Street Line"
+      "removeStreetLine": "Remove Street Line",
+      "title": "Title",
+      "selectTitle": "Select a title",
+      "none": "None",
+      "mr": "Mr",
+      "mrs": "Mrs",
+      "family": "Family"
     },
     "measureValue": {
       "manageMeasureValues": "Manage Measure Values",
