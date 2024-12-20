@@ -15,25 +15,25 @@ CREATE TABLE IF NOT EXISTS company
 
 CREATE TABLE IF NOT EXISTS campaign
 (
+    name            text          NOT NULL,
     start_date      date          NOT NULL,
     end_date        date          NOT NULL,
     reminder_dates  timestamptz[] NOT NULL,
     customer_emails text[],
     measure_values  json[]        NOT NULL,
     company         varchar(255)  NOT NULL,
-    PRIMARY KEY (start_date, end_date, measure_values, reminder_dates, customer_emails, company)
+    PRIMARY KEY (name, company)
 );
+
+CREATE INDEX if not exists search_campaign_idx ON campaign USING btree (start_date, end_date, measure_values, reminder_dates, company);
 
 CREATE TABLE IF NOT EXISTS campaign_reminder_sent
 (
-    date            timestamptz   NOT NULL,
-    start_date      date          NOT NULL,
-    end_date        date          NOT NULL,
-    measure_values  json[]        NOT NULL,
-    reminder_dates  timestamptz[] NOT NULL,
-    customer_emails text[],
-    company         varchar(255)  NOT NULL,
-    PRIMARY KEY (start_date, end_date, measure_values, date, reminder_dates, customer_emails, company)
+    campaign_name  text         NOT NULL,
+    date           timestamptz  NOT NULL,
+    customer_email text,
+    company        varchar(255) NOT NULL,
+    PRIMARY KEY (campaign_name, date, customer_email, company)
 );
 
 CREATE TABLE IF NOT EXISTS customer
@@ -70,7 +70,7 @@ CREATE TABLE IF NOT EXISTS non_active_customer
     archive_date      timestamptz  NOT NULL default now()
 );
 
-CREATE INDEX if not exists non_active_customer_company_email ON non_active_customer USING btree (email, company);
+CREATE INDEX if not exists non_active_customer_company_email_idx ON non_active_customer USING btree (email, company);
 
 CREATE TABLE IF NOT EXISTS measure_value
 (

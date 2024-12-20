@@ -71,7 +71,10 @@
       "reminderDatesTitle": "Selecteer herinnerdata",
       "customerSelectionTitle": "Selecteer klanten",
       "backButton": "Terug",
-      "nextButton": "Volgende"
+      "nextButton": "Volgende",
+      "enterCampaignName": "Vul een unieke campagne naam in",
+      "campaignName": "Campagne naam",
+      "campaignNameExists": "Deze campagne naam bestaat al. Kies een andere naam alstublieft."
     },
     "customer": {
       "manageCustomers": "Klanten Beheren",

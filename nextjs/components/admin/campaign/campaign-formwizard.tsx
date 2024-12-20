@@ -9,25 +9,29 @@ import CustomerSelection from "@/components/admin/campaign/customer-selection";
 import {Campaign} from "@/app/admin/campaign/campaign";
 import FormWizard from "@/components/admin/form-wizard";
 import {getMeasureValues} from "@/app/admin/measure-value/client";
+import CampaignNameForm from "@/components/admin/campaign/campaign-name-form";
 
 interface CampaignFormWizardProps {
     isOpen: boolean;
     onClose: () => void;
     onSubmit: (campaign: Campaign) => Promise<void>;
     t: (key: string) => string;
+    currentCampaignNames: string[];
 }
 
 const CampaignFormWizard: React.FC<CampaignFormWizardProps> = ({
                                                                    isOpen,
                                                                    onClose,
                                                                    onSubmit,
-                                                                   t
+                                                                   t,
+                                                                   currentCampaignNames
                                                                }: any) => {
     const [customers, setCustomers] = useState<Customer[]>([]);
     const [selectedMeasures, setSelectedMeasures] = useState<MeasureValue[]>([]);
     const [selectedCustomers, setSelectedCustomers] = useState<string[]>([]);
     const [reminderDates, setReminderDates] = useState<Date[]>([]);
     const [startDate, setStartDate] = useState<Date | undefined>(undefined);
+    const [name, setName] = useState<string>('');
     const [endDate, setEndDate] = useState<Date | undefined>(undefined);
     const [measureValues, setMeasureValues] = useState<MeasureValue[]>([]);
 
@@ -48,6 +52,7 @@ const CampaignFormWizard: React.FC<CampaignFormWizardProps> = ({
 
     const handleFormSubmit = () => {
         const campaignData: Campaign = {
+            name: name,
             startDate: startDate!,
             endDate: endDate!,
             reminderDates: reminderDates,
@@ -56,6 +61,7 @@ const CampaignFormWizard: React.FC<CampaignFormWizardProps> = ({
         };
         return onSubmit(campaignData)
             .then(() => {
+                setName('')
                 setStartDate(undefined);
                 setEndDate(undefined);
                 setReminderDates([]);
@@ -64,6 +70,17 @@ const CampaignFormWizard: React.FC<CampaignFormWizardProps> = ({
     };
 
     const steps = [
+        {
+            title: t('campaignName'),
+            content: (
+                <CampaignNameForm
+                    t={t}
+                    campaignName={name}
+                    setCampaignName={(name: string) => setName(name)}
+                    currentCampaignNames={currentCampaignNames}
+                />
+            )
+        },
         {
             title: t('dateRangeTitle'),
             content: (

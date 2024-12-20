@@ -31,6 +31,7 @@ export async function updateCampaign(campaign: Campaign, company: string) {
 
 function mapTableToDomain(campaign: CampaignTable): Campaign {
     return {
+        name: campaign.name,
         customerEmails: campaign.customer_emails,
         endDate: campaign.end_date,
         measureValues: campaign.measure_values,
@@ -41,6 +42,7 @@ function mapTableToDomain(campaign: CampaignTable): Campaign {
 
 function mapDomainToTable(campaign: Campaign, company: string) {
     return new CampaignTable(
+        campaign.name,
         campaign.startDate,
         campaign.endDate,
         campaign.reminderDates,

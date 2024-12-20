@@ -1,20 +1,13 @@
 import NextAuth from "next-auth"
 import {sendVerificationRequest} from "@/lib/authSendRequest"
-import getAdapter from "@/auth-adapter";
+import getAdapter from "@/components/authjs/auth-adapter";
+import {getAuthorization} from "@/components/authjs/authorization";
 
 
 export const {handlers, auth, signIn, signOut} = NextAuth({
     adapter: getAdapter(),
     callbacks: {
-        authorized: async ({auth}) => {
-            // Logged in users are authenticated, otherwise redirect to login page
-            let isAuthenticated = !!auth && new Date(auth.expires) > new Date();
-            if (isAuthenticated) {
-                // TODO use auth.user.role to get role-based access control
-                console.log(auth.expires)
-            }
-            return isAuthenticated
-        },
+        authorized: async ({auth, request}) => getAuthorization(auth, request),
     },
     providers: [{
         id: "http-email",

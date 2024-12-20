@@ -1,4 +1,4 @@
-import {Campaign} from "@/app/report/campaign";
+import {campaignFromJson} from "@/app/report/campaign";
 
 export async function getCampaignOptions() {
     const data = await fetch("/api/campaign", {
@@ -6,5 +6,5 @@ export async function getCampaignOptions() {
         credentials: "include"
     });
     const campaign = await data.json();
-    return campaign.map((customerData: any) => Campaign.fromJSON(customerData))
+    return campaign.map((customerData: any) => campaignFromJson(customerData))
 }
