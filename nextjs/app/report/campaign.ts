@@ -1,15 +1,14 @@
-export class Campaign {
-    constructor(readonly measureValues: MeasureValue[]) {
-    }
+export interface Campaign {
+    readonly measureValues: MeasureValue[];
+}
 
-    static fromJSON(json: any): Campaign {
-        return new Campaign(
-            json.measureValues.map((measureValue: any) => new MeasureValue(measureValue.value, measureValue.unit)),
-        );
+export function campaignFromJson(json: any): Campaign {
+    return {
+        measureValues: json.measureValues.map((measureValue: any) => measureValue),
     }
 }
 
-class MeasureValue {
-    constructor(readonly value: string, readonly unit: string) {
-    }
+interface MeasureValue {
+    readonly value: string;
+    readonly unit: string;
 }

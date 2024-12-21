@@ -50,6 +50,7 @@ export default function CampaignsPage() {
                     isOpen={isDialogOpen}
                     onClose={() => setIsDialogOpen(false)}
                     onSubmit={handleAddCampaign}
+                    currentCampaignNames={campaigns.map(value => value.name)}
                     t={t}
                 />
             </div>

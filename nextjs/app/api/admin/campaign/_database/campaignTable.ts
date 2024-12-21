@@ -7,6 +7,8 @@ import {EntityClass} from "@/lib/jpa/decorator/entity-class.decorator";
 export class CampaignTable extends Entity {
     @PrimaryKey
     @Field()
+    name: string;
+    @Field()
     start_date: Date;
     @PrimaryKey
     @Field()
@@ -21,13 +23,15 @@ export class CampaignTable extends Entity {
     @Field()
     company: string;
 
-    constructor(start_date: Date | string,
+    constructor(name: string,
+                start_date: Date | string,
                 end_date: Date | string,
                 reminder_dates: Date[],
                 customer_emails: string[],
                 measure_values: Record<any, any>[],
                 company: string) {
         super();
+        this.name = name;
         this.start_date = new Date(start_date);
         this.end_date = new Date(end_date);
         this.reminder_dates = reminder_dates?.map(value => new Date(value));

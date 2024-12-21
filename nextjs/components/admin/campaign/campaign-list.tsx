@@ -6,7 +6,7 @@ import ConfirmationDialog from "@/components/admin/confirmation-dialog";
 interface CampaignListProps {
     campaigns: Campaign[];
     t: (key: string) => string;
-    onDelete: (campaign: Campaign) => void; 
+    onDelete: (campaign: Campaign) => void;
 }
 
 const CampaignList = ({campaigns, t, onDelete}: CampaignListProps) => {
@@ -38,6 +38,7 @@ const CampaignList = ({campaigns, t, onDelete}: CampaignListProps) => {
                     <table className="min-w-full bg-cyan-950 text-white">
                         <thead>
                         <tr>
+                            <th className="px-4 py-2 text-left">{t('campaignName')}</th>
                             <th className="px-4 py-2 text-left">{t('startDate')}</th>
                             <th className="px-4 py-2 text-left">{t('endDate')}</th>
                             <th className="px-4 py-2 text-left">{t('reminderDates')}</th>
@@ -52,6 +53,7 @@ const CampaignList = ({campaigns, t, onDelete}: CampaignListProps) => {
                                 key={`${campaign.startDate}-${index}`}
                                 className="border-b border-cyan-800 hover:bg-cyan-700"
                             >
+                                <td className="px-4 py-2">{campaign.name}</td>
                                 <td className="px-4 py-2">{new Date(campaign.startDate).toLocaleDateString()}</td>
                                 <td className="px-4 py-2">{new Date(campaign.endDate).toLocaleDateString()}</td>
                                 <td className="px-4 py-2">

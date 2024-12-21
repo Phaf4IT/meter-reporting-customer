@@ -1,6 +1,6 @@
 import {neonConfig, Pool} from "@neondatabase/serverless";
 import PostgresAdapter from "@auth/pg-adapter";
-import {XataClient} from "./lib/xata";
+import {XataClient} from "@/lib/xata";
 import {XataAdapter} from "@auth/xata-adapter";
 
 const getAdapter = () => {
