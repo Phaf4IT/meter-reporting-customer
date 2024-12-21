@@ -1,6 +1,7 @@
-import React from "react";
-import {Dialog, DialogContent} from "@reach/dialog";
-import "@/components/dialog-styles.css";
+import React from 'react';
+import Dialog from 'rc-dialog';
+import 'rc-dialog/assets/index.css'; // Vergeet niet de CSS te importeren
+import '../dialog-styles.css'; // Vergeet niet de CSS te importeren
 
 interface ConfirmationDialogProps {
     isOpen: boolean;
@@ -23,16 +24,10 @@ const ConfirmationDialog: React.FC<ConfirmationDialogProps> = ({
                                                                }) => {
     return (
         <Dialog
-            aria-label={title}
-            isOpen={isOpen}
-            onDismiss={onClose}
-        >
-            <DialogContent
-                className="bg-cyan-900 text-white p-6 rounded shadow-md max-w-lg mx-auto"
-                aria-label={title}
-            >
-                <h3 className="text-lg font-bold">{title}</h3>
-                <p className="my-4">{message}</p>
+            visible={isOpen}
+            onClose={onClose}
+            title={title}
+            footer={
                 <div className="flex justify-end space-x-4">
                     <button
                         className="bg-gray-500 text-white px-3 py-1 rounded hover:bg-gray-600"
@@ -47,7 +42,13 @@ const ConfirmationDialog: React.FC<ConfirmationDialogProps> = ({
                         {confirmText}
                     </button>
                 </div>
-            </DialogContent>
+            }
+            animation="zoom"
+            maskAnimation="fade"
+            className="bg-cyan-900 text-white p-6 rounded shadow-md max-w-lg mx-auto"
+        >
+            <h3 className="text-lg font-bold">{title}</h3>
+            <p className="my-4">{message}</p>
         </Dialog>
     );
 };

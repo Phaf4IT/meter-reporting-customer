@@ -1,23 +1,32 @@
-/* This code is subject to LICENSE in root of this repository */
-
-/* Used to detect in JavaScript if apps have loaded styles or not. */
-:root {
-    --reach-dialog: 1;
+/* Voeg deze stijl toe aan je global stylesheet of in een CSS-modules bestand */
+.rc-dialog {
+    position: relative;
+    background-color: #1e293b;
+    border-radius: 8px;
+    color: white;
+}
+.rc-dialog-content{
+    background-color: hsla(0, 0%, 0%, 0.33);
 }
 
-[data-reach-dialog-overlay] {
-    background: hsla(0, 0%, 0%, 0.33);
-    position: fixed;
-    top: 0;
-    right: 0;
-    bottom: 0;
-    left: 0;
-    overflow: auto;
+.rc-dialog-header {
+    font-size: 1.25rem;
+    font-weight: bold;
 }
 
-[data-reach-dialog-content] {
-    width: 50vw;
-    margin: 10vh auto;
-    padding: 2rem;
-    outline: none;
+.rc-dialog-footer {
+    display: flex;
+    justify-content: flex-end;
+    gap: 1rem;
+}
+
+button {
+    padding: 0.5rem 1rem;
+    border-radius: 4px;
+    border: none;
+    cursor: pointer;
+}
+
+button:hover {
+    opacity: 0.8;
 }
