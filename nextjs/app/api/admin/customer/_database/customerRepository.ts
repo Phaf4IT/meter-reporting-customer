@@ -8,91 +8,59 @@ export async function findCustomers(company: string) {
             company: company
         })
         .then((customers) =>
-            customers.map((customerTable: CustomerTable) => {
-
-                return new Customer(
-                    customerTable.email,
-                    customerTable.firstName,
-                    customerTable.middleName || undefined,
-                    customerTable.lastName,
-                    customerTable.streetLines,
-                    customerTable.postalCode,
-                    customerTable.city,
-                    customerTable.country,
-                    customerTable.stateOrProvince,
-                    customerTable.phoneNumber
-                );
-            })
+            customers.map((customerTable: CustomerTable) => mapTableToDomain(customerTable))
         );
 
 }
 
 export async function saveCustomer(customer: Customer, company: string) {
     return getEntityManager(CustomerTable)
-        .create(new CustomerTable(
-            customer.email,
-            // TODO
-            undefined,
-            customer.firstName,
-            customer.middleName,
-            customer.lastName,
-            customer.streetLines,
-            customer.postalCode,
-            customer.city,
-            customer.country,
-            customer.stateOrProvinceCode,
-            customer.phoneNumber,
-            company))
-        .then(customerTable => new Customer(
-                customerTable.email,
-                customerTable.firstName,
-                customerTable.middleName || undefined,
-                customerTable.lastName,
-                customerTable.streetLines,
-                customerTable.postalCode,
-                customerTable.city,
-                customerTable.country,
-                customerTable.stateOrProvince,
-                customerTable.phoneNumber
-            )
+        .create(mapDomainToTable(customer, company))
+        .then(customerTable => mapTableToDomain(customerTable)
         )
 }
 
 
 export async function updateCustomer(customer: Customer, company: string) {
     return getEntityManager(CustomerTable)
-        .update(new CustomerTable(
-            customer.email,
-            // TODO
-            undefined,
-            customer.firstName,
-            customer.middleName,
-            customer.lastName,
-            customer.streetLines,
-            customer.postalCode,
-            customer.city,
-            customer.country,
-            customer.stateOrProvinceCode,
-            customer.phoneNumber,
-            company))
+        .update(mapDomainToTable(customer, company))
         .then(() => customer)
 }
 
+
 export async function deleteCustomer(customer: Customer, company: string) {
     return getEntityManager(CustomerTable)
-        .delete(new CustomerTable(
-            customer.email,
-            // TODO
-            undefined,
-            customer.firstName,
-            customer.middleName,
-            customer.lastName,
-            customer.streetLines,
-            customer.postalCode,
-            customer.city,
-            customer.country,
-            customer.stateOrProvinceCode,
-            customer.phoneNumber,
-            company)
-        );
+        .delete(mapDomainToTable(customer, company));
+}
+
+function mapDomainToTable(customer: Customer, company: string) {
+    return new CustomerTable(
+        customer.email,
+        customer.title,
+        customer.firstName,
+        customer.middleName,
+        customer.lastName,
+        customer.streetLines,
+        customer.postalCode,
+        customer.city,
+        customer.country,
+        customer.stateOrProvinceCode,
+        customer.phoneNumber,
+        company);
+}
+
+function mapTableToDomain(customerTable: CustomerTable): Customer {
+    return {
+        email: customerTable.email,
+        title: customerTable.title,
+        firstName: customerTable.firstName,
+        middleName: customerTable.middleName,
+        lastName: customerTable.lastName,
+        streetLines: customerTable.streetLines,
+        postalCode: customerTable.postalCode,
+        city: customerTable.city,
+        country: customerTable.country,
+        stateOrProvinceCode: customerTable.stateOrProvinceCode,
+        phoneNumber: customerTable.phoneNumber
+    };
 }

@@ -2,7 +2,7 @@ import {NextRequest, NextResponse} from 'next/server';
 import {auth} from "@/auth";
 import {getCustomers} from "@/app/api/admin/customer/getCustomersAction";
 import {createCustomer} from "@/app/api/admin/customer/createCustomerAction";
-import {Customer} from "@/app/admin/customer/customer";
+import {customerFromJson} from "@/app/admin/customer/customer";
 import {updateCustomer} from "@/app/api/admin/customer/updateCustomerAction";
 import {deleteCustomer} from "@/app/api/admin/customer/deleteCustomerAction";
 
@@ -16,10 +16,10 @@ export async function POST(
         });
     }
     try {
-        const data = await request.json(); 
-        const campaign = await createCustomer(Customer.fromJSON(data), session.user.company); 
+        const data = await request.json();
+        const customer = await createCustomer(customerFromJson(data), session.user.company);
 
-        return NextResponse.json(campaign);
+        return NextResponse.json(customer);
     } catch (err) {
         console.error("Error creating campaign:", err);
         return new NextResponse("Internal Server Error", {status: 500});
@@ -36,8 +36,8 @@ export async function PUT(
         });
     }
     try {
-        const data = await request.json(); 
-        const customer = await updateCustomer(Customer.fromJSON(data), session.user.company);
+        const data = await request.json();
+        const customer = await updateCustomer(customerFromJson(data), session.user.company);
 
         return NextResponse.json(customer);
     } catch (err) {
@@ -55,7 +55,7 @@ export async function GET(): Promise<Response> {
     }
     try {
         return getCustomers()
-            .then(value => NextResponse.json(value)); 
+            .then(value => NextResponse.json(value));
     } catch (err) {
         console.error("Error creating campaign:", err);
         return new NextResponse("Internal Server Error", {status: 500});
@@ -72,8 +72,8 @@ export async function DELETE(
         });
     }
     try {
-        const data = await request.json(); 
-        await deleteCustomer(Customer.fromJSON(data), session.user.company); 
+        const data = await request.json();
+        await deleteCustomer(customerFromJson(data), session.user.company);
 
         return NextResponse.json({});
     } catch (err) {

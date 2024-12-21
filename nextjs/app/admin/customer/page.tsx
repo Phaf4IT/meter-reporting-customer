@@ -2,7 +2,7 @@
 import React, {useEffect, useState} from 'react';
 import AdminLayout from "@/app/admin/adminlayout";
 import {useTranslations} from "next-intl";
-import {Customer} from "@/app/admin/customer/customer";
+import {Customer, emptyCustomer} from "@/app/admin/customer/customer";
 import CustomerForm from "@/components/admin/customer/customer-form";
 import ConfirmationDialog from "@/components/admin/confirmation-dialog"; // Import confirmation dialog
 import "@/components/dialog-styles.css";
@@ -77,9 +77,7 @@ export default function CustomersPage() {
                     <>
                         <button
                             onClick={() =>
-                                openEditor(new Customer(
-                                    '', '', '', '', [''], '', '', '', '', ''
-                                ), true)
+                                openEditor(emptyCustomer(), true)
                             }
                             className="bg-blue-500 text-white px-4 py-2 mb-4 rounded hover:bg-blue-600"
                         >
@@ -88,6 +86,7 @@ export default function CustomersPage() {
                         <table className="table-auto w-full border-collapse bg-cyan-900 text-white rounded shadow-lg">
                             <thead>
                             <tr className="border-b border-cyan-700">
+                                <th className="py-2 px-4 text-left">{t('title')}</th>
                                 <th className="py-2 px-4 text-left">{t('email')}</th>
                                 <th className="py-2 px-4 text-left">{t('name')}</th>
                                 <th className="py-2 px-4 text-left">{t('address')}</th>
@@ -98,6 +97,7 @@ export default function CustomersPage() {
                             <tbody>
                             {customers.map((customer) => (
                                 <tr key={customer.email} className="border-b border-cyan-700">
+                                    <td className="py-2 px-4">{t(customer.title)}</td>
                                     <td className="py-2 px-4">{customer.email}</td>
                                     <td className="py-2 px-4">
                                         {customer.firstName}{' '}
