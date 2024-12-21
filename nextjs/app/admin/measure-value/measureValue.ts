@@ -1,57 +1,60 @@
-export class MeasureValue {
+export interface MeasureValue {
     readonly name: string;
     readonly translations: MeasureValueTranslation[];
     readonly unit: string | undefined;
     readonly type: MeasureValueType;
     readonly isEditable: boolean;
     readonly defaultValue?: string;
+}
 
-    constructor(name: string,
-                translations: MeasureValueTranslation[],
-                unit: string | undefined,
-                type: string,
-                isEditable: boolean,
-                defaultValue?: string) {
-        this.name = name;
-        this.translations = translations;
-        this.unit = unit;
-        this.type = MeasureValueType[type as keyof typeof MeasureValueType];
-        this.isEditable = isEditable;
-        this.defaultValue = defaultValue;
-    }
-
-    getType = () => {
-        return MeasureValueType[this.type];
-    }
-
-    getTranslations = () => {
-        return this.translations.reduce((acc, item) => {
-            acc[item.locale] = item.value;
-            return acc;
-        }, {} as Record<string, string>)
-    }
-
-    static fromJSON(json: any): MeasureValue {
-        return new MeasureValue(json.name, json.translations, json.unit, json.type, json.isEditable, json.defaultValue);
+export function measureValueFromJson(json: any): MeasureValue {
+    return {
+        name: json.name,
+        translations: json.translations,
+        unit: json.unit,
+        type: json.type,
+        isEditable: json.isEditable,
+        defaultValue: json.defaultValue,
     }
 }
 
-export class MeasureValueTranslation {
+export function emptyMeasureValue(): MeasureValue {
+    return {
+        name: '',
+        translations: [],
+        unit: '',
+        type: MeasureValueType.NUMBER,
+        isEditable: true,
+        defaultValue: '',
+    }
+}
+
+export function getMeasureValueTypeName(measureValue: MeasureValue): string {
+    return MeasureValueType[measureValue.type];
+}
+
+export function getTranslationsAsRecords(measureValue: MeasureValue): Record<string, string> {
+    return measureValue.translations.reduce((acc, item) => {
+        acc[item.locale] = item.value;
+        return acc;
+    }, {} as Record<string, string>)
+}
+
+export interface MeasureValueTranslation {
     readonly locale: string;
     readonly value: string;
+}
 
-    constructor(locale: string, value: string) {
-        this.locale = locale;
-        this.value = value;
-    }
-
-    static getTranslations(translations: Record<string, string>): MeasureValueTranslation[] {
-        return Object.entries(translations).map(
-            ([locale, value]) => new MeasureValueTranslation(locale, value)
-        )
-    }
+export function getTranslations(translations: Record<string, string>): MeasureValueTranslation[] {
+    return Object.entries(translations).map(
+        ([locale, value]) => ({locale, value})
+    );
 }
 
 export enum MeasureValueType {
     NUMBER, TEXT, BOOLEAN
+}
+
+export function getMeasureValueType(type: string): MeasureValueType {
+    return MeasureValueType[type as keyof typeof MeasureValueType];
 }

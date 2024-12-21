@@ -1,5 +1,5 @@
 'use client';
-import {Campaign} from "@/app/admin/campaign/campaign";
+import {Campaign, campaignFromJson} from "@/app/admin/campaign/campaign";
 
 export async function getCampaigns() : Promise<Campaign[]> {
     const data = await fetch("/api/admin/campaign", {
@@ -7,7 +7,7 @@ export async function getCampaigns() : Promise<Campaign[]> {
         credentials: "include"
     });
     const campaigns = await data.json();
-    return campaigns.map((campaignData: any) => Campaign.fromJSON(campaignData))
+    return campaigns.map((campaignData: any) => campaignFromJson(campaignData))
 }
 
 export async function saveCampaign(campaign: Campaign): Promise<Campaign> {
@@ -22,7 +22,7 @@ export async function saveCampaign(campaign: Campaign): Promise<Campaign> {
     }
 
     const newCampaign = await response.json();
-    return Campaign.fromJSON(newCampaign);
+    return campaignFromJson(newCampaign);
 }
 
 export async function deleteCampaign(campaign: Campaign): Promise<Response> {

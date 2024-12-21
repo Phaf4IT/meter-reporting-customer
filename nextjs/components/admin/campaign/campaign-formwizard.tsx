@@ -47,7 +47,13 @@ const CampaignFormWizard: React.FC<CampaignFormWizardProps> = ({
     }, [isOpen]);
 
     const handleFormSubmit = () => {
-        const campaignData = new Campaign(selectedCustomers, endDate!, selectedMeasures, reminderDates, startDate!);
+        const campaignData: Campaign = {
+            startDate: startDate!,
+            endDate: endDate!,
+            reminderDates: reminderDates,
+            customerEmails: selectedCustomers,
+            measureValues: selectedMeasures
+        };
         return onSubmit(campaignData)
             .then(() => {
                 setStartDate(undefined);

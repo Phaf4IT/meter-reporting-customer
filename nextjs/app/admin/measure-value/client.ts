@@ -1,9 +1,9 @@
-import {MeasureValue} from "@/app/admin/measure-value/measureValue";
+import {MeasureValue, measureValueFromJson} from "@/app/admin/measure-value/measureValue";
 
 export async function getMeasureValues(): Promise<MeasureValue[]> {
     return fetch('/api/admin/measure-value')
         .then(response => response.json())
-        .then(data => data.map((item: any) => MeasureValue.fromJSON(item)));
+        .then(data => data.map((item: any) => measureValueFromJson(item)));
 }
 
 export async function saveMeasureValue(measureValue: MeasureValue, isNew: boolean): Promise<MeasureValue> {
@@ -14,7 +14,7 @@ export async function saveMeasureValue(measureValue: MeasureValue, isNew: boolea
         headers: {'Content-Type': 'application/json'},
         credentials: "include"
     }).then(response => response.json())
-        .then((item: any) => MeasureValue.fromJSON(item));
+        .then((item: any) => measureValueFromJson(item));
 }
 
 export async function deleteMeasureValue(measureValue: MeasureValue): Promise<boolean> {

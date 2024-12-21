@@ -1,6 +1,6 @@
 import React, {useState} from 'react';
 import {useTranslations} from 'next-intl';
-import {MeasureValue, MeasureValueTranslation, MeasureValueType} from '@/app/admin/measure-value/measureValue';
+import {MeasureValue, MeasureValueType} from '@/app/admin/measure-value/measureValue';
 import 'rc-dialog/assets/index.css';
 import '../../dialog-styles.css';
 import TranslationsForm from './translations-form'; // Zorg ervoor dat het pad correct is
@@ -55,7 +55,7 @@ export default function MeasureValueForm({
             ...formData,
             translations: [
                 ...formData.translations,
-                new MeasureValueTranslation(locale, value),
+                {locale, value},
             ],
         });
     };
