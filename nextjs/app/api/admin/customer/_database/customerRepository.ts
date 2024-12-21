@@ -59,7 +59,7 @@ export async function saveCustomer(customer: Customer, company: string) {
 }
 
 
-export async function updateCampaign(customer: Customer, company: string) {
+export async function updateCustomer(customer: Customer, company: string) {
     return getEntityManager(CustomerTable)
         .update(new CustomerTable(
             customer.email,

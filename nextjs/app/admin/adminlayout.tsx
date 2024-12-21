@@ -1,15 +1,19 @@
 'use client';
 
 import Link from 'next/link';
-import { usePathname } from 'next/navigation';
+import {usePathname} from 'next/navigation';
+import "./../globals.css";
+import {useTranslations} from "next-intl";
 
-export default function AdminLayout({ children }: { children: React.ReactNode }) {
+export default function AdminLayout({children}: { children: React.ReactNode }) {
     const pathname = usePathname();
+    const t = useTranslations('admin');
 
     const navItems = [
-        { name: 'Klanten Beheren', href: '/admin/customer' },
-        { name: 'Campagnes Instellen', href: '/admin/campaign' },
-        { name: 'Meterwaardes Bekijken', href: '/admin/meter' },
+        {name: t('customer.manageCustomers'), href: '/admin/customer'},
+        {name: t('campaign.pageTitle'), href: '/admin/campaign'},
+        {name: t('meter.pageTitle'), href: '/admin/meter'},
+        {name: t('measureValue.manageMeasureValues'), href: '/admin/measure-value'},
     ];
 
     return (

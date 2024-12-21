@@ -15,10 +15,10 @@ export default function CustomerForm({
     onSave: (customer: Customer, isNew: boolean) => void;
     onCancel: () => void;
 }) {
-    
+
     const [formData, setFormData] = useState<Customer>({
         ...customer,
-        streetLines: customer.streetLines || [],  
+        streetLines: customer.streetLines || [],
     });
 
     const t = useTranslations('admin.customer');
@@ -48,10 +48,10 @@ export default function CustomerForm({
         }
     };
 
-    const getStreetLineLabel = (index:number) => {
-        if(index == 0){
+    const getStreetLineLabel = (index: number) => {
+        if (index == 0) {
             return 'address'
-        } else if(index == 1){
+        } else if (index == 1) {
             return 'addressAdditional'
         } else {
             return 'addressOther'
@@ -75,6 +75,7 @@ export default function CustomerForm({
                         onChange={(e) => setFormData({...formData, email: e.target.value})}
                         className="appearance-none block w-full bg-cyan-800 text-white border border-gray-500 rounded py-3 px-4 leading-tight focus:outline-none focus:border-cyan-400"
                         required
+                        disabled={!isNew}
                     />
                 </div>
                 <div className="w-full md:w-1/2 px-3">
@@ -130,9 +131,9 @@ export default function CustomerForm({
                     {t('addressLines')}
                 </label>
                 {formData.streetLines.map((line, index) => (
-  <div key={index} className="flex flex-col space-y-2 items-start w-full">
+                    <div key={index} className="flex flex-col space-y-2 items-start w-full">
 
-    <div className="flex space-x-4 items-center w-full">
+                        <div className="flex space-x-4 items-center w-full">
                             <input
                                 type="text"
                                 value={line}

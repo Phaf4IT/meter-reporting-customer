@@ -1,13 +1,14 @@
 import React, {useEffect, useState} from 'react';
 import {Customer} from "@/app/admin/customer/customer";
 import {getCustomers} from "@/app/admin/customer/client";
-import {MeasureValue} from "@/app/admin/measure_value/measureValue";
+import {MeasureValue} from "@/app/admin/measure-value/measureValue";
 import DateRangePicker from "@/components/admin/campaign/date-range-picker";
 import MeasureValuesSelector from "@/components/admin/campaign/measure-values";
 import ReminderDates from "@/components/admin/campaign/reminder-dates";
 import CustomerSelection from "@/components/admin/campaign/customer-selection";
 import {Campaign} from "@/app/admin/campaign/campaign";
 import FormWizard from "@/components/admin/form-wizard";
+import {getMeasureValues} from "@/app/admin/measure-value/client";
 
 interface CampaignFormWizardProps {
     isOpen: boolean;
@@ -31,20 +32,17 @@ const CampaignFormWizard: React.FC<CampaignFormWizardProps> = ({
     const [measureValues, setMeasureValues] = useState<MeasureValue[]>([]);
 
     useEffect(() => {
-        const staticMeasureValues: MeasureValue[] = [
-            {name: 'Gas', unit: 'm³'},
-            {name: 'Water', unit: 'liters'},
-            {name: 'Licht', unit: 'kWh'},
-        ];
         if (isOpen) {
+            getMeasureValues()
+                .then(values => {
+                    setMeasureValues(values)
+                    setSelectedMeasures(values)
+                })
             getCustomers()
                 .then(customers => {
                     setCustomers(customers);
-                    setSelectedCustomers(customers.map((c: Customer) => c.email)); 
+                    setSelectedCustomers(customers.map((c: Customer) => c.email));
                 });
-            
-            setMeasureValues(staticMeasureValues);
-            setSelectedMeasures(staticMeasureValues); 
         }
     }, [isOpen]);
 
@@ -81,7 +79,7 @@ const CampaignFormWizard: React.FC<CampaignFormWizardProps> = ({
                     measureValues={measureValues}
                     selectedMeasures={selectedMeasures}
                     setSelectedMeasures={setSelectedMeasures}
-                    setMeasureValues={setMeasureValues} 
+                    setMeasureValues={setMeasureValues}
                 />
             ),
         },
