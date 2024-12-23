@@ -3,7 +3,7 @@ import {createCampaign} from "@/app/api/admin/campaign/createCampaignAction";
 import {auth} from "@/auth";
 import {getCampaigns} from "@/app/api/admin/campaign/getCampaignsAction";
 import {campaignFromJson} from "@/app/admin/campaign/campaign";
-import {deleteCampaign} from "@/app/api/admin/campaign/_database/campaignRepository";
+import {removeCampaign} from "@/app/api/admin/campaign/deleteCampaignAction";
 
 export async function POST(
     request: NextRequest
@@ -36,7 +36,7 @@ export async function DELETE(
     }
     try {
         const data = await request.json();
-        await deleteCampaign(campaignFromJson(data), session.user.company);
+        await removeCampaign(campaignFromJson(data), session.user.company);
 
         return NextResponse.json({});
     } catch (err) {

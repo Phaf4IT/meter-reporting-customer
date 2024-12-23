@@ -2,11 +2,7 @@
 
 import {auth} from "@/auth"
 
-export async function sendMeters(data: {
-    gas: string;
-    water: string;
-    light: string;
-}) {
+export async function sendMeters(data: Record<string, any>) {
     const session = await auth()
 
     if (!session) {

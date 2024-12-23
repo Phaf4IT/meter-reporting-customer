@@ -11,6 +11,8 @@ export abstract class EntityManager<T extends Entity> {
 
     abstract findBy(...keyValues: any[]): Promise<T[]>;
 
+    abstract findByDateFilter(dateColumn: string, operator: '>' | '<' | '=' | '>=' | '<=', date: Date): Promise<T[]>;
+
     abstract update(entity: T): Promise<void>;
 
     abstract delete(entity: T): Promise<void>;

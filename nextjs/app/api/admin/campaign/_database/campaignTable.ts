@@ -10,7 +10,6 @@ export class CampaignTable extends Entity {
     name: string;
     @Field()
     start_date: Date;
-    @PrimaryKey
     @Field()
     end_date: Date;
     @Field()

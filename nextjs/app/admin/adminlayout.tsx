@@ -12,8 +12,9 @@ export default function AdminLayout({children}: { children: React.ReactNode }) {
     const navItems = [
         {name: t('customer.manageCustomers'), href: '/admin/customer'},
         {name: t('campaign.pageTitle'), href: '/admin/campaign'},
-        {name: t('meter.pageTitle'), href: '/admin/meter'},
         {name: t('measureValue.manageMeasureValues'), href: '/admin/measure-value'},
+        {name: t('reminder.remindersAdminTitle'), href: '/admin/reminder'},
+        {name: t('meter.pageTitle'), href: '/admin/meter'},
     ];
 
     return (

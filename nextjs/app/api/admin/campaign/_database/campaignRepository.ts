@@ -2,7 +2,7 @@ import {CampaignTable} from "@/app/api/admin/campaign/_database/campaignTable";
 import {Campaign} from "@/app/admin/campaign/campaign";
 import {getEntityManager} from "@/lib/jpa/entity-fetcher";
 
-export async function findCampaigns(company: string) {
+export async function findCampaignsByCompany(company: string) {
     return getEntityManager(CampaignTable)
         .findBy(CampaignTable, {
             company: company
@@ -10,6 +10,16 @@ export async function findCampaigns(company: string) {
         .then(campaigns => campaigns.map(campaign => mapTableToDomain(campaign)
             )
         )
+}
+
+export async function findCampaignByCompanyAndName(name: string, company: string) {
+    return getEntityManager(CampaignTable)
+        .findBy(CampaignTable, {
+            name: name,
+            company: company
+        })
+        .then(campaigns => campaigns.map(campaign => mapTableToDomain(campaign))
+            .find(() => true))
 }
 
 export async function deleteCampaign(campaign: Campaign, company: string) {

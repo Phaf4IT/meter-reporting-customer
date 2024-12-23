@@ -1,12 +1,13 @@
 "use server"
-import {findCampaignsByCompany} from "@/app/api/admin/campaign/_database/campaignRepository";
 import {auth} from "@/auth";
+import {findRemindersSent} from "@/app/api/admin/reminder-sent/_database/reminderSentRepository";
 
-export async function getCampaigns() {
+
+export async function getReminderSents() {
     const session = await auth()
     if (!session) {
         throw new Error('Niet geautoriseerd.');
     }
     const company = session.user.company
-    return findCampaignsByCompany(company);
+    return findRemindersSent(company);
 }

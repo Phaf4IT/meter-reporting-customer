@@ -112,6 +112,15 @@
       "confirmDeleteButton": "Confirm Delete",
       "cancelButton": "Cancel",
       "undefined": "-"
+    },
+    "reminder": {
+      "remindersAdminTitle": "Reminders Management",
+      "noReminders": "No reminders available.",
+      "campaignName": "Campaign Name",
+      "reminderDate": "Reminder Date",
+      "emailAddresses": "Email Addresses",
+      "sendNow": "Send Now",
+      "removeReminder": "Remove Reminder"
     }
   }
 }

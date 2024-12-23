@@ -27,13 +27,24 @@ CREATE TABLE IF NOT EXISTS campaign
 
 CREATE INDEX if not exists search_campaign_idx ON campaign USING btree (start_date, end_date, measure_values, reminder_dates, company);
 
+CREATE TABLE IF NOT EXISTS reminder
+(
+    campaign_name   text         NOT NULL,
+    customer_emails text[]       NOT NULL,
+    reminder_date   timestamptz  NOT NULL,
+    company         varchar(255) NOT NULL,
+    PRIMARY KEY (campaign_name, reminder_date, company)
+);
+
+
 CREATE TABLE IF NOT EXISTS campaign_reminder_sent
 (
     campaign_name  text         NOT NULL,
-    date           timestamptz  NOT NULL,
-    customer_email text,
+    reminder_date  timestamptz  NOT NULL,
+    customer_email text         NOT NULL,
+    token          text         NOT NULL,
     company        varchar(255) NOT NULL,
-    PRIMARY KEY (campaign_name, date, customer_email, company)
+    PRIMARY KEY (campaign_name, reminder_date, customer_email, token, company)
 );
 
 CREATE TABLE IF NOT EXISTS customer

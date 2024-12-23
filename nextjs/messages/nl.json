@@ -4,7 +4,8 @@
     "gas": "Gasverbruik (m³)",
     "water": "Waterverbruik (m³)",
     "light": "Elektriciteitsverbruik (kWh)",
-    "submit": "Opslaan"
+    "submit": "Opslaan",
+    "loading": "Even geduld aub..."
   },
   "success": {
     "title": "Bedankt!",
@@ -144,6 +145,15 @@
       "translationValue": "Vertaling",
       "addTranslation": "Voeg vertaling toe",
       "undefined": "-"
+    },
+    "reminder": {
+      "remindersAdminTitle": "Herinneringen Beheer",
+      "noReminders": "Geen herinneringen beschikbaar.",
+      "campaignName": "Campagne Naam",
+      "reminderDate": "Herinneringsdatum",
+      "emailAddresses": "E-mailadressen",
+      "sendNow": "Verstuur Nu",
+      "removeReminder": "Verwijder Herinnering"
     }
   }
 }
