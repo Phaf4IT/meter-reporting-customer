@@ -1,23 +1,23 @@
 import "reflect-metadata";
 
 export abstract class Entity {
-    
+
     static getPrimaryKey(): string[] {
         return Reflect.getMetadata('primaryKeys', this) || [];
     }
 
     static getTableName(): string {
-        return (this as any).tableName; 
+        return (this as any).tableName;
     }
 
     getFields(): string[] {
         const fields: string[] = [];
-        const keys = Object.getOwnPropertyNames(this);  
+        const keys = Object.getOwnPropertyNames(this);
 
         for (const key of keys) {
-            const columnName = Reflect.getMetadata("field", this.constructor.prototype, key);  
+            const columnName = Reflect.getMetadata("field", this.constructor.prototype, key);
             if (columnName) {
-                fields.push(columnName);  
+                fields.push(columnName);
             }
         }
         return fields;
@@ -25,19 +25,23 @@ export abstract class Entity {
 
     getFieldAndColumnNames(): Record<string, any> {
         const fieldAndColumnNames: Record<string, any> = {};
-        const keys = Object.getOwnPropertyNames(this);  
+        const keys = Object.getOwnPropertyNames(this);
 
         for (const key of keys) {
-            const columnName = Reflect.getMetadata("field", this.constructor.prototype, key);  
-            if (columnName) {
-                fieldAndColumnNames[key] = columnName;  
-            }
+            fieldAndColumnNames[key] = this.getColumnName(key);
         }
         return fieldAndColumnNames;
     }
 
+    getColumnName(key: string) {
+        const columnName = Reflect.getMetadata("field", this.constructor.prototype, key);
+        if (columnName) {
+            return columnName;
+        }
+    }
+
     getFieldAndValues(): Record<string, any> {
-        
+
         const fieldAndColumnNames: Record<string, any> = this.getFieldAndColumnNames();
         const fields: Record<string, any> = {};
         for (const fieldAndColumnNamesKey in fieldAndColumnNames) {
@@ -60,8 +64,10 @@ export abstract class Entity {
 
 
 export interface EntityClasss<T extends Entity> {
-    new(...args: any[]): T;  
-    getPrimaryKey(): string[]; 
-    getTableName(): string;    
+    new(...args: any[]): T;
+
+    getPrimaryKey(): string[];
+
+    getTableName(): string;
 }
 

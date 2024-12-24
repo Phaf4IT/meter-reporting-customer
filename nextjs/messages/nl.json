@@ -12,7 +12,8 @@
     "message": "Je gegevens zijn succesvol opgeslagen.",
     "gas": "Gasverbruik",
     "water": "Waterverbruik",
-    "light": "Elektriciteitsverbruik"
+    "light": "Elektriciteitsverbruik",
+    "loading": "Even geduld aub..."
   },
   "admin": {
     "meter": {

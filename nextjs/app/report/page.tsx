@@ -1,12 +1,12 @@
 'use client';
 import {FormEvent, useEffect, useState} from 'react';
 import {useRouter, useSearchParams} from 'next/navigation';
-import {sendMeters} from './sendMetersAction';
 import {useLocale, useTranslations} from 'next-intl';
 import LanguageSwitcher from "@/app/languageswitcher";
-import {getCampaignOptions} from "@/app/report/client";
-import {MeasureValue} from "@/app/admin/measure-value/measureValue";
+import {getCampaignOptions, report} from "@/app/report/client";
+import {MeasureValue as DetailedMeasureValue} from "@/app/admin/measure-value/measureValue";
 import {Campaign} from "@/app/report/campaign";
+import {CustomerMeasurement} from "@/app/report/customerMeasurement";
 
 export default function FormPage() {
     const t = useTranslations('form');
@@ -15,7 +15,6 @@ export default function FormPage() {
     const router = useRouter();
     const locale = useLocale();
 
-    // State voor het formulier, dynamisch op basis van de Campaign data
     const [formData, setFormData] = useState<Record<string, string>>({});
     const [campaigns, setCampaigns] = useState<Campaign | null>(null);
     const [, setError] = useState<string | null>(null);
@@ -25,14 +24,9 @@ export default function FormPage() {
             getCampaignOptions(token).then((campaign) => {
                 setCampaigns(campaign);
 
-                // Zet de formData op basis van de measureValues
                 const initialFormData: Record<string, string> = {};
-                campaign.measureValues.forEach((measure: MeasureValue) => {
-                    if (measure.defaultValue) {
-                        initialFormData[measure.name] = measure.defaultValue;
-                    } else {
-                        initialFormData[measure.name] = '';
-                    }
+                campaign.measureValues.forEach((measure: DetailedMeasureValue) => {
+                    initialFormData[measure.name] = measure.defaultValue || '';
                 });
                 setFormData(initialFormData);
             });
@@ -44,12 +38,20 @@ export default function FormPage() {
         setError(null);
 
         try {
-            await sendMeters(formData);
+            const customerMeasurement: CustomerMeasurement = {
+                measurements: Object.entries(formData).map(([name, value]) => ({
+                    name,
+                    value
+                })),
+                dateTime: new Date(),
+            };
+
+            await report(customerMeasurement, token!);
 
             router.push(
                 `/success?${Object.entries(formData)
                     .map(([key, value]) => `${key}=${value}`)
-                    .join('&')}`
+                    .join('&')}&token=${token}`
             );
         } catch (err: any) {
             setError(err.message || 'Er ging iets mis.');
@@ -57,16 +59,18 @@ export default function FormPage() {
     };
 
     const handleChange = (e: React.ChangeEvent<HTMLInputElement>) => {
-        setFormData({
-            ...formData,
-            [e.target.name]: e.target.value,
-        });
+        const {name, value} = e.target;
+
+        // Update de formData
+        setFormData((prevData) => ({
+            ...prevData,
+            [name]: value,
+        }));
     };
 
-    function getTranslationOrDefault(measureValue: MeasureValue) {
-        const translation = measureValue.translations.filter(value => value.locale === locale)
-            .find(() => true);
-        return translation ? t(translation!) : measureValue.name;
+    function getTranslationOrDefault(measureValue: DetailedMeasureValue) {
+        const translation = measureValue.translations.find((value) => value.locale === locale);
+        return translation ? translation.value : measureValue.name;
     }
 
     return (
@@ -76,13 +80,13 @@ export default function FormPage() {
 
             {campaigns ? (
                 <form onSubmit={handleSubmit} className=" bg-cyan-900 p-6 rounded shadow-md">
-                    {campaigns.measureValues.map((measure: MeasureValue) => (
+                    {campaigns.measureValues.map((measure: DetailedMeasureValue) => (
                         <div key={measure.name} className="mb-4">
                             <label htmlFor={measure.name} className="block font-medium">
                                 {getTranslationOrDefault(measure)}
                             </label>
                             <input
-                                type={measure.type == 'NUMBER' ? 'number' : 'text'}
+                                type={measure.type === 'NUMBER' ? 'number' : 'text'}
                                 id={measure.name}
                                 name={measure.name}
                                 value={formData[measure.name] || ''}

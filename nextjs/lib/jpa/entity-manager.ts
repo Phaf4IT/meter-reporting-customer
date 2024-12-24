@@ -4,7 +4,7 @@ export abstract class EntityManager<T extends Entity> {
     abstract create(entity: T): Promise<T>;
 
     abstract findOne(
-        ...primaryKeyValues: any[]
+        primaryKeyValues: Record<string, any>
     ): Promise<T | null>;
 
     abstract findAll(): Promise<T[]>;

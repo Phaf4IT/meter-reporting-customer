@@ -1,6 +1,6 @@
 import {EntityManager} from './entity-manager';
 import {Entity, EntityClasss} from './entity';
-import {Kysely} from 'kysely';
+import {ExpressionBuilder, Kysely, sql} from 'kysely';
 
 export abstract class XyselyEntityManager<T extends Entity> extends EntityManager<T> {
 
@@ -13,10 +13,6 @@ export abstract class XyselyEntityManager<T extends Entity> extends EntityManage
         this.db = kysely
         this.entityClass = new entityClass()
         this.EntityClasss = entityClass
-    }
-
-    test(): Promise<boolean> {
-        return Promise.resolve(false);
     }
 
 
@@ -33,21 +29,16 @@ export abstract class XyselyEntityManager<T extends Entity> extends EntityManage
 
 
     async findOne(
-        ...primaryKeyValues: any[]
+        primaryKeyValues: Record<string, any>
     ): Promise<T | null> {
         const tableName = this.entityClass.getTableName();
         const fieldNames = this.entityClass.getFields();
 
-
         let query = this.db.selectFrom(tableName).select(fieldNames);
 
-        Object.getOwnPropertyNames(this.entityClass).forEach((property, index) => {
-            const isPrimaryKey = Reflect.getMetadata("primaryKey", this.entityClass, property);
-            const fieldName = Reflect.getMetadata("fieldName", this.entityClass, property);
-            if (isPrimaryKey) {
-                query = query.where(fieldName, '=', primaryKeyValues[index]);
-            }
-        });
+        for (const primaryKeyValue in primaryKeyValues) {
+            query = query.where(this.entityClass.getColumnName(primaryKeyValue), '=', primaryKeyValues[primaryKeyValue]);
+        }
 
         const result = await query.execute();
 
@@ -81,10 +72,8 @@ export abstract class XyselyEntityManager<T extends Entity> extends EntityManage
 
         let query = this.db.selectFrom(tableName).select(columnNames);
 
-
         Object.entries(keyValues).forEach(([key, value]) => {
             if (Array.isArray(value)) {
-
                 query = query.where(key, 'in', value);
             } else {
                 query = query.where(key, '=', value);
@@ -119,30 +108,30 @@ export abstract class XyselyEntityManager<T extends Entity> extends EntityManage
     async update(entity: T): Promise<void> {
         const tableName = this.entityClass.getTableName();
         const fields = entity.getFieldAndValues();
+        const primaryKeys = this.entityClass.getPrimaryKeys();
 
         let query = this.db.updateTable(tableName).set(fields);
 
-        for (const property of Object.getOwnPropertyNames(this.entityClass)) {
-            const isPrimaryKey = Reflect.getMetadata("primaryKey", this.entityClass, property);
-            const fieldName = Reflect.getMetadata("fieldName", this.entityClass, property);
-            if (isPrimaryKey) {
-                query = query.where(fieldName, '=', (entity as any)[property]);
-            }
+        for (const key of primaryKeys) {
+            query = query.where(this.entityClass.getColumnName(key), '=', (entity as any)[key]);
         }
+
         await query.execute();
     }
 
-
     async delete(entity: T): Promise<void> {
-        const tableName = this.entityClass.getTableName();
+        const tableName: string = this.entityClass.getTableName();
+        const primaryKeys: string[] = this.entityClass.getPrimaryKeys();
 
         let query = this.db.deleteFrom(tableName);
 
-        for (const property of Object.getOwnPropertyNames(this.entityClass)) {
-            const isPrimaryKey = Reflect.getMetadata("primaryKey", this.entityClass, property);
-            const fieldName = Reflect.getMetadata("fieldName", this.entityClass, property);
-            if (isPrimaryKey) {
-                query = query.where(fieldName, '=', (entity as any)[property]);
+        for (const key of primaryKeys) {
+            const value = (entity as any)[key];
+
+            if (value instanceof Date) {
+                query = query.where(this.getDateEquation(value, this.entityClass.getColumnName(key)))
+            } else {
+                query = query.where(this.entityClass.getColumnName(key), '=', value);
             }
         }
 
@@ -152,5 +141,12 @@ export abstract class XyselyEntityManager<T extends Entity> extends EntityManage
         }
     }
 
-
+    private getDateEquation(value: Date, columnName: any) {
+        return (eb: ExpressionBuilder<any, any>) => {
+            const millisecond = sql.lit("MILLISECOND");
+            const left = eb.fn("date_trunc", [millisecond, eb.ref(columnName)]);
+            const right = eb.val(value.toISOString());
+            return eb(left, "=", right);
+        };
+    }
 }

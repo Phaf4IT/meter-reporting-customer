@@ -14,8 +14,7 @@ export async function findReminders(company: string) {
         .findBy({
             company: company
         })
-        .then((reminders) =>
-            reminders.map((reminderTable: ReminderTable) => mapTableToDomain(reminderTable))
+        .then((reminders) => reminders.map((reminderTable: ReminderTable) => mapTableToDomain(reminderTable))
         );
 
 }

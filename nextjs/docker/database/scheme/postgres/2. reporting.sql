@@ -97,10 +97,10 @@ CREATE TABLE IF NOT EXISTS measure_value
 
 CREATE TABLE IF NOT EXISTS customer_measurement
 (
-    name          TEXT         NOT NULL,
-    value         TEXT         NOT NULL,
+    measurements  json[]       NOT NULL,
+    campaign_name TEXT         NOT NULL,
     customer_mail TEXT         NOT NULL,
     date_time     TIMESTAMP    NOT NULL,
     company       varchar(255) NOT NULL,
-    PRIMARY KEY (name, customer_mail, date_time, company)
+    PRIMARY KEY (campaign_name, customer_mail, company)
 );

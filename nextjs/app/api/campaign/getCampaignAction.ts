@@ -3,7 +3,7 @@ import {findCampaignByCompanyAndName} from "@/app/api/admin/campaign/_database/c
 import {auth} from "@/auth";
 import {findReminderSent} from "@/app/api/admin/reminder-sent/_database/reminderSentRepository";
 import {ReminderSent} from "@/app/api/admin/reminder-sent/reminder-sent";
-import {Campaign, campaignFromJson} from "@/app/report/campaign";
+import {Campaign} from "@/app/admin/campaign/campaign";
 
 export async function findCampaign(token: string | null): Promise<Campaign> {
     const session = await auth()
@@ -13,6 +13,6 @@ export async function findCampaign(token: string | null): Promise<Campaign> {
     const company = session.user.company
     return findReminderSent(token!, session.user.email!, session.user.company)
         .then((reminderSent: ReminderSent | undefined) =>
-            findCampaignByCompanyAndName(reminderSent!.campaignName, company)
-                .then(c => campaignFromJson(c)))
+            findCampaignByCompanyAndName(reminderSent!.campaignName, company))
+        .then(value => value!);
 }

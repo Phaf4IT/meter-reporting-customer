@@ -1,6 +1,7 @@
 import {NextRequest, NextResponse} from "next/server";
 import {auth} from "@/auth";
-import {findCampaign} from "@/app/api/campaign/getCampaignAction";
+import {customerMeasurementFromJson} from "@/app/api/customer_measurement/customerMeasurement";
+import {report} from "@/app/api/report/reportAction";
 
 export async function POST(
     request: NextRequest
@@ -12,10 +13,7 @@ export async function POST(
         });
     }
     const token = request.nextUrl.searchParams.get('token');
-    findCampaign(token)
-        .then(campaign => {
-            // TODO with campaign
-            console.log(campaign);
-        })
-    return NextResponse.json({});
+    const data = await request.json();
+    return report(customerMeasurementFromJson(data), session.user.company, token!, session.user.email!)
+        .then(() => NextResponse.json({}));
 }
