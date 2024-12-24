@@ -3,10 +3,10 @@ import React, {useEffect, useState} from 'react';
 import AdminLayout from "@/app/admin/adminlayout";
 import {useTranslations} from "next-intl";
 import ConfirmationDialog from "@/components/admin/confirmation-dialog";
-import {emptyMeasureValue, MeasureValue} from "@/app/admin/measure-value/measureValue";
+import {emptyMeasureValue, MeasureValue} from "@/components/admin/measure-value/measureValue";
 import {deleteMeasureValue, getMeasureValues, saveMeasureValue} from "@/app/admin/measure-value/client";
-import MeasureValueForm from "@/components/admin/measure_value/measure-value-form";
-import {languageSuggestions} from "@/components/admin/measure_value/language-suggestions";
+import MeasureValueForm from "@/components/admin/measure-value/measure-value-form";
+import {languageSuggestions} from "@/components/admin/measure-value/language-suggestions";
 
 export default function MeasureValuesPage() {
     const t = useTranslations('admin.measureValue');

@@ -4,8 +4,8 @@ import {useRouter, useSearchParams} from 'next/navigation';
 import {useLocale, useTranslations} from 'next-intl';
 import LanguageSwitcher from "@/app/languageswitcher";
 import {getCampaignOptions, report} from "@/app/report/client";
-import {MeasureValue as DetailedMeasureValue} from "@/app/admin/measure-value/measureValue";
-import {Campaign} from "@/app/report/campaign";
+import {MeasureValue as DetailedMeasureValue} from "@/components/admin/measure-value/measureValue";
+import {Campaign} from "@/components/report/campaign";
 import {CustomerMeasurement} from "@/app/report/customerMeasurement";
 
 export default function FormPage() {
@@ -17,7 +17,7 @@ export default function FormPage() {
 
     const [formData, setFormData] = useState<Record<string, string>>({});
     const [campaigns, setCampaigns] = useState<Campaign | null>(null);
-    const [, setError] = useState<string | null>(null);
+    const [error, setError] = useState<string | null>(null);
 
     useEffect(() => {
         if (token) {
@@ -29,9 +29,12 @@ export default function FormPage() {
                     initialFormData[measure.name] = measure.defaultValue || '';
                 });
                 setFormData(initialFormData);
-            });
+            })
+                .catch(reason => {
+                    setError(reason.message || t('error'));
+                });
         }
-    }, [token]);
+    }, [token, t]);
 
     const handleSubmit = async (e: FormEvent<HTMLFormElement>) => {
         e.preventDefault();
@@ -104,7 +107,7 @@ export default function FormPage() {
                     </button>
                 </form>
             ) : (
-                <p>{t('loading')}</p>
+                <p>{error ? error : t('loading')}</p>
             )}
         </div>
     );

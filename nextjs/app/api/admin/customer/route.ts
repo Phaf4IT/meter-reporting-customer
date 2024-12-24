@@ -1,10 +1,10 @@
 import {NextRequest, NextResponse} from 'next/server';
 import {auth} from "@/auth";
-import {getCustomers} from "@/app/api/admin/customer/getCustomersAction";
-import {createCustomer} from "@/app/api/admin/customer/createCustomerAction";
-import {customerFromJson} from "@/app/admin/customer/customer";
-import {updateCustomer} from "@/app/api/admin/customer/updateCustomerAction";
-import {deleteCustomer} from "@/app/api/admin/customer/deleteCustomerAction";
+import {getCustomers} from "@/components/admin/customer/action/getCustomersAction";
+import {createCustomer} from "@/components/admin/customer/action/createCustomerAction";
+import {customerFromJson} from "@/components/admin/customer/customer";
+import {updateCustomer} from "@/components/admin/customer/action/updateCustomerAction";
+import {deleteCustomer} from "@/components/admin/customer/action/deleteCustomerAction";
 
 export async function POST(
     request: NextRequest

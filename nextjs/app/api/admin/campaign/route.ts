@@ -1,9 +1,9 @@
 import {NextRequest, NextResponse} from 'next/server';
-import {createCampaign} from "@/app/api/admin/campaign/createCampaignAction";
+import {createCampaign} from "@/components/admin/campaign/action/createCampaignAction";
 import {auth} from "@/auth";
-import {getCampaigns} from "@/app/api/admin/campaign/getCampaignsAction";
-import {campaignFromJson} from "@/app/admin/campaign/campaign";
-import {removeCampaign} from "@/app/api/admin/campaign/deleteCampaignAction";
+import {getCampaigns} from "@/components/admin/campaign/action/getCampaignsAction";
+import {campaignFromJson} from "@/components/admin/campaign/campaign";
+import {removeCampaign} from "@/components/admin/campaign/action/deleteCampaignAction";
 
 export async function POST(
     request: NextRequest

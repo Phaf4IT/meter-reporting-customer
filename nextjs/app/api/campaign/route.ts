@@ -1,7 +1,7 @@
 import {auth} from "@/auth";
 import {NextRequest, NextResponse} from "next/server";
-import {findCampaign} from "@/app/api/campaign/getCampaignAction";
-import {campaignFromJson} from "@/app/report/campaign";
+import {findCampaign} from "@/components/admin/campaign/action/getCampaignAction";
+import {campaignFromJson} from "@/components/report/campaign";
 
 export async function GET(req: NextRequest): Promise<Response> {
     const session = await auth()

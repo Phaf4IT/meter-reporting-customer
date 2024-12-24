@@ -1,5 +1,5 @@
 'use client';
-import {Campaign, campaignFromJson} from "@/app/admin/campaign/campaign";
+import {Campaign, campaignFromJson} from "@/components/admin/campaign/campaign";
 
 export async function getCampaigns() : Promise<Campaign[]> {
     const data = await fetch("/api/admin/campaign", {

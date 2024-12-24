@@ -1,11 +1,11 @@
 import {NextRequest, NextResponse} from 'next/server';
 import {auth} from "@/auth";
-import {getReminders} from "@/app/api/admin/reminder/getRemindersAction";
-import {createReminder} from "@/app/api/admin/reminder/createReminderAction";
-import {performReminder} from "@/app/api/admin/reminder/performReminderAction";
-import {reminderFromJson} from "@/app/api/admin/reminder/reminder";
-import {genericReminderFromJson} from "@/app/api/admin/reminder/findExpiredRemindersAction";
-import {removeReminder} from "@/app/api/admin/reminder/deleteReminderAction";
+import {getReminders} from "@/components/admin/reminder/action/getRemindersAction";
+import {createReminder} from "@/components/admin/reminder/action/createReminderAction";
+import {performReminder} from "@/components/admin/reminder/action/performReminderAction";
+import {reminderFromJson} from "@/components/admin/reminder/reminder";
+import {genericReminderFromJson} from "@/components/admin/reminder/action/findExpiredRemindersAction";
+import {removeReminder} from "@/components/admin/reminder/action/deleteReminderAction";
 
 export async function POST(
     request: NextRequest

@@ -1,5 +1,5 @@
 import {DragDropContext, Draggable, Droppable} from '@hello-pangea/dnd';
-import {MeasureValue} from "@/app/admin/measure-value/measureValue";
+import {MeasureValue} from "@/components/admin/measure-value/measureValue";
 import {useTranslations} from "next-intl";
 
 interface MeasureValuesSelectorProps {

@@ -1,4 +1,4 @@
-import {campaignFromJson} from "@/app/report/campaign";
+import {campaignFromJson} from "@/components/report/campaign";
 import {CustomerMeasurement} from "@/app/report/customerMeasurement";
 
 export async function getCampaignOptions(token: string) {
@@ -6,6 +6,9 @@ export async function getCampaignOptions(token: string) {
         method: "GET",
         credentials: "include"
     });
+    if (!data.ok) {
+        return Promise.reject(`Error: ${data.status} ${data.statusText}`)
+    }
     const campaign = await data.json();
     return campaignFromJson(campaign)
 }

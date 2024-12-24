@@ -4,7 +4,7 @@ import React, {useEffect, useState} from 'react';
 import AdminLayout from '../adminlayout';
 import {useTranslations} from 'next-intl';
 import CampaignList from "@/components/admin/campaign/campaign-list";
-import {Campaign} from "@/app/admin/campaign/campaign";
+import {Campaign} from "@/components/admin/campaign/campaign";
 import {deleteCampaign, getCampaigns, saveCampaign} from "@/app/admin/campaign/client";
 import CampaignFormWizard from "@/components/admin/campaign/campaign-formwizard";
 

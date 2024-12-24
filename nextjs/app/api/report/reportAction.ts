@@ -1,10 +1,10 @@
-import {findCampaign} from "@/app/api/campaign/getCampaignAction";
-import {Campaign} from "@/app/report/campaign";
-import {createCustomerMeasurement} from "@/app/api/customer_measurement/createCustomerMeasurementAction";
+import {findCampaign} from "@/components/admin/campaign/action/getCampaignAction";
+import {Campaign} from "@/components/report/campaign";
+import {createCustomerMeasurement} from "@/components/admin/customer-measurement/action/createCustomerMeasurementAction";
 import {CustomerMeasurement} from "@/app/report/customerMeasurement";
 import {
     findCustomerMeasurementByCompanyCampaignAndCustomer
-} from "@/app/api/customer_measurement/_database/customerMeasurementRepository";
+} from "@/components/admin/customer-measurement/_database/customerMeasurementRepository";
 
 export async function report(customerMeasurement: CustomerMeasurement, company: string, token: string, email: string): Promise<any> {
     return findCampaign(token)

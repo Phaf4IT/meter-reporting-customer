@@ -1,6 +1,6 @@
 "use client"
 import React, {useEffect, useState} from 'react';
-import {Reminder} from "@/app/api/admin/reminder/reminder";
+import {Reminder} from "@/components/admin/reminder/reminder";
 import {useTranslations} from "next-intl";
 import {deleteReminder, getReminders, sendReminder} from "@/app/admin/reminder/client";
 import AdminLayout from '../adminlayout';

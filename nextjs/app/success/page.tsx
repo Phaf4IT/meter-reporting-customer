@@ -4,8 +4,8 @@ import {useLocale, useTranslations} from 'next-intl';
 import {useSearchParams} from 'next/navigation';
 import {useEffect, useState} from 'react';
 import {signOutAction} from "@/app/success/signOutAction";
-import {Campaign} from "@/app/report/campaign";
-import {MeasureValue as DetailedMeasureValue} from "@/app/admin/measure-value/measureValue";
+import {Campaign} from "@/components/report/campaign";
+import {MeasureValue as DetailedMeasureValue} from "@/components/admin/measure-value/measureValue";
 import {getCampaignOptions} from "@/app/report/client";
 
 export default function SuccessPage() {

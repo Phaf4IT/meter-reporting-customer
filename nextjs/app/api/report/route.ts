@@ -1,6 +1,6 @@
 import {NextRequest, NextResponse} from "next/server";
 import {auth} from "@/auth";
-import {customerMeasurementFromJson} from "@/app/api/customer_measurement/customerMeasurement";
+import {customerMeasurementFromJson} from "@/components/admin/customer-measurement/customerMeasurement";
 import {report} from "@/app/api/report/reportAction";
 
 export async function POST(

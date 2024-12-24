@@ -1,4 +1,4 @@
-import {MeasureValue, measureValueFromJson} from "@/app/admin/measure-value/measureValue";
+import {MeasureValue, measureValueFromJson} from "@/components/admin/measure-value/measureValue";
 
 export async function getMeasureValues(): Promise<MeasureValue[]> {
     return fetch('/api/admin/measure-value')

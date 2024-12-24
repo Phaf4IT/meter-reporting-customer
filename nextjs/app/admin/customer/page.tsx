@@ -2,7 +2,7 @@
 import React, {useEffect, useState} from 'react';
 import AdminLayout from "@/app/admin/adminlayout";
 import {useTranslations} from "next-intl";
-import {Customer, emptyCustomer} from "@/app/admin/customer/customer";
+import {Customer, emptyCustomer} from "@/components/admin/customer/customer";
 import CustomerForm from "@/components/admin/customer/customer-form";
 import ConfirmationDialog from "@/components/admin/confirmation-dialog"; // Import confirmation dialog
 import "@/components/dialog-styles.css";

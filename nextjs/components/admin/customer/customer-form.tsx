@@ -1,4 +1,4 @@
-import {Customer} from "@/app/admin/customer/customer";
+import {Customer} from "@/components/admin/customer/customer";
 import React, {useState} from 'react';
 import {useTranslations} from "next-intl";
 import {FaTrashAlt} from "react-icons/fa";

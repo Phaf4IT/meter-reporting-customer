@@ -1,10 +1,10 @@
 import {NextRequest, NextResponse} from 'next/server';
 import {auth} from "@/auth";
-import {getMeasureValues} from "@/app/api/admin/measure-value/getMeasureValuesAction";
-import {createMeasureValue} from "@/app/api/admin/measure-value/createMeasureValueAction";
-import {measureValueFromJson} from "@/app/admin/measure-value/measureValue";
-import {updateMeasureValue} from "@/app/api/admin/measure-value/updateMeasureValueAction";
-import {deleteMeasureValue} from "@/app/api/admin/measure-value/deleteMeasureValueAction";
+import {getMeasureValues} from "@/components/admin/measure-value/action/getMeasureValuesAction";
+import {createMeasureValue} from "@/components/admin/measure-value/action/createMeasureValueAction";
+import {measureValueFromJson} from "@/components/admin/measure-value/measureValue";
+import {updateMeasureValue} from "@/components/admin/measure-value/action/updateMeasureValueAction";
+import {deleteMeasureValue} from "@/components/admin/measure-value/action/deleteMeasureValueAction";
 
 export async function POST(
     request: NextRequest

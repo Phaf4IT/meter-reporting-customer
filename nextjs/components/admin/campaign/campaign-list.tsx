@@ -1,5 +1,5 @@
 import React, {useState} from "react";
-import {Campaign} from "@/app/admin/campaign/campaign";
+import {Campaign} from "@/components/admin/campaign/campaign";
 import '@/components/dialog-styles.css';
 import ConfirmationDialog from "@/components/admin/confirmation-dialog";
 

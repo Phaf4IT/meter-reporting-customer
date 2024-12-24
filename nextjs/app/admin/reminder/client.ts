@@ -1,4 +1,4 @@
-import {Reminder, reminderFromJson} from "@/app/api/admin/reminder/reminder";
+import {Reminder, reminderFromJson} from "@/components/admin/reminder/reminder";
 
 export async function getReminders(): Promise<Reminder[]> {
     const data = await fetch("/api/admin/reminder", {

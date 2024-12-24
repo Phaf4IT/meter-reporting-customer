@@ -14,7 +14,7 @@ export default function AdminLayout({children}: { children: React.ReactNode }) {
         {name: t('campaign.pageTitle'), href: '/admin/campaign'},
         {name: t('measureValue.manageMeasureValues'), href: '/admin/measure-value'},
         {name: t('reminder.remindersAdminTitle'), href: '/admin/reminder'},
-        {name: t('meter.pageTitle'), href: '/admin/meter'},
+        {name: t('meter.pageTitle'), href: '/admin/customer-measurement'},
     ];
 
     return (

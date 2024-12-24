@@ -5,7 +5,8 @@
     "water": "Waterverbruik (m³)",
     "light": "Elektriciteitsverbruik (kWh)",
     "submit": "Opslaan",
-    "loading": "Even geduld aub..."
+    "loading": "Even geduld aub...",
+    "error": "Er ging iets mis."
   },
   "success": {
     "title": "Bedankt!",
@@ -155,6 +156,18 @@
       "emailAddresses": "E-mailadressen",
       "sendNow": "Verstuur Nu",
       "removeReminder": "Verwijder Herinnering"
+    },
+    "customerMeasurement": {
+      "manageCustomerMeasurements": "Beheer Klantmetingen",
+      "customerMail": "Klantmail",
+      "campaignName": "Campagnenaam",
+      "measurements": "Metingen",
+      "actions": "Acties",
+      "overrule": "Overschrijven",
+      "overruleConfirmationTitle": "Weet je het zeker?",
+      "overruleConfirmationMessage": "Je staat op het punt om deze metingen over te schrijven. Wil je doorgaan?",
+      "confirmOverruleButton": "Ja, overschrijven",
+      "cancelButton": "Annuleren"
     }
   }
 }

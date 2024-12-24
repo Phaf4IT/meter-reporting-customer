@@ -1,6 +1,6 @@
-import {findExpiredRemindersAction} from "@/app/api/admin/reminder/findExpiredRemindersAction";
+import {findExpiredRemindersAction} from "@/components/admin/reminder/action/findExpiredRemindersAction";
 import getAdapter from "@/components/authjs/auth-adapter";
-import {handleReminder} from "@/app/api/admin/reminder/performReminderAction";
+import {handleReminder} from "@/components/admin/reminder/action/performReminderAction";
 import {getEmailProvider} from "@/components/authjs/email-provider";
 
 export async function reminderAction(host: string) {

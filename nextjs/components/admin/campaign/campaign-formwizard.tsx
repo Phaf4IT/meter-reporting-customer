@@ -1,12 +1,12 @@
 import React, {useEffect, useState} from 'react';
-import {Customer} from "@/app/admin/customer/customer";
+import {Customer} from "@/components/admin/customer/customer";
 import {getCustomers} from "@/app/admin/customer/client";
-import {MeasureValue} from "@/app/admin/measure-value/measureValue";
+import {MeasureValue} from "@/components/admin/measure-value/measureValue";
 import DateRangePicker from "@/components/admin/campaign/date-range-picker";
 import MeasureValuesSelector from "@/components/admin/campaign/measure-values";
 import ReminderDates from "@/components/admin/campaign/reminder-dates";
 import CustomerSelection from "@/components/admin/campaign/customer-selection";
-import {Campaign} from "@/app/admin/campaign/campaign";
+import {Campaign} from "@/components/admin/campaign/campaign";
 import FormWizard from "@/components/admin/form-wizard";
 import {getMeasureValues} from "@/app/admin/measure-value/client";
 import CampaignNameForm from "@/components/admin/campaign/campaign-name-form";

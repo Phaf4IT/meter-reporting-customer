@@ -121,6 +121,18 @@
       "emailAddresses": "Email Addresses",
       "sendNow": "Send Now",
       "removeReminder": "Remove Reminder"
+    },
+    "customerMeasurement": {
+      "manageCustomerMeasurements": "Manage Customer Measurements",
+      "customerMail": "Customer Email",
+      "campaignName": "Campaign Name",
+      "measurements": "Measurements",
+      "actions": "Actions",
+      "overrule": "Overrule",
+      "overruleConfirmationTitle": "Are you sure?",
+      "overruleConfirmationMessage": "You are about to overrule these measurements. Do you want to continue?",
+      "confirmOverruleButton": "Yes, overrule",
+      "cancelButton": "Cancel"
     }
   }
 }

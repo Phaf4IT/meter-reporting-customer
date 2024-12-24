@@ -1,5 +1,5 @@
 'use client';
-import {Customer, customerFromJson} from "@/app/admin/customer/customer";
+import {Customer, customerFromJson} from "@/components/admin/customer/customer";
 
 export async function getCustomers(): Promise<Customer[]> {
     const data = await fetch("/api/admin/customer", {
