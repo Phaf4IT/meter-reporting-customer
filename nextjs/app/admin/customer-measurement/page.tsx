@@ -2,25 +2,39 @@
 import React, {useEffect, useState} from "react";
 import AdminLayout from "@/app/admin/adminlayout";
 import {useTranslations} from "next-intl";
-import {getCustomerMeasurements, saveCustomerMeasurement} from "@/app/admin/customer-measurement/client";
+import {
+    getCustomerMeasurements,
+    getRemindersSent,
+    saveCustomerMeasurement
+} from "@/app/admin/customer-measurement/client";
+import {getCampaigns} from "@/app/admin/campaign/client"; // Veronderstelde API om campagnes op te halen
 import CustomerMeasurementForm from "@/components/admin/customer-measurement/customer-measurement-form";
 import {CustomerMeasurement} from "@/components/admin/customer-measurement/customerMeasurement";
+import {Campaign} from "@/components/admin/campaign/campaign";
+import {ReminderSent} from "@/components/admin/reminder-sent/reminder-sent";
 
 export default function CustomerMeasurementsPage() {
     const t = useTranslations("admin.customerMeasurement");
     const [customerMeasurements, setCustomerMeasurements] = useState<CustomerMeasurement[]>([]);
+    const [campaigns, setCampaigns] = useState<Campaign[]>([]);
+    const [reminders, setReminders] = useState<ReminderSent[]>([]);
     const [editingCustomerMeasurement, setEditingCustomerMeasurement] = useState<CustomerMeasurement | null>(null);
-    const [isOverruling, setIsOverruling] = useState(false);  // Voeg toe om te controleren of we aan het overschrijven zijn
+    const [isOverruling, setIsOverruling] = useState(false);
 
     useEffect(() => {
-        // Haal de customer measurements op
-        getCustomerMeasurements().then((measurements) => {
+        // Haal campagnes, metingen en herinneringen op
+        Promise.all([
+            getCustomerMeasurements(),
+            getCampaigns(),
+            getRemindersSent(),
+        ]).then(([measurements, campaigns, reminders]) => {
             setCustomerMeasurements(measurements);
+            setCampaigns(campaigns);
+            setReminders(reminders);
         });
     }, []);
 
     const handleSave = async (customerMeasurement: CustomerMeasurement, isNew: boolean) => {
-        // Als we overschrijven, markeer dan de actie als overschrijven en sla op
         saveCustomerMeasurement(customerMeasurement, !isNew).then((savedMeasurement) => {
             setCustomerMeasurements((prev) => {
                 const existing = prev.find(
@@ -30,70 +44,115 @@ export default function CustomerMeasurementsPage() {
                     ? prev.map((m) => (m.customerMail === savedMeasurement.customerMail && m.campaignName === savedMeasurement.campaignName ? savedMeasurement : m))
                     : [...prev, savedMeasurement];
             });
-            setEditingCustomerMeasurement(null);  // Sluit het formulier af na opslaan
-            setIsOverruling(false);  // Reset overschrijvingsflag
+            setEditingCustomerMeasurement(null);
+            setIsOverruling(false);
         });
     };
 
     const openEditor = (customerMeasurement: CustomerMeasurement, isOverruling: boolean = false) => {
-        setEditingCustomerMeasurement(customerMeasurement);  // Zet de meting die je wilt bewerken of overschrijven
-        setIsOverruling(isOverruling);  // Als we overschrijven, markeer dan de actie
+        setEditingCustomerMeasurement(customerMeasurement);
+        setIsOverruling(isOverruling);
+    };
+
+    // Functie om te controleren of er een meting is voor een klant in een specifieke campagne
+    const getMeasurementForCustomer = (campaignName: string, customerEmail: string): CustomerMeasurement | null => {
+        return customerMeasurements.find(
+            (measurement) => measurement.campaignName === campaignName && measurement.customerMail === customerEmail
+        ) || null;
+    };
+
+    // Functie om te controleren of een klant een herinnering heeft ontvangen voor een specifieke campagne
+    const hasReminderBeenSent = (campaignName: string, customerEmail: string): boolean => {
+        return reminders.some(
+            (reminder) => reminder.campaignName === campaignName && reminder.customerEmail === customerEmail
+        );
     };
 
     return (
         <AdminLayout>
             <div className="min-h-screen p-8 bg-cyan-950 text-white">
-                <h1 className="text-2xl font-bold mb-6">{t('manageCustomerMeasurements')}</h1>
+                <h1 className="text-2xl font-bold mb-6">{t("manageCustomerMeasurements")}</h1>
                 {editingCustomerMeasurement ? (
                     <CustomerMeasurementForm
                         customerMeasurement={editingCustomerMeasurement}
-                        isOverruling={isOverruling}  // Geef de overschrijfstatus door naar het formulier
-                        onSave={(customerMeasurement) => handleSave(customerMeasurement, !isOverruling)}  // Bij opslaan, bepaal of het een nieuwe meting is of overschrijven
-                        onCancel={() => setEditingCustomerMeasurement(null)}  // Annuleer bewerken/overschrijven
+                        isOverruling={isOverruling}
+                        onSave={(customerMeasurement) => handleSave(customerMeasurement, !isOverruling)}
+                        onCancel={() => setEditingCustomerMeasurement(null)}
                     />
                 ) : (
                     <>
-                        <table className="table-auto w-full border-collapse bg-cyan-900 text-white rounded shadow-lg">
-                            <thead>
-                            <tr className="border-b border-cyan-700">
-                                <th className="py-2 px-4 text-left">{t("customerMail")}</th>
-                                <th className="py-2 px-4 text-left">{t("campaignName")}</th>
-                                <th className="py-2 px-4 text-left">{t("measurements")}</th>
-                                <th className="py-2 px-4 text-left">{t("actions")}</th>
-                            </tr>
-                            </thead>
-                            <tbody>
-                            {customerMeasurements.map((measurement) => (
-                                <tr key={`${measurement.customerMail}-${measurement.campaignName}`}
-                                    className="border-b border-cyan-700">
-                                    <td className="py-2 px-4">{measurement.customerMail}</td>
-                                    <td className="py-2 px-4">{measurement.campaignName}</td>
-                                    <td className="py-2 px-4">
-                                        {measurement.measurements.map((m) => (
-                                            <div key={m.name}>
-                                                <strong>{m.name}:</strong> {m.value}
-                                            </div>
-                                        ))}
-                                    </td>
-                                    <td className="py-2 px-4 space-x-2">
-                                        <button
-                                            onClick={() => openEditor(measurement)}  // "Bewerken"
-                                            className="bg-yellow-500 text-white px-2 py-1 rounded hover:bg-yellow-600"
-                                        >
-                                            {t("edit")}
-                                        </button>
-                                        <button
-                                            onClick={() => openEditor(measurement, true)}  // "Overschrijven"
-                                            className="bg-red-500 text-white px-2 py-1 rounded hover:bg-red-600"
-                                        >
-                                            {t("overrule")}
-                                        </button>
-                                    </td>
-
-                                </tr>
-                            ))}
-                            </tbody>
-                        </table>
+                        {campaigns.map((campaign) => (
+                            <div key={campaign.name} className="mb-6">
+                                <h2 className="text-xl font-semibold mb-3">{campaign.name}</h2>
+                                <table
+                                    className="table-auto w-full border-collapse bg-cyan-900 text-white rounded shadow-lg">
+                                    <thead>
+                                    <tr className="border-b border-cyan-700">
+                                        <th className="py-2 px-4 text-left">{t("customerMail")}</th>
+                                        <th className="py-2 px-4 text-left">{t("measurements")}</th>
+                                        <th className="py-2 px-4 text-left">{t("reminderSent")}</th>
+                                        <th className="py-2 px-4 text-left">{t("actions")}</th>
+                                    </tr>
+                                    </thead>
+                                    <tbody>
+                                    {campaign.customerEmails.map((customerEmail) => {
+                                        const measurement = getMeasurementForCustomer(campaign.name, customerEmail);
+                                        const reminderSent = hasReminderBeenSent(campaign.name, customerEmail);
+                                        return (
+                                            <tr key={customerEmail} className="border-b border-cyan-700">
+                                                <td className="py-2 px-4">{customerEmail}</td>
+                                                <td className="py-2 px-4">
+                                                    {measurement ? (
+                                                        <>
+                                                            {measurement.measurements.map((m) => (
+                                                                <div key={m.name}>
+                                                                    <strong>{m.name}:</strong> {m.value}
+                                                                </div>
+                                                            ))}
+                                                        </>
+                                                    ) : (
+                                                        <span>{t("measurementPending")}</span>
+                                                    )}
+                                                </td>
+                                                <td className="py-2 px-4">
+                                                    {reminderSent ? t("reminderSent") : t("reminderNotSent")}
+                                                </td>
+                                                <td className="py-2 px-4 space-x-2">
+                                                    {measurement ? (
+                                                        // Overschrijven alleen als er metingen zijn
+                                                        <button
+                                                            onClick={() => openEditor(measurement, true)}
+                                                            className="bg-red-500 text-white px-2 py-1 rounded hover:bg-red-600"
+                                                        >
+                                                            {t("overrule")}
+                                                        </button>
+                                                    ) : (
+                                                        // Als er geen meting is, kan de admin zelf invoeren
+                                                        <button
+                                                            onClick={() =>
+                                                                openEditor(
+                                                                    {
+                                                                campaignName: campaign.name,
+                                                                customerMail: customerEmail,
+                                                                measurements: [],
+                                                                        dateTime: new Date(),
+                                                                    },
+                                                                    false
+                                                                )
+                                                            }
+                                                            className="bg-green-500 text-white px-2 py-1 rounded hover:bg-green-600"
+                                                        >
+                                                            {t("enterMeasurement")}
+                                                        </button>
+                                                    )}
+                                                </td>
+                                            </tr>
+                                        );
+                                    })}
+                                    </tbody>
+                                </table>
+                            </div>
+                        ))}
                     </>
                 )}
             </div>

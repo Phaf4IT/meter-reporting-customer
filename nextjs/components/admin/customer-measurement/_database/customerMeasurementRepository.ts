@@ -14,6 +14,16 @@ export async function findCustomerMeasurementsByCompanyAndCampaign(
         .then(measurements => measurements.map(measurement => mapTableToDomain(measurement)));
 }
 
+export async function findCustomerMeasurementsByCompany(
+    company: string
+) {
+    return getEntityManager(CustomerMeasurementTable)
+        .findBy(CustomerMeasurementTable, {
+            company: company,
+        })
+        .then(measurements => measurements.map(measurement => mapTableToDomain(measurement)));
+}
+
 export async function findCustomerMeasurementByCompanyCampaignAndCustomer(
     campaignName: string,
     customerMail: string,

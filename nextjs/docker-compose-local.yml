@@ -64,6 +64,14 @@ services:
     depends_on:
       postgres:
         condition: service_healthy
+  wiremock:
+    image: wiremock/wiremock
+    volumes:
+      - ./docker/wiremock/mappings:/home/wiremock/mappings
+    ports:
+      - '8082:8080'
+    command:
+      - -verbose
 
 volumes:
   db_data:

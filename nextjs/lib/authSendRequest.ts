@@ -7,7 +7,8 @@ export async function sendVerificationRequest(config: Config) {
         if (process.env.IS_MAIL_ENABLED === 'true') {
             const mailjet = {
                 apiKey: process.env.MJ_APIKEY_PUBLIC || 'your-api-key',
-                apiSecret: process.env.MJ_APIKEY_PRIVATE || 'your-api-secret'
+                apiSecret: process.env.MJ_APIKEY_PRIVATE || 'your-api-secret',
+                url: process.env.MJ_URL || 'https://api.mailjet.com/v3.1/send',
             };
 
             const body: MailjetMessageRequest = {
@@ -25,7 +26,7 @@ export async function sendVerificationRequest(config: Config) {
                 }]
             }
 
-            const response = await fetch("https://api.mailjet.com/v3.1/send", {
+            const response = await fetch(process.env.MJ_URL!, {
                 headers: {
                     'Content-Type': 'application/json',
                     'Authorization': `Basic ${btoa(`${mailjet.apiKey}:${mailjet.apiSecret}`)}`,

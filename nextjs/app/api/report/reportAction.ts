@@ -1,15 +1,15 @@
 import {findCampaign} from "@/components/admin/campaign/action/getCampaignAction";
 import {Campaign} from "@/components/report/campaign";
-import {createCustomerMeasurement} from "@/components/admin/customer-measurement/action/createCustomerMeasurementAction";
-import {CustomerMeasurement} from "@/app/report/customerMeasurement";
 import {
-    findCustomerMeasurementByCompanyCampaignAndCustomer
-} from "@/components/admin/customer-measurement/_database/customerMeasurementRepository";
+    createCustomerMeasurement
+} from "@/components/admin/customer-measurement/action/createCustomerMeasurementAction";
+import {CustomerMeasurement} from "@/app/report/customerMeasurement";
+import {findCustomerMeasurement} from "@/components/admin/customer-measurement/action/findCustomerMeasurementAction";
 
 export async function report(customerMeasurement: CustomerMeasurement, company: string, token: string, email: string): Promise<any> {
     return findCampaign(token)
         .then(async campaign => {
-            const measurement = await findCustomerMeasurementByCompanyCampaignAndCustomer(campaign.name, email, company)
+            const measurement = await findCustomerMeasurement(campaign.name, email, company)
             if (measurement != undefined) {
                 throw Error("Already measured")
             }

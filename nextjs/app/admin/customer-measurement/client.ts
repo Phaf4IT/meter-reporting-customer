@@ -1,7 +1,8 @@
 import {CustomerMeasurement} from "@/components/admin/customer-measurement/customerMeasurement";
+import {ReminderSent} from "@/components/admin/reminder-sent/reminder-sent";
 
 export async function getCustomerMeasurements(): Promise<CustomerMeasurement[]> {
-    const response = await fetch("/api/admin/customer-measurements");
+    const response = await fetch("/api/admin/customer-measurement");
     if (!response.ok) {
         throw new Error("Failed to fetch customer measurements");
     }
@@ -9,9 +10,8 @@ export async function getCustomerMeasurements(): Promise<CustomerMeasurement[]> 
     return data;
 }
 
-// Sla een klantmeting op (bijv. overruled of nieuw)
 export async function saveCustomerMeasurement(customerMeasurement: CustomerMeasurement, isNew: boolean): Promise<CustomerMeasurement> {
-    const response = await fetch("/api/admin/customer-measurements", {
+    const response = await fetch("/api/admin/customer-measurement", {
         method: isNew ? "POST" : "PUT",
         headers: {
             "Content-Type": "application/json",
@@ -24,5 +24,14 @@ export async function saveCustomerMeasurement(customerMeasurement: CustomerMeasu
     }
 
     const data: CustomerMeasurement = await response.json();
+    return data;
+}
+
+export async function getRemindersSent() {
+    const response = await fetch("/api/admin/reminder-sent");
+    if (!response.ok) {
+        throw new Error("Failed to fetch customer measurements");
+    }
+    const data: ReminderSent[] = await response.json();
     return data;
 }

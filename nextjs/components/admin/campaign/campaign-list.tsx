@@ -10,24 +10,24 @@ interface CampaignListProps {
 }
 
 const CampaignList = ({campaigns, t, onDelete}: CampaignListProps) => {
-    const [isDialogOpen, setIsDialogOpen] = useState(false);
+    const [isDeleteConfirmationDialogOpen, setIsDeleteConfirmationDialogOpen] = useState(false);
     const [campaignToDelete, setCampaignToDelete] = useState<Campaign | null>(null);
 
-    const openDialog = (campaign: Campaign) => {
+    const openDeleteConfirmationDialog = (campaign: Campaign) => {
         setCampaignToDelete(campaign);
-        setIsDialogOpen(true);
+        setIsDeleteConfirmationDialogOpen(true);
     };
 
-    const closeDialog = () => {
+    const closeDeleteConfirmationDialog = () => {
         setCampaignToDelete(null);
-        setIsDialogOpen(false);
+        setIsDeleteConfirmationDialogOpen(false);
     };
 
     const handleDelete = () => {
         if (campaignToDelete) {
             onDelete(campaignToDelete);
         }
-        closeDialog();
+        closeDeleteConfirmationDialog();
     };
 
     return (
@@ -80,7 +80,7 @@ const CampaignList = ({campaigns, t, onDelete}: CampaignListProps) => {
                                 <td className="px-4 py-2">
                                     <button
                                         className="bg-red-500 text-white px-3 py-1 rounded hover:bg-red-600"
-                                        onClick={() => openDialog(campaign)}
+                                        onClick={() => openDeleteConfirmationDialog(campaign)}
                                     >
                                         {t('deleteButton')}
                                     </button>
@@ -94,8 +94,8 @@ const CampaignList = ({campaigns, t, onDelete}: CampaignListProps) => {
                 <p className="text-gray-400">{t('noCampaigns')}</p>
             )}
             <ConfirmationDialog
-                isOpen={isDialogOpen}
-                onClose={closeDialog}
+                isOpen={isDeleteConfirmationDialogOpen}
+                onClose={closeDeleteConfirmationDialog}
                 onConfirm={handleDelete}
                 title={t("deleteConfirmationTitle")}
                 message={t("deleteConfirmationMessage")}
