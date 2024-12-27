@@ -2,12 +2,10 @@ import {auth} from "@/auth";
 import {NextResponse} from "next/server";
 import {getCustomerMeasurements} from "@/components/admin/customer-measurement/action/getCustomerMeasurementsAction";
 
-export async function GET(): Promise<Response> {
+export async function GET(): Promise<NextResponse> {
     const session = await auth()
     if (!session) {
-        return new Response('Unauthorized', {
-            status: 401,
-        });
+        return new NextResponse("Unauthorized", {status: 401});
     }
     try {
         return getCustomerMeasurements(session.user.company)
