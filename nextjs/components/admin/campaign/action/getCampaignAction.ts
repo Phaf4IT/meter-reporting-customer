@@ -5,6 +5,7 @@ import {findReminderSent} from "@/components/admin/reminder-sent/_database/remin
 import {ReminderSent} from "@/components/admin/reminder-sent/reminder-sent";
 import {Campaign} from "@/components/admin/campaign/campaign";
 import {findCustomerMeasurement} from "@/components/admin/customer-measurement/action/findCustomerMeasurementAction";
+import {AlreadyReported} from "@/components/admin/campaign/action/alreadyReported";
 
 export async function findCampaign(token: string | null): Promise<Campaign> {
     const session = await auth()
@@ -16,7 +17,7 @@ export async function findCampaign(token: string | null): Promise<Campaign> {
         .then(async (reminderSent: ReminderSent | undefined) => {
             const customerMeasurement = await findCustomerMeasurement(reminderSent!.campaignName!, reminderSent!.customerEmail!, company);
             if (customerMeasurement) {
-                throw Error(`Er is al een stand doorgegeven voor campagne '${reminderSent?.campaignName}' voor gebruiker '${reminderSent?.customerEmail}'`)
+                throw new AlreadyReported(`Er is al een stand doorgegeven voor campagne '${reminderSent?.campaignName}' voor gebruiker '${reminderSent?.customerEmail}'`)
             }
             return reminderSent;
         })
@@ -24,3 +25,4 @@ export async function findCampaign(token: string | null): Promise<Campaign> {
             findCampaignByCompanyAndName(reminderSent!.campaignName, company))
         .then(value => value!);
 }
+
