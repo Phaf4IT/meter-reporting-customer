@@ -1,10 +1,10 @@
 import {neonConfig, Pool} from "@neondatabase/serverless";
 import PostgresAdapter from "@auth/pg-adapter";
-import {XataClient} from "./lib/xata";
+import {XataClient} from "@/lib/xata";
 import {XataAdapter} from "@auth/xata-adapter";
 
 const getAdapter = () => {
-    if (process.env.DATABASE_PROVIDER === 'postgres') {
+    if (process.env.DATABASE_PROVIDER === 'neon') {
         return getNeonPostgresAdapter();
     } else if (process.env.DATABASE_PROVIDER === 'xata') {
         return getXataAdapter();
@@ -13,7 +13,7 @@ const getAdapter = () => {
 };
 
 const getNeonPostgresAdapter = () => {
-    const connectionString = 'postgres://postgres:postgres@db.localtest.me:5432/main';
+    const connectionString = process.env.DATABASE_URL;
     neonConfig.fetchEndpoint = (host) => {
         const [protocol, port] = host === 'db.localtest.me' ? ['http', 4444] : ['https', 443];
         return `${protocol}://${host}:${port}/sql`;
@@ -22,7 +22,6 @@ const getNeonPostgresAdapter = () => {
     neonConfig.useSecureWebSocket = connectionStringUrl.hostname !== 'db.localtest.me';
     neonConfig.wsProxy = (host) => (host === 'db.localtest.me' ? `${host}:4444/v1` : undefined);
 
-    console.log(connectionString)
     const pool = new Pool({connectionString})
     return PostgresAdapter(pool)
 };

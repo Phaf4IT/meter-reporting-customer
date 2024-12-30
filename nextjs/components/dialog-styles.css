@@ -1,0 +1,32 @@
+/* Voeg deze stijl toe aan je global stylesheet of in een CSS-modules bestand */
+.rc-dialog {
+    position: relative;
+    border-radius: 8px;
+    color: white;
+}
+.rc-dialog-content{
+    background-color: initial!important;
+}
+
+.rc-dialog-header {
+    font-size: 1.25rem;
+    font-weight: bold;
+    background-color: initial!important;
+}
+
+.rc-dialog-footer {
+    display: flex;
+    justify-content: flex-end;
+    gap: 1rem;
+}
+
+button {
+    padding: 0.5rem 1rem;
+    border-radius: 4px;
+    border: none;
+    cursor: pointer;
+}
+
+button:hover {
+    opacity: 0.8;
+}

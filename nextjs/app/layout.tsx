@@ -2,7 +2,8 @@ import type {Metadata} from "next";
 import localFont from "next/font/local";
 import "./globals.css";
 import {NextIntlClientProvider} from 'next-intl';
-import {getLocale, getMessages} from 'next-intl/server';
+import {getMessages} from 'next-intl/server';
+import {getUserLocale} from "@/lib/locale";
 
 const geistSans = localFont({
     src: "./fonts/GeistVF.woff",
@@ -25,7 +26,8 @@ export default async function RootLayout({
                                          }: Readonly<{
     children: React.ReactNode;
 }>) {
-    const locale = await getLocale();
+    // using our own cookie getter instead of the cacheable variant of next-intl -> it prevents static building of application!
+    const locale = await getUserLocale();
     const messages = await getMessages();
     return (
         <html lang={locale}>

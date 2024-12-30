@@ -1,0 +1,13 @@
+{
+  "request": {
+    "method": "POST",
+    "url": "/v3.1/send"
+  },
+  "response": {
+    "status": 200,
+    "body": "{}",
+    "headers": {
+      "Content-Type": "json/application"
+    }
+  }
+}

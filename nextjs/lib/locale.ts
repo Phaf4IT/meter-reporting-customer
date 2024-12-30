@@ -1,13 +1,13 @@
 'use server';
 
-import {cookies} from 'next/headers';
+import {getCookie, setCookie} from "cookies-next";
 
 const COOKIE_NAME = 'NEXT_LOCALE';
 
 export async function getUserLocale() {
-    return (await cookies()).get(COOKIE_NAME)?.value || 'nl';
+    return getCookie(COOKIE_NAME) || 'nl';
 }
 
 export async function setUserLocale(locale: string) {
-    (await cookies()).set(COOKIE_NAME, locale);
+    setCookie(COOKIE_NAME, locale);
 }

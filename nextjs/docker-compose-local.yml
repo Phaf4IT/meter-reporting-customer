@@ -3,27 +3,78 @@ services:
     image: postgres
     command: '-d 1'
     volumes:
-      - ./docker/database/scheme/postgres/:/docker-entrypoint-initdb.d/
+      #      - ./docker/database/scheme/postgres/:/docker-entrypoint-initdb.d/
+      - ./db_data:/var/lib/postgresql/data
     ports:
       - '5432:5432'
     environment:
       POSTGRES_USER: postgres
       POSTGRES_PASSWORD: postgres
       POSTGRES_DB: main
+    networks:
+      - db
     healthcheck:
       test: [ 'CMD-SHELL', 'pg_isready -U postgres' ]
       interval: 10s
       timeout: 5s
       retries: 5
+  postgres_init:
+    build:
+      context: .
+      dockerfile: docker/database/init_loader/postgres/Dockerfile
+    environment:
+      PGDATABASE: main
+      PGHOST: postgres
+      PGPORT: 5432
+      PGUSER: postgres
+      PGPASSWORD: postgres
+    working_dir: /scripts
+    networks:
+      - db
+    volumes:
+      - ./docker/database/scheme/postgres:/scripts/
+    depends_on:
+      - postgres
+    command:
+      - "insert.sh"
+  pgadmin:
+    image: dpage/pgadmin4
+    container_name: pgadmin4_container
+    restart: always
+    ports:
+      - "8888:80"
+    environment:
+      PGADMIN_DEFAULT_EMAIL: postgres@admin.com
+      PGADMIN_DEFAULT_PASSWORD: postgres
+    networks:
+      - db
+    volumes:
+      - pgadmin-data:/var/lib/pgadmin
+    depends_on:
+      postgres:
+        condition: service_healthy
   neon-proxy:
     image: ghcr.io/timowilhelm/local-neon-http-proxy:main
     environment:
       - PG_CONNECTION_STRING=postgres://postgres:postgres@postgres:5432/main
     ports:
       - '4444:4444'
+    networks:
+      - db
     depends_on:
       postgres:
         condition: service_healthy
+  wiremock:
+    image: wiremock/wiremock
+    volumes:
+      - ./docker/wiremock/mappings:/home/wiremock/mappings
+    ports:
+      - '8082:8080'
+    command:
+      - -verbose
 
 volumes:
   db_data:
+  pgadmin-data:
+networks:
+  db:
