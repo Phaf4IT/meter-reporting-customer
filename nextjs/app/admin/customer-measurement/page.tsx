@@ -22,7 +22,6 @@ export default function CustomerMeasurementsPage() {
     const [isOverruling, setIsOverruling] = useState(false);
 
     useEffect(() => {
-        // Haal campagnes, metingen en herinneringen op
         Promise.all([
             getCustomerMeasurements(),
             getCampaigns(),
@@ -54,14 +53,12 @@ export default function CustomerMeasurementsPage() {
         setIsOverruling(isOverruling);
     };
 
-    // Functie om te controleren of er een meting is voor een klant in een specifieke campagne
     const getMeasurementForCustomer = (campaignName: string, customerEmail: string): CustomerMeasurement | null => {
         return customerMeasurements.find(
             (measurement) => measurement.campaignName === campaignName && measurement.customerMail === customerEmail
         ) || null;
     };
 
-    // Functie om te controleren of een klant een herinnering heeft ontvangen voor een specifieke campagne
     const hasReminderBeenSent = (campaignName: string, customerEmail: string): boolean => {
         return reminders.some(
             (reminder) => reminder.campaignName === campaignName && reminder.customerEmail === customerEmail
@@ -132,9 +129,9 @@ export default function CustomerMeasurementsPage() {
                                                             onClick={() =>
                                                                 openEditor(
                                                                     {
-                                                                campaignName: campaign.name,
-                                                                customerMail: customerEmail,
-                                                                measurements: [],
+                                                                        campaignName: campaign.name,
+                                                                        customerMail: customerEmail,
+                                                                        measurements: [],
                                                                         dateTime: new Date(),
                                                                     },
                                                                     false
