@@ -4,6 +4,7 @@ import Link from 'next/link';
 import {usePathname} from 'next/navigation';
 import "./../globals.css";
 import {useTranslations} from "next-intl";
+import LanguageSwitcher from "@/app/languageswitcher";
 
 export default function AdminLayout({children}: { children: React.ReactNode }) {
     const pathname = usePathname();
@@ -19,10 +20,10 @@ export default function AdminLayout({children}: { children: React.ReactNode }) {
 
     return (
         <div className="flex min-h-screen bg-cyan-950 text-white">
-            {/* Sidebar */}
             <nav className="w-64 bg-cyan-900 p-6">
                 <h1 className="text-xl font-bold mb-6">Admin Dashboard</h1>
                 <ul className="space-y-4">
+                    <li><LanguageSwitcher/></li>
                     {navItems.map((item) => (
                         <li key={item.href}>
                             <Link

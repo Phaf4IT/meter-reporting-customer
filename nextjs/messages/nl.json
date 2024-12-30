@@ -169,12 +169,12 @@
       "overruleConfirmationMessage": "Je staat op het punt om deze metingen over te schrijven. Wil je doorgaan?",
       "confirmOverruleButton": "Ja, overschrijven",
       "cancelButton": "Annuleren",
-
       "measurementComplete": "Meting Voltooid",
       "measurementPending": "Meting In Afwachting",
       "reminderSent": "Herinnering Verstuurd",
       "reminderNotSent": "Geen Herinnering Verstuurd",
-      "overruleConfirmationTitle": "Bevestig Overschrijven"
+      "overruleConfirmationTitle": "Bevestig Overschrijven",
+      "enterMeasurement": "Voeg meting toe"
     }
   }
 }
