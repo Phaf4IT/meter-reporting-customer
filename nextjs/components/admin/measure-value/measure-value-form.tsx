@@ -3,7 +3,8 @@ import {useTranslations} from 'next-intl';
 import {MeasureValue, MeasureValueType} from '@/components/admin/measure-value/measureValue';
 import 'rc-dialog/assets/index.css';
 import '../../dialog-styles.css';
-import TranslationsForm from './translations-form'; // Zorg ervoor dat het pad correct is
+import TranslationsForm from './translations-form';
+import ToggleSwitch from '@/components/toggle-switch'; // Import the ToggleSwitch component
 
 export default function MeasureValueForm({
                                              measureValue,
@@ -17,8 +18,8 @@ export default function MeasureValueForm({
     onCancel: () => void;
 }) {
     const [formData, setFormData] = useState<MeasureValue>({...measureValue});
-    const [error, setError] = useState<string | null>(null); // Error state voor de dialoog
-    const [isDialogVisible, setIsDialogVisible] = useState(false); // Dialog zichtbaarheid
+    const [error, setError] = useState<string | null>(null);
+    const [isDialogVisible, setIsDialogVisible] = useState(false);
     const t = useTranslations('admin.measureValue');
 
     const handleSubmit = (e: React.FormEvent) => {
@@ -138,22 +139,12 @@ export default function MeasureValueForm({
                     </select>
                 </div>
 
-                <div className="w-full md:w-1/2 px-3">
-                    <label className="block uppercase tracking-wide text-gray-200 text-s font-bold mb-2"
-                           htmlFor="isEditable">
-                        {t('isEditable')}
-                    </label>
-                    <div
-                        onClick={handleToggleChange}
-                        className={`relative inline-flex items-center cursor-pointer w-12 h-6 rounded-full transition-all duration-200 ease-in-out ${formData.isEditable ? 'bg-green-500' : 'bg-gray-400'}`}
-                    >
-                        <span
-                            className={`${
-                                formData.isEditable ? 'translate-x-6 bg-white' : 'bg-white'
-                            } absolute left-0 inline-block w-6 h-6 rounded-full transition-all duration-200 ease-in-out`}
-                        ></span>
-                    </div>
-                </div>
+                {/* Gebruik de generieke ToggleSwitch component */}
+                <ToggleSwitch
+                    isEnabled={formData.isEditable}
+                    onToggle={handleToggleChange}
+                    label={t('isEditable')}
+                />
             </div>
 
             <div className="flex flex-wrap -mx-3 mb-6">

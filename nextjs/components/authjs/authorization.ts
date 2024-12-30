@@ -6,7 +6,7 @@ export async function getAuthorization(auth: Session, request: NextRequest) {
     const isAuthenticated = !!auth && new Date(auth.expires) > new Date();
     if (isAuthenticated) {
         if (adminPaths.find(value => request.nextUrl.pathname.match(value))) {
-            return auth.user.role.includes("admin")
+            return auth.user.role?.includes("admin")
         } else if (regular.find(value => request.nextUrl.pathname.match(value))) {
             return isAuthenticated;
         }

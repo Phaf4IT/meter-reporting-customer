@@ -22,6 +22,7 @@ export async function getCampaignOptions(token: string, router: AppRouterInstanc
     });
     if (response.status == 307) {
         router.push(await response.text());
+        return Promise.resolve()
     }
     if (!response.ok) {
         return Promise.reject(`Error: ${response.status} ${response.statusText}`)
@@ -38,6 +39,7 @@ export async function report(data: CustomerMeasurement, token: string, router: A
     });
     if (response.status == 307) {
         router.push(await response.text());
+        return Promise.resolve()
     }
     if (!response.ok) {
         throw new Error(`Error: ${response.status} ${response.statusText}`);

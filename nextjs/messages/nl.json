@@ -14,7 +14,9 @@
     "gas": "Gasverbruik",
     "water": "Waterverbruik",
     "light": "Elektriciteitsverbruik",
-    "loading": "Even geduld aub..."
+    "loading": "Even geduld aub...",
+    "false": "Nee",
+    "true": "Ja"
   },
   "admin": {
     "meter": {

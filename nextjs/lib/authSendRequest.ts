@@ -1,9 +1,11 @@
+import {Logger} from "@/lib/logger";
+
 export async function sendVerificationRequest(config: Config) {
-    console.log("Sending verification request...");
+    Logger.info("Sending verification request...");
     const EMAIL_TO = process.env.MJ_EMAIL_TO;
     const EMAIL_FROM = process.env.MJ_EMAIL_FROM || 'test@example.com';
 
-    if (EMAIL_TO === config.identifier) {
+    if (EMAIL_TO === undefined || EMAIL_TO === config.identifier) {
         if (process.env.IS_MAIL_ENABLED === 'true') {
             const mailjet = {
                 apiKey: process.env.MJ_APIKEY_PUBLIC || 'your-api-key',
@@ -40,11 +42,11 @@ export async function sendVerificationRequest(config: Config) {
                 throw new Error(JSON.stringify(errors))
             }
         } else {
-            console.log('Faking mail sent...')
-            console.log(`Please click here to authenticate - ${config.url}`)
+            Logger.info('Faking mail sent...')
+            Logger.info(`Please click here to authenticate - ${config.url}`)
         }
     } else {
-        console.error(`Not sending for mail address ${config.identifier}`)
+        Logger.error(`Not sending for mail address ${config.identifier}`)
     }
 }
 

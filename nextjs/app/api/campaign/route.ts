@@ -3,6 +3,7 @@ import {NextRequest, NextResponse} from "next/server";
 import {findCampaign} from "@/components/admin/campaign/action/getCampaignAction";
 import {campaignFromJson} from "@/components/report/campaign";
 import {AlreadyReported} from "@/components/admin/campaign/action/alreadyReported";
+import { Logger } from "@/lib/logger";
 
 export async function GET(req: NextRequest): Promise<Response> {
     const session = await auth()
@@ -19,6 +20,7 @@ export async function GET(req: NextRequest): Promise<Response> {
                 if (reason instanceof AlreadyReported) {
                     return new NextResponse(`/success?token=${token}`, {status: 307})
                 }
+                Logger.error(`Could not get campaign`, reason)
                 return new NextResponse("Internal Server Error", {status: 500});
             });
     } catch (err) {

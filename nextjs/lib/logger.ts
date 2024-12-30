@@ -1,6 +1,6 @@
 export class Logger {
-    private readonly logLevel: LogLevel = LogLevel[(process.env.LOG_LEVEL ? process.env.LOG_LEVEL.toUpperCase() : "INFO") as keyof typeof LogLevel];
-    private readonly logFormat: LogFormat = LogFormat[(process.env.LOG_FORMAT ? process.env.LOG_FORMAT.toUpperCase() : 'SIMPLE') as keyof typeof LogFormat];
+    private readonly logLevel: LogLevel = LogLevel[(process.env.NEXT_PUBLIC_LOG_LEVEL ? process.env.NEXT_PUBLIC_LOG_LEVEL.toUpperCase() : "INFO") as keyof typeof LogLevel];
+    private readonly logFormat: LogFormat = LogFormat[(process.env.NEXT_PUBLIC_LOG_FORMAT ? process.env.NEXT_PUBLIC_LOG_FORMAT.toUpperCase() : 'SIMPLE') as keyof typeof LogFormat];
     private static _instance: Logger;
 
     public static get Instance() {
@@ -19,8 +19,15 @@ export class Logger {
         this.Instance.handleMessage(message, LogLevel.WARN);
     }
 
-    public static error(message: string): void {
+    public static error(message: string, error?: Error): void {
+        if (error) {
+            const errorStack = `${message}
+                                    ${error.stack}
+                                    `
+            this.Instance.handleMessage(errorStack, LogLevel.ERROR);
+        } else {
         this.Instance.handleMessage(message, LogLevel.ERROR);
+    }
     }
 
     public handleMessage(message: string, level: LogLevel) {

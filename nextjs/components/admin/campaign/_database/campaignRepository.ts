@@ -18,8 +18,10 @@ export async function findCampaignByCompanyAndName(name: string, company: string
             name: name,
             company: company
         })
-        .then(campaigns => campaigns.map(campaign => mapTableToDomain(campaign))
-            .find(() => true))
+        .then(campaigns => {
+            return campaigns.map(campaign => mapTableToDomain(campaign))
+                .find(() => true);
+        })
 }
 
 export async function deleteCampaign(campaign: Campaign, company: string) {

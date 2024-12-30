@@ -1,4 +1,5 @@
 import {Client, neon, neonConfig, NeonQueryFunction, Pool} from "@neondatabase/serverless";
+import {Logger} from "@/lib/logger";
 
 export const sql = () => {
     return neon(connectionString());
@@ -24,7 +25,7 @@ export const clientPool = async () => {
     const pool = new Pool({connectionString: connectionStringUrl.origin});
     const {rows} = await pool.query('SELECT * FROM NOW()');
 
-    console.log(rows[0]);
+    Logger.info(rows[0]);
 
     await pool.end();
 }

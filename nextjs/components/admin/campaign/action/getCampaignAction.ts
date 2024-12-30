@@ -15,6 +15,9 @@ export async function findCampaign(token: string | null): Promise<Campaign> {
     const company = session.user.company
     return findReminderSent(token!, session.user.email!, session.user.company)
         .then(async (reminderSent: ReminderSent | undefined) => {
+            if (!reminderSent) {
+                throw new Error(`Could not fetch reminder sent for customer ${session.user.email} of company ${session.user.company}`);
+            }
             const customerMeasurement = await findCustomerMeasurement(reminderSent!.campaignName!, reminderSent!.customerEmail!, company);
             if (customerMeasurement) {
                 throw new AlreadyReported(`Er is al een stand doorgegeven voor campagne '${reminderSent?.campaignName}' voor gebruiker '${reminderSent?.customerEmail}'`)

@@ -30,7 +30,6 @@ export default function Success() {
         logoutUser();
     }, []);
 
-    // Functie om de vertaling te krijgen op basis van de 'name' en locale
     const getTranslation = (measureName: string, measureTranslations: MeasureValueTranslation[]): string => {
         const translation = measureTranslations.find(t => t.locale === locale);
         return translation ? translation.value : measureName;
@@ -47,7 +46,9 @@ export default function Success() {
                             campaign.measureValues.map((measurement) => (
                                 <div key={measurement.name} className="mb-4">
                                     <p>
-                                        <strong>{getTranslation(measurement.name, measurement.translations)}:</strong> {measurement.value} {measurement.unit}
+                                        <strong>{getTranslation(measurement.name, measurement.translations)}:</strong>
+                                        {measurement.type === 'BOOLEAN' ? (<>{t(`${measurement.value}`)} </>) : (<>{measurement.value} </>)}
+                                        {measurement.unit}
                                     </p>
                                 </div>
                             ))
