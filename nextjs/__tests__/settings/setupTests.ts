@@ -21,7 +21,7 @@ beforeAll(async () => {
             postgresServer = value[0];
             neonApiServer = value[1];
         });
-}, 15000);
+}, 150000);
 afterAll(() => {
     wiremockServer.stop();
     postgresServer.stop();
