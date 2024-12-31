@@ -5,6 +5,7 @@ DROP TABLE IF EXISTS customer;
 DROP TABLE IF EXISTS non_active_customer;
 DROP TABLE IF EXISTS measure_value;
 DROP TABLE IF EXISTS customer_measurement;
+DROP TABLE IF EXISTS overruled_customer_measurement;
 
 CREATE TABLE IF NOT EXISTS company
 (
@@ -35,7 +36,6 @@ CREATE TABLE IF NOT EXISTS reminder
     company         varchar(255) NOT NULL,
     PRIMARY KEY (campaign_name, reminder_date, company)
 );
-
 
 CREATE TABLE IF NOT EXISTS campaign_reminder_sent
 (
@@ -107,10 +107,11 @@ CREATE TABLE IF NOT EXISTS customer_measurement
 
 CREATE TABLE IF NOT EXISTS overruled_customer_measurement
 (
-    measurements  json[]       NOT NULL,
-    campaign_name TEXT         NOT NULL,
-    customer_mail TEXT         NOT NULL,
-    date_time     TIMESTAMP    NOT NULL,
-    company       varchar(255) NOT NULL,
-    PRIMARY KEY (campaign_name, customer_mail, company)
+    measurements       json[]       NOT NULL,
+    campaign_name      TEXT         NOT NULL,
+    customer_mail      TEXT         NOT NULL,
+    original_date_time TIMESTAMP    NOT NULL,
+    overrule_date_time TIMESTAMP    NOT NULL,
+    company            varchar(255) NOT NULL,
+    PRIMARY KEY (campaign_name, customer_mail, company, overrule_date_time)
 );

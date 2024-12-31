@@ -1,4 +1,7 @@
-import {CustomerMeasurement} from "@/components/admin/customer-measurement/customerMeasurement";
+import {
+    CustomerMeasurement,
+    customerMeasurementFromJson
+} from "@/components/admin/customer-measurement/customerMeasurement";
 import {ReminderSent} from "@/components/admin/reminder-sent/reminder-sent";
 
 export async function getCustomerMeasurements(): Promise<CustomerMeasurement[]> {
@@ -23,8 +26,7 @@ export async function saveCustomerMeasurement(customerMeasurement: CustomerMeasu
         throw new Error("Failed to save customer measurement");
     }
 
-    const data: CustomerMeasurement = await response.json();
-    return data;
+    return customerMeasurementFromJson(await response.json());
 }
 
 export async function getRemindersSent() {
