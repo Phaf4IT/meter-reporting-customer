@@ -4,7 +4,7 @@ import {getEntityManager} from "@/lib/jpa/entity-fetcher";
 
 export async function findCampaignsByCompany(company: string) {
     return getEntityManager(CampaignTable)
-        .findBy(CampaignTable, {
+        .findBy({
             company: company
         })
         .then(campaigns => campaigns.map(campaign => mapTableToDomain(campaign)
@@ -14,7 +14,7 @@ export async function findCampaignsByCompany(company: string) {
 
 export async function findCampaignByCompanyAndName(name: string, company: string) {
     return getEntityManager(CampaignTable)
-        .findBy(CampaignTable, {
+        .findBy({
             name: name,
             company: company
         })

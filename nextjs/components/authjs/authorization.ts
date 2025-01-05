@@ -1,7 +1,7 @@
 import {Session} from "next-auth";
 import {NextRequest} from "next/server";
 
-export async function getAuthorization(auth: Session, request: NextRequest) {
+export async function getAuthorization(auth: Session | null, request: NextRequest) {
     // Logged in users are authenticated, otherwise redirect to login page
     const isAuthenticated = !!auth && new Date(auth.expires) > new Date();
     if (isAuthenticated) {

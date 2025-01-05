@@ -1,6 +1,7 @@
 import {EntityManager} from './entity-manager';
 import {Entity, EntityClasss} from './entity';
 import {ExpressionBuilder, Kysely, sql} from 'kysely';
+import {retry} from "ts-retry";
 
 export abstract class XyselyEntityManager<T extends Entity> extends EntityManager<T> {
 
@@ -19,10 +20,16 @@ export abstract class XyselyEntityManager<T extends Entity> extends EntityManage
     async create(entity: T): Promise<T> {
         const fields = entity.getFieldAndValues();
         const tableName = entity.getTableName();
-        const result = await this.db
-            .insertInto(tableName)
-            .values(fields)
-            .executeTakeFirst();
+        let result;
+        await retry(
+            async () => {
+                result = await this.db
+                    .insertInto(tableName)
+                    .values(fields)
+                    .executeTakeFirst();
+            },
+            {delay: 100, maxTry: 3}
+        );
 
         return Object.assign(entity, result);
     }

@@ -3,5 +3,6 @@ import {saveReminder} from "@/components/admin/reminder/_database/reminderReposi
 import {Reminder} from "@/components/admin/reminder/reminder";
 
 export async function createReminder(data: Reminder, company: string) {
+    // TODO validate campaign exists
     return saveReminder(data, company);
 }

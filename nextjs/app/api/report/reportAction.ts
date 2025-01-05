@@ -5,6 +5,7 @@ import {
 } from "@/components/admin/customer-measurement/action/createCustomerMeasurementAction";
 import {CustomerMeasurement} from "@/app/report/customerMeasurement";
 import {findCustomerMeasurement} from "@/components/admin/customer-measurement/action/findCustomerMeasurementAction";
+import {Logger} from "@/lib/logger";
 
 export async function report(customerMeasurement: CustomerMeasurement, company: string, token: string, email: string): Promise<any> {
     return findCampaign(token)
@@ -32,7 +33,7 @@ function validateCustomerMeasurement(campaign: Campaign, customerMeasurement: Cu
         );
 
         if (!correspondingMeasurement || correspondingMeasurement.value.trim() === '') {
-            console.error(`Fout: Geen waarde opgegeven voor ${measureValue.name}`);
+            Logger.error(`Fout: Geen waarde opgegeven voor ${measureValue.name}`);
             return false;
         }
 
@@ -42,24 +43,24 @@ function validateCustomerMeasurement(campaign: Campaign, customerMeasurement: Cu
         switch (measureValue.type) {
             case 'NUMBER':
                 if (isNaN(Number(value))) {
-                    console.error(`Fout: Waarde voor ${measureValue.name} moet een nummer zijn`);
+                    Logger.error(`Fout: Waarde voor ${measureValue.name} moet een nummer zijn`);
                     return false;
                 }
                 break;
             case 'BOOLEAN':
                 if (value !== 'true' && value !== 'false') {
-                    console.error(`Fout: Waarde voor ${measureValue.name} moet 'true' of 'false' zijn`);
+                    Logger.error(`Fout: Waarde voor ${measureValue.name} moet 'true' of 'false' zijn`);
                     return false;
                 }
                 break;
             case 'TEXT':
                 if (value.length < 1) {
-                    console.error(`Fout: Waarde voor ${measureValue.name} moet een geldige tekst zijn`);
+                    Logger.error(`Fout: Waarde voor ${measureValue.name} moet een geldige tekst zijn`);
                     return false;
                 }
                 break;
             default:
-                console.error(`Onbekend type voor ${measureValue.name}`);
+                Logger.error(`Onbekend type voor ${measureValue.name}`);
                 return false;
         }
     }

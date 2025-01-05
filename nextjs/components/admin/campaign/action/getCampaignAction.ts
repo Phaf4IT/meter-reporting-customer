@@ -6,6 +6,7 @@ import {ReminderSent} from "@/components/admin/reminder-sent/reminder-sent";
 import {Campaign} from "@/components/admin/campaign/campaign";
 import {findCustomerMeasurement} from "@/components/admin/customer-measurement/action/findCustomerMeasurementAction";
 import {AlreadyReported} from "@/components/admin/campaign/action/alreadyReported";
+import {Logger} from "@/lib/logger";
 
 export async function findCampaign(token: string | null): Promise<Campaign> {
     const session = await auth()
@@ -26,6 +27,13 @@ export async function findCampaign(token: string | null): Promise<Campaign> {
         })
         .then((reminderSent: ReminderSent | undefined) =>
             findCampaignByCompanyAndName(reminderSent!.campaignName, company))
-        .then(value => value!);
+        .then(value => value!)
+        .then(campaign => {
+            if (!campaign.customerEmails.some(value => value.toLowerCase() === session.user.email!.toLowerCase())) {
+                Logger.error(`User ${session.user.email!} tried to report for campaign ${campaign.name}, but was not found.`);
+                throw Error("Invalid data")
+            }
+            return campaign;
+        });
 }
 

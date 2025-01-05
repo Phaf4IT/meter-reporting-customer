@@ -4,12 +4,13 @@ import {saveCampaign} from "@/components/admin/campaign/_database/campaignReposi
 import {createReminder} from "@/components/admin/reminder/action/createReminderAction";
 
 export async function createCampaign(campaign: Campaign, company: string) {
-    return saveCampaign(campaign, company)
-        .then(savedCampaign => savedCampaign.reminderDates.flatMap(date =>
-            createReminder({
-                reminderDate: date,
-                customerEmails: savedCampaign.customerEmails,
-                campaignName: savedCampaign.name
-            }, company)
-        ));
+    const savedCampaign = await saveCampaign(campaign, company);
+    const reminderPromises = savedCampaign.reminderDates.map(date => createReminder({
+            reminderDate: date,
+            customerEmails: savedCampaign.customerEmails,
+            campaignName: savedCampaign.name
+        }, company)
+    );
+    await Promise.all(reminderPromises);
+    return savedCampaign;
 }

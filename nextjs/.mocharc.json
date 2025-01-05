@@ -1,0 +1,15 @@
+{
+  "recursive": true,
+  "timeout": 3000,
+  "require": [
+    "esbuild-register",
+    "./test/settings/globalSetup.ts"
+  ],
+  "spec": [
+    "test/**/*.test.ts"
+  ],
+  "extension": [
+    "ts"
+  ],
+  "parallel": true
+}
