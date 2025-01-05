@@ -3,7 +3,6 @@ import {
     OverruledCustomerMeasurementTable
 } from "@/components/admin/customer-measurement/_database/overruledCustomerMeasurementTable";
 import {CustomerMeasurement} from "@/components/admin/customer-measurement/customerMeasurement";
-import { Logger } from "@/lib/logger";
 
 export async function findCustomerMeasurementsByCompanyAndCampaign(
     company: string,
