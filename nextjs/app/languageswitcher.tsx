@@ -1,17 +1,15 @@
 import {setUserLocale} from "@/lib/locale";
-import { Logger } from "@/lib/logger";
 import {useLocale} from "next-intl";
 
 export default function LanguageSwitcher() {
     const locale = useLocale();
-    Logger.debug(locale)
     return (
         <div>
-            <button onClick={() => setUserLocale('en')}>
+            <button className={locale === 'en' ? 'text-cyan-500' : 'text-white'} onClick={() => setUserLocale('en')}>
                 EN
             </button>
             {' | '}
-            <button onClick={() => setUserLocale('nl')}>
+            <button className={locale === 'nl' ? 'text-cyan-500' : 'text-white'} onClick={() => setUserLocale('nl')}>
                 NL
             </button>
         </div>

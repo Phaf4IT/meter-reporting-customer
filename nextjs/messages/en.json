@@ -164,12 +164,16 @@
       "overruleConfirmationMessage": "You are about to override these measurements. Do you wish to continue?",
       "confirmOverruleButton": "Yes, Override",
       "cancelButton": "Cancel",
-
       "measurementComplete": "Measurement Complete",
       "measurementPending": "Measurement Pending",
       "reminderSent": "Reminder Sent",
       "reminderNotSent": "No Reminder Sent",
-      "overruleConfirmationTitle": "Confirm Override"
+      "overruleConfirmationTitle": "Confirm Override",
+      "submit": "Submit",
+      "cancel": "Cancel",
+      "enterMeasurement": "Enter Measurement",
+      "createMeasurements": "Add measurements for ",
+      "overruleMeasurements": "Override measurements for "
     }
   }
 }

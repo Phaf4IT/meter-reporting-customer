@@ -174,7 +174,12 @@
       "reminderSent": "Herinnering Verstuurd",
       "reminderNotSent": "Geen Herinnering Verstuurd",
       "overruleConfirmationTitle": "Bevestig Overschrijven",
-      "enterMeasurement": "Voeg meting toe"
+      "enterMeasurement": "Voeg meting toe",
+      "submit": "Indienen",
+      "cancel": "Annuleren",
+      "formWizardTitle": "Formulier voor het overschrijven van metingen",
+      "createMeasurements": "Voeg metingen toe voor ",
+      "overruleMeasurements": "Overschrijf metingen voor "
     }
   }
 }

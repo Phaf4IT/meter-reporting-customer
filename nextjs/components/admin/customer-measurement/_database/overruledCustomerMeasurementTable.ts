@@ -4,7 +4,7 @@ import {Field} from "@/lib/jpa/decorator/field.decorator";
 import {EntityClass} from "@/lib/jpa/decorator/entity-class.decorator";
 
 @EntityClass("overruled_customer_measurement")
-export class CustomerMeasurementTable extends Entity {
+export class OverruledCustomerMeasurementTable extends Entity {
     @PrimaryKey
     @Field("campaign_name")
     campaignName: string;
@@ -20,21 +20,27 @@ export class CustomerMeasurementTable extends Entity {
     @Field()
     measurements: any[];
 
-    @Field("date_time")
-    dateTime: Date;
+    @Field("original_date_time")
+    originalDateTime: Date;
+
+    @PrimaryKey
+    @Field("overrule_date_time")
+    overruleDateTime: Date;
 
     constructor(
         campaignName: string,
         customerMail: string,
         company: string,
         measurements: any[],
-        dateTime: Date | string
+        originalDateTime: Date | string,
+        overruleDateTime: Date | string
     ) {
         super();
         this.campaignName = campaignName;
         this.customerMail = customerMail;
         this.company = company;
         this.measurements = measurements;
-        this.dateTime = new Date(dateTime);
+        this.originalDateTime = new Date(originalDateTime);
+        this.overruleDateTime = new Date(overruleDateTime);
     }
 }
