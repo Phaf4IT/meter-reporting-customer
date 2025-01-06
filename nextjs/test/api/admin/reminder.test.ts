@@ -2,6 +2,7 @@ import {given, then, when} from '@/testlib/givenWhenThen';
 import {getNewReminder} from "@/testlib/fixtures/reminder.fixture";
 import {expect} from "chai";
 import supertest from "supertest";
+import {getNewCampaign} from "@/testlib/fixtures/campaign.fixture";
 
 describe('Reminder API Endpoints', () => {
     let request: any;
@@ -16,8 +17,11 @@ describe('Reminder API Endpoints', () => {
         let newReminder: any;
         let response: any;
 
-        given('A new reminder', () => {
-            newReminder = getNewReminder();
+        given('A new reminder', async () => {
+            const newCampaign = getNewCampaign();
+            await request.post('/api/admin/campaign').send(newCampaign)
+                .set('Cookie', sessionCookie);
+            newReminder = getNewReminder({campaignName: newCampaign.name});
         });
 
         when('The reminder is posted to the server', async () => {
@@ -34,12 +38,34 @@ describe('Reminder API Endpoints', () => {
         });
     });
 
+    describe('POST invalid /api/admin/reminder', () => {
+        let newReminder: any;
+        let response: any;
+
+        given('A new reminder', () => {
+            newReminder = getNewReminder({});
+        });
+
+        when('The reminder is posted to the server', async () => {
+            response = await request.post('/api/admin/reminder')
+                .send(newReminder)
+                .set('Cookie', sessionCookie);
+        });
+
+        then('The response should indicate successful creation', async () => {
+            expect(response.status).eq(500);
+        });
+    });
+
     describe('GET /api/admin/reminder', () => {
         let newReminder: any;
         let response: any;
 
         given('A new reminder is created', async () => {
-            newReminder = getNewReminder();
+            const newCampaign = getNewCampaign();
+            await request.post('/api/admin/campaign').send(newCampaign)
+                .set('Cookie', sessionCookie);
+            newReminder = getNewReminder({campaignName: newCampaign.name});
             await request.post('/api/admin/reminder').send(newReminder)
                 .set('Cookie', sessionCookie);
         });
@@ -62,7 +88,8 @@ describe('Reminder API Endpoints', () => {
         let response: any;
 
         given('A new reminder is created', async () => {
-            newReminder = getNewReminder();
+            const newCampaign = getNewCampaign();
+            newReminder = getNewReminder({campaignName: newCampaign.name});
             await request.post('/api/admin/reminder').send(newReminder)
                 .set('Cookie', sessionCookie);
         });
@@ -83,7 +110,7 @@ describe('Reminder API Endpoints', () => {
         let response: any;
 
         given('A new reminder is created', async () => {
-            newReminder = getNewReminder();
+            newReminder = getNewReminder({});
             await request.post('/api/admin/reminder').send(newReminder)
                 .set('Cookie', sessionCookie);
         });
@@ -105,7 +132,7 @@ describe('Reminder API Endpoints', () => {
         let response: any;
 
         given('A reminder payload', () => {
-            newReminder = getNewReminder();
+            newReminder = getNewReminder({});
         });
 
         when('The reminder is posted without authorization', async () => {

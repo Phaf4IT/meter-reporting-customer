@@ -1,9 +1,10 @@
 import {randomUUID} from "node:crypto";
+import {randomDate} from "@/testlib/randomDate";
 
-export function getNewReminder() {
+export function getNewReminder({campaignName}: { campaignName?: string }) {
     return {
-        campaignName: `Campaign-${randomUUID()}`,
+        campaignName: campaignName || `Campaign-${randomUUID()}`,
         customerEmails: ["person@example.com"],
-        reminderDate: "2025-01-02T12:00:00.000Z"
+        reminderDate: randomDate()
     };
 }

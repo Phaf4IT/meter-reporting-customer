@@ -6,7 +6,6 @@ import {getPool} from "@/lib/neonClient";
 export class XyselyNeonEntityManager<T extends Entity> extends XyselyEntityManager<T> {
     constructor(entityClass: EntityClasss<T>) {
         const pool = getPool();
-        // const pool = new Pool({connectionString: process.env.DATABASE_URL});
         super(new Kysely<any>({
             dialect: new PostgresDialect({
                 pool,

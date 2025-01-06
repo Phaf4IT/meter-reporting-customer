@@ -3,7 +3,7 @@ import {findReminderSent} from "@/components/admin/reminder-sent/_database/remin
 import {ReminderSent} from "@/components/admin/reminder-sent/reminder-sent";
 import {findCustomerMeasurement} from "@/components/admin/customer-measurement/action/findCustomerMeasurementAction";
 import {findCampaignByCompanyAndName} from "@/components/admin/campaign/_database/campaignRepository";
-import {CustomerMeasurement} from "@/app/report/customerMeasurement";
+import {CustomerMeasurement} from "@/components/report/customerMeasurement";
 import {Campaign} from "@/components/report/campaign";
 import {Measurements, Report} from "@/app/api/report/report";
 

@@ -1,4 +1,4 @@
-import {CustomerMeasurement} from "@/app/report/customerMeasurement";
+import {CustomerMeasurement} from "@/components/report/customerMeasurement";
 import {reportFromJson} from "@/app/api/report/report";
 import {campaignFromJson} from "@/components/report/campaign";
 import {AppRouterInstance} from "next/dist/shared/lib/app-router-context.shared-runtime";

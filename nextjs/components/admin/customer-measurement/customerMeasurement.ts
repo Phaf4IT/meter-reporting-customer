@@ -1,5 +1,4 @@
 export interface CustomerMeasurement {
-    // TODO use token instead...
     readonly campaignName: string;
     readonly customerMail: string;
     readonly measurements: MeasureValue[];
