@@ -1,4 +1,3 @@
-import 'tsconfig-paths/register';
 import {createWiremockServer} from "@/testlib/wiremock";
 import {createPostgresServer} from "@/testlib/postgres";
 import {startServer} from "@/testlib/server";
