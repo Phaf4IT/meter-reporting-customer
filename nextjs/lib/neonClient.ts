@@ -1,6 +1,8 @@
 import {Client, neon, neonConfig, NeonQueryFunction, Pool} from "@neondatabase/serverless";
 import {Logger} from "@/lib/logger";
 
+let pool: Pool | undefined = undefined;
+
 export const sql = () => {
     return neon(connectionString());
 }
@@ -15,14 +17,19 @@ export const connectionString = () => {
     return connectionString;
 }
 
-export const clientPool = async () => {
-    /* or using Pool */
-    const neonConnectionString = new URL(process.env.NEON_URL!);
-    const connectionStringUrl = new URL(process.env.DATABASE_URL!);
-    neonConfig.useSecureWebSocket = connectionStringUrl.hostname !== 'db.localtest.me';
-    neonConfig.wsProxy = `${neonConnectionString.host}/v1`;
+export const getPool = () => {
+    if (!pool) {
+        const neonConnectionString = new URL(process.env.NEON_URL!);
+        const connectionStringUrl = new URL(process.env.DATABASE_URL!);
+        neonConfig.useSecureWebSocket = connectionStringUrl.hostname !== 'db.localtest.me';
+        neonConfig.wsProxy = `${neonConnectionString.host}/v1`;
+        pool = new Pool({connectionString: process.env.DATABASE_URL!, max: 10});
+    }
+    return pool;
+}
 
-    const pool = new Pool({connectionString: connectionStringUrl.origin});
+export const clientPool = async () => {
+    const pool = getPool();
     const {rows} = await pool.query('SELECT * FROM NOW()');
 
     Logger.info(rows[0]);

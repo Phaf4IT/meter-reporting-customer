@@ -26,7 +26,7 @@ CREATE TABLE IF NOT EXISTS campaign
     PRIMARY KEY (name, company)
 );
 
-CREATE INDEX if not exists search_campaign_idx ON campaign USING btree (start_date, end_date, measure_values, reminder_dates, company);
+CREATE INDEX if not exists search_campaign_idx ON campaign USING btree (start_date, end_date, reminder_dates, company);
 
 CREATE TABLE IF NOT EXISTS reminder
 (

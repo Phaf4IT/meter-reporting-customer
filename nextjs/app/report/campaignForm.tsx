@@ -5,7 +5,7 @@ import {MeasureValue as DetailedMeasureValue} from '@/components/admin/measure-v
 import useFormData from '@/hooks/useFormData';
 import ToggleSwitch from '@/components/toggle-switch';
 import {Logger} from "@/lib/logger";
-import {useTranslations, useLocale} from "next-intl";
+import {useLocale, useTranslations} from "next-intl";
 
 export default function CampaignForm() {
     const t = useTranslations('form');
@@ -40,7 +40,7 @@ export default function CampaignForm() {
             getCampaignOptions(token, router)
                 .then((campaign) => {
                     if (campaign) {
-                    setCampaigns(campaign);
+                        setCampaigns(campaign);
                     }
                 })
                 .catch((reason) => {
@@ -98,16 +98,16 @@ export default function CampaignForm() {
                                     disabled={!measure.isEditable} // Disable if not editable
                                 />
                             ) : (
-                            <input
-                                type={measure.type === 'NUMBER' ? 'number' : 'text'}
-                                id={measure.name}
-                                name={measure.name}
-                                value={formData[measure.name] || ''}
-                                onChange={handleChange}
-                                required={measure.isEditable}
-                                    disabled={!measure.isEditable} // Disable if not editable
-                                className="border rounded w-full p-2 text-gray-900"
-                            />
+                                <input
+                                    type={measure.type === 'NUMBER' ? 'number' : 'text'}
+                                    id={measure.name}
+                                    name={measure.name}
+                                    value={formData[measure.name] || ''}
+                                    onChange={handleChange}
+                                    required={measure.isEditable}
+                                    disabled={!measure.isEditable}
+                                    className="border rounded w-full p-2 text-gray-900"
+                                />
                             )}
                         </div>
                     ))}

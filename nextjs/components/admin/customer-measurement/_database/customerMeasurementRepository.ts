@@ -7,7 +7,7 @@ export async function findCustomerMeasurementsByCompanyAndCampaign(
     campaignName: string
 ) {
     return getEntityManager(CustomerMeasurementTable)
-        .findBy(CustomerMeasurementTable, {
+        .findBy({
             company: company,
             campaign_name: campaignName
         })
@@ -18,7 +18,7 @@ export async function findCustomerMeasurementsByCompany(
     company: string
 ) {
     return getEntityManager(CustomerMeasurementTable)
-        .findBy(CustomerMeasurementTable, {
+        .findBy({
             company: company,
         })
         .then(measurements => measurements.map(measurement => mapTableToDomain(measurement)));
@@ -30,7 +30,7 @@ export async function findCustomerMeasurementByCompanyCampaignAndCustomer(
     company: string
 ) {
     return getEntityManager(CustomerMeasurementTable)
-        .findBy(CustomerMeasurementTable, {
+        .findBy({
             campaign_name: campaignName,
             customer_mail: customerMail,
             company: company

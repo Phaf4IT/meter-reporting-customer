@@ -9,7 +9,7 @@ export async function findCustomerMeasurementsByCompanyAndCampaign(
     campaignName: string
 ) {
     return getEntityManager(OverruledCustomerMeasurementTable)
-        .findBy(OverruledCustomerMeasurementTable, {
+        .findBy({
             company: company,
             campaign_name: campaignName
         })
