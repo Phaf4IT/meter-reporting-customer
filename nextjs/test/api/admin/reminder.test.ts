@@ -3,14 +3,16 @@ import {getNewReminder} from "@/testlib/fixtures/reminder.fixture";
 import {expect} from "chai";
 import supertest from "supertest";
 import {getNewCampaign} from "@/testlib/fixtures/campaign.fixture";
+import {getEnvironmentVariableProvider} from "@/testlib/environmentVariableProvider";
 
 describe('Reminder API Endpoints', () => {
     let request: any;
     let sessionCookie: string;
 
-    beforeEach(async () => {
-        request = supertest(process.env.SERVER_URL!);
-        sessionCookie = process.env.ADMIN_SESSION_COOKIE!;
+    before(async () => {
+        const environmentVariableProvider = getEnvironmentVariableProvider();
+        request = supertest(environmentVariableProvider.serverBaseUrl);
+        sessionCookie = environmentVariableProvider.sessionCookie;
     })
 
     describe('POST /api/admin/reminder', () => {

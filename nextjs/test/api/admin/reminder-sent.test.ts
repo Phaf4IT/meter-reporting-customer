@@ -1,16 +1,17 @@
-// import {getSessionCookie, Request} from '@/__tests__/settings/setupTests';
 import {given, then, when} from '@/testlib/givenWhenThen';
 import {getNewReminderSent} from "@/testlib/fixtures/reminder-sent.fixture";
 import {expect} from "chai";
 import supertest from "supertest";
+import {getEnvironmentVariableProvider} from "@/testlib/environmentVariableProvider";
 
 describe('Reminder Sent API Endpoints', () => {
     let request: any;
     let sessionCookie: string;
 
-    beforeEach(async () => {
-        request = supertest(process.env.SERVER_URL!);
-        sessionCookie = process.env.ADMIN_SESSION_COOKIE!;
+    before(async () => {
+        const environmentVariableProvider = getEnvironmentVariableProvider();
+        request = supertest(environmentVariableProvider.serverBaseUrl);
+        sessionCookie = environmentVariableProvider.sessionCookie;
     })
 
     describe('POST /api/admin/reminder-sent', () => {

@@ -3,10 +3,12 @@ import {given, then, when} from '@/testlib/givenWhenThen';
 import {getNewCustomer} from "@/testlib/fixtures/customer.fixture";
 import {getAllTypeMeasureValues} from "@/testlib/fixtures/measure-value.fixture";
 import {getNewCampaignByParams} from "@/testlib/fixtures/campaign.fixture";
-import {WiremockRequest} from "@/testlib/wiremock";
+import {WiremockRequest} from "@/testlib/testcontainers/wiremock";
 import {expect} from "chai";
 import supertest from "supertest";
 import {WireMock} from "wiremock-captain";
+import {getEnvironmentVariableProvider} from "@/testlib/environmentVariableProvider";
+import waitForExpect from "@sadams/wait-for-expect";
 
 describe('Complete Scenario: Customer, Measure Values, Campaign, and Reminders', () => {
     const newCustomer = getNewCustomer();
@@ -25,10 +27,11 @@ describe('Complete Scenario: Customer, Measure Values, Campaign, and Reminders',
     let reminder: any;
     let wiremock: any;
 
-    beforeEach(() => {
-        request = supertest(process.env.SERVER_URL!);
-        sessionCookie = process.env.ADMIN_SESSION_COOKIE!;
-        wiremock = new WireMock(process.env.WIREMOCK_URL!);
+    before(() => {
+        const environmentVariableProvider = getEnvironmentVariableProvider();
+        request = supertest(environmentVariableProvider.serverBaseUrl);
+        sessionCookie = environmentVariableProvider.sessionCookie;
+        wiremock = new WireMock(environmentVariableProvider.wiremockUrl);
     });
 
     describe('Customer, Measure Values, Campaign Creation', () => {
@@ -80,13 +83,15 @@ describe('Complete Scenario: Customer, Measure Values, Campaign, and Reminders',
         then('The reminder should be triggered, and Wiremock should be called', async () => {
             expect(sentReminderResponse.status).eq(200);
 
-            const requests: WiremockRequest[] = await wiremock.getRequestsForAPI("POST", "/v3.1/send") as WiremockRequest[];
+            await waitForExpect(async () => {
+                const requests: WiremockRequest[] = await wiremock.getRequestsForAPI("POST", "/v3.1/send") as WiremockRequest[];
 
-            const customerEmailSent = requests.map(value => JSON.parse(value.request.body))
-                .some(requestBody => requestBody.messages[0].To.some((recipient: any) => recipient.Email === customerEmail))
+                const customerEmailSent = requests.map(value => JSON.parse(value.request.body))
+                    .some(requestBody => requestBody.messages[0].To.some((recipient: any) => recipient.Email === customerEmail))
 
-            expect(customerEmailSent).eq(true);
-            expect(requests.length).greaterThan(0);
+                expect(customerEmailSent).eq(true);
+                expect(requests.length).greaterThan(0);
+            });
         });
     });
 });

@@ -7,7 +7,7 @@ import {Network} from "@/testlib/network";
 export async function createPostgresServer(): Promise<{
     postgresServer: StartedTestContainer,
     neonApiServer: StartedTestContainer,
-    pgconnectionstring: string,
+    databaseUrl: string,
     neonUrl: string
 }> {
     const network = await new Network("database-network").start();
@@ -51,7 +51,7 @@ export async function createPostgresServer(): Promise<{
         .withCommand(["insert.sh"])
         .start();
     info("starting neon")
-    const pgconnectionstring = `postgres://${postgresServer.getUsername()}:${postgresServer.getPassword()}@db.localtest.me:${postgresServer.getMappedPort(5432)}/main`;
+    const databaseUrl = `postgres://${postgresServer.getUsername()}:${postgresServer.getPassword()}@db.localtest.me:${postgresServer.getMappedPort(5432)}/main`;
     const neonApiServer = await new GenericContainer("ghcr.io/timowilhelm/local-neon-http-proxy:main")
         .withReuse()
         .withNetwork(network)
@@ -64,7 +64,7 @@ export async function createPostgresServer(): Promise<{
     return {
         postgresServer,
         neonApiServer,
-        pgconnectionstring,
+        databaseUrl,
         neonUrl: `http://${neonApiServer.getHost()}:${neonApiServer.getMappedPort(4444)}`
     };
 }

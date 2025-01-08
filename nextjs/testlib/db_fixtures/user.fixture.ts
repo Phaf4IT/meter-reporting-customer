@@ -5,7 +5,7 @@ import {retry} from "ts-retry";
 export async function createUser(customerEmail: string) {
     await retry(
         async () => {
-            await sql()(`INSERT INTO users (name,
+            await sql(process.env.DATABASE_URL!, process.env.NEON_URL!)(`INSERT INTO users (name,
                                             email,
                                             "emailVerified",
                                             image,
