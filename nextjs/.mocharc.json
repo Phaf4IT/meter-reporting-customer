@@ -1,6 +1,6 @@
 {
   "recursive": true,
-  "timeout": 5000,
+  "timeout": 50000,
   "require": [
     "esbuild-register",
     "./test/settings/globalSetup.ts"

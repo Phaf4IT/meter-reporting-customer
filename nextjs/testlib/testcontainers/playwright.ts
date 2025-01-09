@@ -15,11 +15,14 @@ export class PlaywrightContainer {
                     "LANGUAGE": 'nl'
                 })
                 .withExposedPorts(9222)
+                .withWaitStrategy(Wait.forListeningPorts());
+        if (process.env.PLATFORM === 'linux') {
+            genericContainer
                 .withExtraHosts([{
                     host: "host.docker.internal",
                     ipAddress: `${await getDockerHostIP()}`,
                 }])
-                .withWaitStrategy(Wait.forListeningPorts());
+        }
         this.container = await genericContainer
             .start();
 
