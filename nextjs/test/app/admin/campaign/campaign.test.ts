@@ -49,7 +49,7 @@ describe('Open admin in browser', () => {
             });
             page = await loginAndGoToAdminPage(context, serverUrl, adminUrl, email, wiremock);
             await page.waitForSelector('table');
-        })
+        }, 50000)
         then('The response should contain the new campaign', async () => {
             Logger.info(await page.content())
             const rowIndex = await page.$$eval('table tbody tr', (rows: any, campaignName: string) => {

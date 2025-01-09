@@ -6,7 +6,6 @@ import {Logger} from "@/lib/logger";
 export async function loginAndGoToAdminPage(context: BrowserContext, serverUrl: string, adminUrl: string, email: string, wiremock: any) {
     const page = addEventListeners(await context.newPage());
     await page.goto(`${serverUrl}${adminUrl}`);
-    Logger.info(await page.content())
     await page.fill('input[name="email"]', email);
     await page.locator('button[type="submit"]').click();
 
