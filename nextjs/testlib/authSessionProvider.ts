@@ -1,8 +1,15 @@
 import {IWireMockRequest, IWireMockResponse, WireMock} from "wiremock-captain";
-// import {getServerBaseUrl, getWiremock, Request} from "@/__tests__/settings/setupTests";
 import cookie from "cookie";
-import {WiremockRequest} from "@/testlib/wiremock";
+import {WiremockRequest} from "@/testlib/testcontainers/wiremock";
 import TestAgent from "supertest/lib/agent";
+
+export async function getLoginUrl(wiremock: WireMock, email: string, serverBaseUrl: string) {
+    const requests: WiremockRequest[] = await wiremock.getRequestsForAPI("POST", "/v3.1/send") as WiremockRequest[];
+    const loginEmail = requests.map(value => JSON.parse(value.request.body))
+        .find(value => value.messages[0].To.some((recipient: any) => recipient.Email === email));
+
+    return loginEmail.messages[0].TextPart.replace("Please click here to authenticate - " + serverBaseUrl, "");
+}
 
 export async function loginAndGetSession(email: string, wiremock: WireMock, serverBaseUrl: string, request: TestAgent): Promise<string> {
     const wireMockRequest: IWireMockRequest = {
@@ -29,11 +36,7 @@ export async function loginAndGetSession(email: string, wiremock: WireMock, serv
             callbackUrl: serverBaseUrl,
             "redirect": "false"
         });
-    const requests: WiremockRequest[] = await wiremock.getRequestsForAPI("POST", "/v3.1/send") as WiremockRequest[];
-    const loginEmail = requests.map(value => JSON.parse(value.request.body))
-        .find(value => value.messages[0].To.some((recipient: any) => recipient.Email === email));
-
-    const url = loginEmail.messages[0].TextPart.replace("Please click here to authenticate - " + serverBaseUrl, "");
+    const url = await getLoginUrl(wiremock, email, serverBaseUrl);
     const loggedIn: any = await request.get(url);
     return getCookies(loggedIn.get('set-cookie'), 'authjs.session-token');
 }

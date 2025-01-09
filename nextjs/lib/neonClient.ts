@@ -3,18 +3,16 @@ import {Logger} from "@/lib/logger";
 
 let pool: Pool | undefined = undefined;
 
-export const sql = () => {
-    return neon(connectionString());
+export const sql = (databaseUrl: string, neonUrl: string) => {
+    return neon(connectionString(databaseUrl, neonUrl));
 }
 
-export const connectionString = () => {
-    const connectionString = process.env.DATABASE_URL!;
-    const neonConnectionString = process.env.NEON_URL!;
-    const url = new URL(neonConnectionString);
+export const connectionString = (databaseUrl: string, neonUrl: string) => {
+    const url = new URL(neonUrl);
     neonConfig.fetchEndpoint = () => {
         return `${url.origin}/sql`;
     };
-    return connectionString;
+    return databaseUrl;
 }
 
 export const getPool = () => {
@@ -39,12 +37,12 @@ export const clientPool = async () => {
 
 export const getClient = () => {
     return new Client({
-        connectionString: connectionString(),
+        connectionString: connectionString(process.env.DATABASE_URL!, process.env.NEON_URL!),
     })
 }
 
 export class NeonClient {
-    private queryFunction: NeonQueryFunction<any, any> = neon(connectionString());
+    private queryFunction: NeonQueryFunction<any, any> = neon(connectionString(process.env.DATABASE_URL!, process.env.NEON_URL!));
 
     query(strings: TemplateStringsArray, ...params: any[]) {
         return this.queryFunction(strings, params);

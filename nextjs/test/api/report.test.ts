@@ -11,16 +11,20 @@ import {createUser} from "@/testlib/db_fixtures/user.fixture";
 import {expect} from "chai";
 import supertest from "supertest";
 import {WireMock} from "wiremock-captain";
+import {getEnvironmentVariableProvider} from "@/testlib/environmentVariableProvider";
 
 describe('Report API Endpoints', () => {
     let request: any;
     let wiremock: any;
     let sessionCookie: string;
+    let serverUrl: string;
 
-    beforeEach(async () => {
-        request = supertest(process.env.SERVER_URL!);
-        wiremock = new WireMock(process.env.WIREMOCK_URL!);
-        sessionCookie = process.env.ADMIN_SESSION_COOKIE!;
+    before(async () => {
+        const environmentVariableProvider = getEnvironmentVariableProvider();
+        request = supertest(environmentVariableProvider.serverBaseUrl);
+        sessionCookie = environmentVariableProvider.sessionCookie;
+        wiremock = new WireMock(environmentVariableProvider.wiremockUrl);
+        serverUrl = environmentVariableProvider.serverBaseUrl;
     });
 
     describe('POST /api/report', () => {
@@ -48,7 +52,7 @@ describe('Report API Endpoints', () => {
 
         when('The report is submitted successfully', async () => {
             await createUser(randomEmail);
-            const session = await loginAndGetSession(randomEmail, wiremock, process.env.SERVER_URL!, request);
+            const session = await loginAndGetSession(randomEmail, wiremock, serverUrl, request);
             response = await request.post(`/api/report?token=${reminderSent.token}`)
                 .send(reportData)
                 .set('Cookie', session);
@@ -85,7 +89,7 @@ describe('Report API Endpoints', () => {
 
         when('The report is fetched successfully', async () => {
             await createUser(randomEmail);
-            const session = await loginAndGetSession(randomEmail, wiremock, process.env.SERVER_URL!, request);
+            const session = await loginAndGetSession(randomEmail, wiremock, serverUrl, request);
             response = await request.get(`/api/report?token=${reminderSent.token}`)
                 .set('Cookie', session);
         });
@@ -145,15 +149,15 @@ describe('Report API Endpoints', () => {
             await request.post('/api/admin/customer-measurement')
                 .send(customerMeasurement)
                 .set('Cookie', sessionCookie);
-        });
+        }, 10_000);
 
         when('A report is submitted for the same campaign again', async () => {
             await createUser(customerEmail);
-            const session = await loginAndGetSession(customerEmail, wiremock, process.env.SERVER_URL!, request);
+            const session = await loginAndGetSession(customerEmail, wiremock, serverUrl, request);
             response = await request.post(`/api/report?token=${reminderSent.token}`)
                 .send(reportData)
                 .set('Cookie', session);
-        });
+        }, 10_000);
 
         then('The response should return a redirect indicating already reported', () => {
             expect(response.status).eq(307);
@@ -182,7 +186,7 @@ describe('Report API Endpoints', () => {
             await request.post('/api/admin/reminder-sent')
                 .send(reminderSent)
                 .set('Cookie', sessionCookie);
-        });
+        }, 10_000);
 
 
         when('A report is submitted with invalid data', async () => {

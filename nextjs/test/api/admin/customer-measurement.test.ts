@@ -2,14 +2,16 @@ import {given, then, when} from '@/testlib/givenWhenThen';
 import {getMeasurement, getNewCustomerMeasurement} from "@/testlib/fixtures/customer-measurement.fixture";
 import {expect} from "chai";
 import supertest from "supertest";
+import {getEnvironmentVariableProvider} from "@/testlib/environmentVariableProvider";
 
 describe('Customer Measurement API Endpoints', () => {
     let request: any;
     let sessionCookie: string;
 
-    beforeEach(async () => {
-        request = supertest(process.env.SERVER_URL!);
-        sessionCookie = process.env.ADMIN_SESSION_COOKIE!;
+    before(async () => {
+        const environmentVariableProvider = getEnvironmentVariableProvider();
+        request = supertest(environmentVariableProvider.serverBaseUrl);
+        sessionCookie = environmentVariableProvider.sessionCookie;
     })
 
     describe('GET /api/admin/customer-measurement', () => {

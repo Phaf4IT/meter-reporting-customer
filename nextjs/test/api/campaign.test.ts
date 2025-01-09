@@ -8,16 +8,20 @@ import {createUser} from "@/testlib/db_fixtures/user.fixture";
 import {expect} from "chai";
 import supertest from "supertest";
 import {WireMock} from "wiremock-captain";
+import {getEnvironmentVariableProvider} from "@/testlib/environmentVariableProvider";
 
 describe('Campaign API Endpoints', () => {
     let request: any;
     let wiremock: any;
     let sessionCookie: string;
+    let serverUrl: string;
 
-    beforeEach(async () => {
-        request = supertest(process.env.SERVER_URL!);
-        wiremock = new WireMock(process.env.WIREMOCK_URL!);
-        sessionCookie = process.env.ADMIN_SESSION_COOKIE!;
+    before(async () => {
+        const environmentVariableProvider = getEnvironmentVariableProvider();
+        request = supertest(environmentVariableProvider.serverBaseUrl);
+        sessionCookie = environmentVariableProvider.sessionCookie;
+        wiremock = new WireMock(environmentVariableProvider.wiremockUrl);
+        serverUrl = environmentVariableProvider.serverBaseUrl;
     });
 
     describe('GET /api/campaign', () => {
@@ -37,7 +41,7 @@ describe('Campaign API Endpoints', () => {
 
         when('The campaign is fetched from the server', async () => {
             await createUser(randomEmail);
-            const session = await loginAndGetSession(randomEmail, wiremock, process.env.SERVER_URL!, request);
+            const session = await loginAndGetSession(randomEmail, wiremock, serverUrl, request);
             response = await request.get(`/api/campaign?token=${reminderSent.token}`)
                 .set('Cookie', session);
         });
@@ -76,7 +80,7 @@ describe('Campaign API Endpoints', () => {
 
         when('The already reported campaign is fetched', async () => {
             await createUser(reminderSent.customerEmail);
-            const session = await loginAndGetSession(reminderSent.customerEmail, wiremock, process.env.SERVER_URL!, request);
+            const session = await loginAndGetSession(reminderSent.customerEmail, wiremock, serverUrl, request);
             response = await request.get(`/api/campaign?token=${reminderSent.token}`)
                 .set('Cookie', session);
         });
