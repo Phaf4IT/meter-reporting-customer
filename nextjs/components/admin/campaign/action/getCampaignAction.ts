@@ -8,32 +8,31 @@ import {findCustomerMeasurement} from "@/components/admin/customer-measurement/a
 import {AlreadyReported} from "@/components/admin/campaign/action/alreadyReported";
 import {Logger} from "@/lib/logger";
 
-export async function findCampaign(token: string | null): Promise<Campaign> {
+export async function findCampaignAndCompany(token: string | null): Promise<{ campaign: Campaign, company: string }> {
     const session = await auth()
     if (!session) {
         throw new Error('Niet geautoriseerd.');
     }
-    const company = session.user.company
-    return findReminderSent(token!, session.user.email!, session.user.company)
-        .then(async (reminderSent: ReminderSent | undefined) => {
-            if (!reminderSent) {
+    return findReminderSent({token: token!, email: session.user.email!})
+        .then(async (reminderSentAndCompany: { reminderSent?: ReminderSent, company?: string }) => {
+            if (!reminderSentAndCompany.reminderSent) {
                 throw new Error(`Could not fetch reminder sent for customer ${session.user.email} of company ${session.user.company}`);
             }
-            const customerMeasurement = await findCustomerMeasurement(reminderSent!.campaignName!, reminderSent!.customerEmail!, company);
+            const customerMeasurement = await findCustomerMeasurement(reminderSentAndCompany.reminderSent!.campaignName!, reminderSentAndCompany.reminderSent!.customerEmail!, reminderSentAndCompany.company!);
             if (customerMeasurement) {
-                throw new AlreadyReported(`Er is al een stand doorgegeven voor campagne '${reminderSent?.campaignName}' voor gebruiker '${reminderSent?.customerEmail}'`)
+                throw new AlreadyReported(`Er is al een stand doorgegeven voor campagne '${reminderSentAndCompany.reminderSent?.campaignName}' voor gebruiker '${reminderSentAndCompany.reminderSent?.customerEmail}'`)
             }
-            return reminderSent;
+            return reminderSentAndCompany;
         })
-        .then((reminderSent: ReminderSent | undefined) =>
-            findCampaignByCompanyAndName(reminderSent!.campaignName, company))
-        .then(value => value!)
-        .then(campaign => {
-            if (!campaign.customerEmails.some(value => value.toLowerCase() === session.user.email!.toLowerCase())) {
-                Logger.error(`User ${session.user.email!} tried to report for campaign ${campaign.name}, but was not found.`);
-                throw Error("Invalid data")
-            }
-            return campaign;
-        });
+        .then((reminderSentAndCompany: { reminderSent?: ReminderSent, company?: string }) =>
+            findCampaignByCompanyAndName(reminderSentAndCompany.reminderSent!.campaignName, reminderSentAndCompany.company!)
+                .then(value => value!)
+                .then(campaign => {
+                    if (!campaign.customerEmails.some(value => value.toLowerCase() === session.user.email!.toLowerCase())) {
+                        Logger.error(`User ${session.user.email!} tried to report for campaign ${campaign.name}, but was not found.`);
+                        throw Error("Invalid data")
+                    }
+                    return {campaign, company: reminderSentAndCompany.company!};
+                }));
 }
 

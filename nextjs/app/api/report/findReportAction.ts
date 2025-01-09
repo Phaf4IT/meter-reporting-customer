@@ -12,12 +12,16 @@ export async function findReport(token: string | null): Promise<Report> {
     if (!session) {
         throw new Error('Niet geautoriseerd.');
     }
-    const company = session.user.company
-    return findReminderSent(token!, session.user.email!, session.user.company)
-        .then(async (reminderSent: ReminderSent | undefined) => {
+    return findReminderSent({token: token!, email: session.user.email!})
+        .then(async (reminderSentAndCompany: { reminderSent?: ReminderSent, company?: string }) => {
             return Promise.all(
-                [findCustomerMeasurement(reminderSent!.campaignName!, reminderSent!.customerEmail!, company),
-                    findCampaignByCompanyAndName(reminderSent!.campaignName, company)]
+                [findCustomerMeasurement(
+                    reminderSentAndCompany.reminderSent!.campaignName!,
+                    reminderSentAndCompany.reminderSent!.customerEmail!,
+                    reminderSentAndCompany.company!),
+                    findCampaignByCompanyAndName(
+                        reminderSentAndCompany.reminderSent!.campaignName,
+                        reminderSentAndCompany.company!)]
             );
         })
         .then(value => {

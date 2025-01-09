@@ -9,8 +9,13 @@ import supertest from "supertest";
 import {WireMock} from "wiremock-captain";
 import {getEnvironmentVariableProvider} from "@/testlib/environmentVariableProvider";
 import waitForExpect from "@sadams/wait-for-expect";
+import {getCookies, getLoginUrlFromMail} from "@/testlib/authSessionProvider";
+import {
+    generateRandomMeasurements,
+    getNewCustomerMeasurementByParams
+} from "@/testlib/fixtures/customer-measurement.fixture";
 
-describe('Complete Scenario: Customer, Measure Values, Campaign, and Reminders', () => {
+describe('Complete Scenario: Customer should receive a reminder for a campaign', () => {
     const newCustomer = getNewCustomer();
     const customerEmail = newCustomer.email;
     const measureValues = getAllTypeMeasureValues();
@@ -20,24 +25,37 @@ describe('Complete Scenario: Customer, Measure Values, Campaign, and Reminders',
         customerEmails: [customerEmail],
         reminderDates: [reminderDate]
     });
+    const customerMeasurement: any = getNewCustomerMeasurementByParams({
+        customerMail: newCustomer.email,
+        measurements: generateRandomMeasurements(campaign.measureValues)
+    });
+    const reportData = {
+        measurements: customerMeasurement.measurements,
+        dateTime: customerMeasurement.dateTime,
+    };
     const campaignName = campaign.name;
 
     let request: any;
     let sessionCookie: string;
     let reminder: any;
     let wiremock: any;
+    let serverUrl: any;
 
     before(() => {
         const environmentVariableProvider = getEnvironmentVariableProvider();
         request = supertest(environmentVariableProvider.serverBaseUrl);
         sessionCookie = environmentVariableProvider.sessionCookie;
         wiremock = new WireMock(environmentVariableProvider.wiremockUrl);
+        serverUrl = environmentVariableProvider.serverBaseUrl;
     });
 
-    describe('Customer, Measure Values, Campaign Creation', () => {
+    context('-', () => {
         let customerResponse: any;
         let campaignResponse: any;
         let sentReminderResponse: any;
+        let reportResponse: any;
+        let customerSessionCookie: string;
+        let token: string;
 
         given('A new customer and measure values are created', async () => {
             customerResponse = await request.post('/api/admin/customer')
@@ -87,11 +105,28 @@ describe('Complete Scenario: Customer, Measure Values, Campaign, and Reminders',
                 const requests: WiremockRequest[] = await wiremock.getRequestsForAPI("POST", "/v3.1/send") as WiremockRequest[];
 
                 const customerEmailSent = requests.map(value => JSON.parse(value.request.body))
-                    .some(requestBody => requestBody.messages[0].To.some((recipient: any) => recipient.Email === customerEmail))
+                    .find(requestBody => requestBody.messages[0].To.some((recipient: any) => recipient.Email === customerEmail))
 
-                expect(customerEmailSent).eq(true);
-                expect(requests.length).greaterThan(0);
+                expect(customerEmailSent).is.not.undefined;
+
+                const url = await getLoginUrlFromMail(requests, newCustomer.email, serverUrl);
+                const urlObj = new URL(`${serverUrl}${url}`);
+                const callbackUrl = urlObj.searchParams.get('callbackUrl')!;
+                const callbackUrlObj = new URL(callbackUrl);
+                token = callbackUrlObj.searchParams.get('token')!;
+                const loggedIn: any = await request.get(url);
+                customerSessionCookie = getCookies(loggedIn.get('set-cookie'), 'authjs.session-token');
             });
         });
+
+        when('Customer fills report', async () => {
+            reportResponse = await request.post(`/api/report?token=${token}`)
+                .send(reportData)
+                .set('Cookie', customerSessionCookie);
+        })
+
+        then('Customer has successfully submitted the report', async () => {
+            expect(reportResponse.status).eq(307);
+        })
     });
 });
