@@ -49,5 +49,5 @@ jobs:
     - run: npm run build --if-present
       working-directory: nextjs
     - run: ip addr show docker0 | grep -Po 'inet \K[\d.]+'
-    - run: npm test -- PLATFORM=linux
+    - run: PLATFORM=linux npm test --
       working-directory: nextjs
