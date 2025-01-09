@@ -16,7 +16,7 @@ export async function POST(
     }
     const token = request.nextUrl.searchParams.get('token');
     const data = await request.json();
-    return report(customerMeasurementFromJson(data), session.user.company, token!, session.user.email!)
+    return report(customerMeasurementFromJson(data), token!, session.user.email!)
         .then(() => {
             return new NextResponse(`/success?token=${token}`, {status: 307})
         })

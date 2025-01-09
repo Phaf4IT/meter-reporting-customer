@@ -1,4 +1,4 @@
-import {findCampaign} from "@/components/admin/campaign/action/getCampaignAction";
+import {findCampaignAndCompany} from "@/components/admin/campaign/action/getCampaignAction";
 import {Campaign} from "@/components/report/campaign";
 import {
     createCustomerMeasurement
@@ -7,22 +7,22 @@ import {CustomerMeasurement} from "@/components/report/customerMeasurement";
 import {findCustomerMeasurement} from "@/components/admin/customer-measurement/action/findCustomerMeasurementAction";
 import {Logger} from "@/lib/logger";
 
-export async function report(customerMeasurement: CustomerMeasurement, company: string, token: string, email: string): Promise<any> {
-    return findCampaign(token)
-        .then(async campaign => {
-            const measurement = await findCustomerMeasurement(campaign.name, email, company)
+export async function report(customerMeasurement: CustomerMeasurement, token: string, email: string): Promise<any> {
+    return findCampaignAndCompany(token)
+        .then(async campaignAndCompany => {
+            const measurement = await findCustomerMeasurement(campaignAndCompany.campaign.name, email, campaignAndCompany.company)
             if (measurement != undefined) {
                 throw Error("Already measured")
             }
-            if (!validateCustomerMeasurement(campaign, customerMeasurement)) {
+            if (!validateCustomerMeasurement(campaignAndCompany.campaign, customerMeasurement)) {
                 throw Error("Invalid data")
             }
             return createCustomerMeasurement({
                 customerMail: email,
                 measurements: customerMeasurement.measurements,
-                campaignName: campaign.name,
+                campaignName: campaignAndCompany.campaign.name,
                 dateTime: customerMeasurement.dateTime
-            }, company)
+            }, campaignAndCompany.company)
         });
 }
 

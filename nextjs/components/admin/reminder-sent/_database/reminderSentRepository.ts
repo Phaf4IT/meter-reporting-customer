@@ -2,15 +2,24 @@ import {getEntityManager} from "@/lib/jpa/entity-fetcher";
 import {ReminderSentTable} from "@/components/admin/reminder-sent/_database/reminderSentTable";
 import {ReminderSent} from "@/components/admin/reminder-sent/reminder-sent";
 
-export async function findReminderSent(token: string, email: string, company: string) {
+export async function findReminderSent({token, email, company}: {
+    token: string,
+    email: string,
+    company?: string
+}): Promise<{ reminderSent?: ReminderSent, company?: string }> {
     return getEntityManager(ReminderSentTable)
         .findBy({
-            token: token,
+            token,
             customer_email: email,
-            company: company
+            ...(company ? {company} : {})
         })
-        .then((reminderSents) =>
-            reminderSents.map((reminderSentTable: ReminderSentTable) => mapTableToDomain(reminderSentTable)).find(() => true)
+        .then((reminderSents) => {
+                const foundReminderSent = reminderSents.find(() => true);
+                return {
+                    reminderSent: foundReminderSent ? mapTableToDomain(foundReminderSent) : undefined,
+                    company: foundReminderSent?.company
+                }
+            }
         );
 }
 

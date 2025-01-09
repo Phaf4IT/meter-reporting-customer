@@ -10,5 +10,6 @@ export async function getReminderSent(token: string, email: string, company: str
     if (session.user.company !== company || session.user.email !== email) {
         throw new Error('Niet geautoriseerd.');
     }
-    return findReminderSent(token, email, company);
+    return findReminderSent({token, email, company})
+        .then(value => value.reminderSent);
 }

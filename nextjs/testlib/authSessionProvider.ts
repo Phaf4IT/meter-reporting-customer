@@ -3,12 +3,16 @@ import cookie from "cookie";
 import {WiremockRequest} from "@/testlib/testcontainers/wiremock";
 import TestAgent from "supertest/lib/agent";
 
-export async function getLoginUrl(wiremock: WireMock, email: string, serverBaseUrl: string) {
-    const requests: WiremockRequest[] = await wiremock.getRequestsForAPI("POST", "/v3.1/send") as WiremockRequest[];
+export function getLoginUrlFromMail(requests: WiremockRequest[], email: string, serverBaseUrl: string) {
     const loginEmail = requests.map(value => JSON.parse(value.request.body))
         .find(value => value.messages[0].To.some((recipient: any) => recipient.Email === email));
 
     return loginEmail.messages[0].TextPart.replace("Please click here to authenticate - " + serverBaseUrl, "");
+}
+
+export async function getLoginUrl(wiremock: WireMock, email: string, serverBaseUrl: string) {
+    const requests: WiremockRequest[] = await wiremock.getRequestsForAPI("POST", "/v3.1/send") as WiremockRequest[];
+    return getLoginUrlFromMail(requests, email, serverBaseUrl);
 }
 
 export async function loginAndGetSession(email: string, wiremock: WireMock, serverBaseUrl: string, request: TestAgent): Promise<string> {
@@ -41,7 +45,7 @@ export async function loginAndGetSession(email: string, wiremock: WireMock, serv
     return getCookies(loggedIn.get('set-cookie'), 'authjs.session-token');
 }
 
-function getCookies(cookies: string[], cookieName: string) {
+export function getCookies(cookies: string[], cookieName: string) {
     const parsedCookie = cookie.parse(cookies.find(value => value.startsWith(cookieName))!);
     delete parsedCookie.Path
     delete parsedCookie.SameSite

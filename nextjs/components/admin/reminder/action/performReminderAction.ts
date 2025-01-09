@@ -19,7 +19,7 @@ export async function handleReminder(adapter: Adapter, provider: Provider, host:
     for (const customerEmail of reminder.customerEmails) {
         if (!await hasAlreadyCustomerMeasurement(reminder, customerEmail)) {
             const customerToken: string = randomUUID()
-            signIn({
+            await signIn({
                 headers: [],
                 method: 'GET',
                 url: host,
