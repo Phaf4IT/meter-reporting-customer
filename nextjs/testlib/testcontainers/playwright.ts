@@ -1,4 +1,5 @@
 import {GenericContainer, Wait} from 'testcontainers';
+import {getDockerHostIP} from "@/testlib/testcontainers/getDockerHostIP";
 
 export class PlaywrightContainer {
     private container: any;
@@ -14,6 +15,10 @@ export class PlaywrightContainer {
                     "LANGUAGE": 'nl'
                 })
                 .withExposedPorts(9222)
+                .withExtraHosts([{
+                    host: "host.docker.internal",
+                    ipAddress: `${await getDockerHostIP()}`,
+                }])
                 .withWaitStrategy(Wait.forListeningPorts());
         this.container = await genericContainer
             .start();
