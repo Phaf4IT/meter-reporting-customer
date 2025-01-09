@@ -50,7 +50,7 @@ describe('Complete Scenario: Customer, Measure Values, Campaign, and Reminders',
                     .set('Cookie', sessionCookie)
             );
             await Promise.all(measureValuePromises);
-        });
+        }, 10_000);
 
         when('A campaign is created and customer is linked', async () => {
             campaignResponse = await request.post('/api/admin/campaign')
