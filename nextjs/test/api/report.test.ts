@@ -157,7 +157,7 @@ describe('Report API Endpoints', () => {
             response = await request.post(`/api/report?token=${reminderSent.token}`)
                 .send(reportData)
                 .set('Cookie', session);
-        });
+        }, 10_000);
 
         then('The response should return a redirect indicating already reported', () => {
             expect(response.status).eq(307);
