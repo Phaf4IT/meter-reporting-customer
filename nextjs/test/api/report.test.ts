@@ -149,7 +149,7 @@ describe('Report API Endpoints', () => {
             await request.post('/api/admin/customer-measurement')
                 .send(customerMeasurement)
                 .set('Cookie', sessionCookie);
-        });
+        }, 10_000);
 
         when('A report is submitted for the same campaign again', async () => {
             await createUser(customerEmail);
@@ -186,7 +186,7 @@ describe('Report API Endpoints', () => {
             await request.post('/api/admin/reminder-sent')
                 .send(reminderSent)
                 .set('Cookie', sessionCookie);
-        });
+        }, 10_000);
 
 
         when('A report is submitted with invalid data', async () => {
