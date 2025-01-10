@@ -52,15 +52,15 @@ function mapDomainToTable(customer: Customer, company: string) {
 function mapTableToDomain(customerTable: CustomerTable): Customer {
     return {
         email: customerTable.email,
-        title: customerTable.title,
+        title: customerTable.title || undefined,
         firstName: customerTable.firstName,
-        middleName: customerTable.middleName,
+        middleName: customerTable.middleName || undefined,
         lastName: customerTable.lastName,
         streetLines: customerTable.streetLines,
         postalCode: customerTable.postalCode,
         city: customerTable.city,
         country: customerTable.country,
-        stateOrProvinceCode: customerTable.stateOrProvinceCode,
+        stateOrProvinceCode: customerTable.stateOrProvince,
         phoneNumber: customerTable.phoneNumber
     };
 }

@@ -35,9 +35,9 @@ export class CustomerTable extends Entity implements Customer {
 
     constructor(
         email: string,
-        title: string | null,
+        title: string | undefined,
         firstName: string,
-        middleName: string | null,
+        middleName: string | undefined,
         lastName: string,
         streetLines: string[],
         postalCode: string,
@@ -49,9 +49,9 @@ export class CustomerTable extends Entity implements Customer {
     ) {
         super();
         this.email = email;
-        this.title = title;
+        this.title = title || null;
         this.firstName = firstName;
-        this.middleName = middleName;
+        this.middleName = middleName || null;
         this.lastName = lastName;
         this.streetLines = streetLines;
         this.postalCode = postalCode;
