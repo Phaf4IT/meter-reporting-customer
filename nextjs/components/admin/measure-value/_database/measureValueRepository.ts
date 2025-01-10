@@ -45,10 +45,10 @@ function mapTableToDomain(measureValueTable: MeasureValueTable): MeasureValue {
     return {
         name: measureValueTable.name,
         translations: getTranslations(measureValueTable.translations),
-        unit: measureValueTable.measureUnit,
+        unit: measureValueTable.measureUnit || undefined,
         type: getMeasureValueType(measureValueTable.type),
         isEditable: measureValueTable.isEditable,
-        defaultValue: measureValueTable.defaultValue
+        defaultValue: measureValueTable.defaultValue || undefined
     };
 }
 

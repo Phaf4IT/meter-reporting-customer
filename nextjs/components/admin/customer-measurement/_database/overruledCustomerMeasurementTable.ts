@@ -2,9 +2,10 @@ import {Entity} from "@/lib/jpa/entity";
 import {PrimaryKey} from "@/lib/jpa/decorator/primary-key.decorator";
 import {Field} from "@/lib/jpa/decorator/field.decorator";
 import {EntityClass} from "@/lib/jpa/decorator/entity-class.decorator";
+import OverruledCustomerMeasurement from "@/components/database/schemas/public/OverruledCustomerMeasurement";
 
 @EntityClass("overruled_customer_measurement")
-export class OverruledCustomerMeasurementTable extends Entity {
+export class OverruledCustomerMeasurementTable extends Entity implements OverruledCustomerMeasurement {
     @PrimaryKey
     @Field("campaign_name")
     campaignName: string;
