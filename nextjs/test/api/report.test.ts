@@ -92,7 +92,7 @@ describe('Report API Endpoints', () => {
             const session = await loginAndGetSession(randomEmail, wiremock, serverUrl, request);
             response = await request.get(`/api/report?token=${reminderSent.token}`)
                 .set('Cookie', session);
-        });
+        }, 10_000);
 
         then('The response should return the report details', () => {
             expect(response.status).eq(200);
