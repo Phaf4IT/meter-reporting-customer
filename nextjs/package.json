@@ -50,6 +50,8 @@
     "eslint": "^8",
     "eslint-config-next": "15.0.3",
     "jest-dev-server": "^11.0.0",
+    "kanel": "^3.11.0",
+    "kanel-kysely": "^0.6.0",
     "mocha": "^11.0.1",
     "playwright-core": "^1.49.1",
     "postcss": "^8",

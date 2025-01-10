@@ -2,18 +2,19 @@ import {Entity} from "@/lib/jpa/entity";
 import {PrimaryKey} from "@/lib/jpa/decorator/primary-key.decorator";
 import {Field} from "@/lib/jpa/decorator/field.decorator";
 import {EntityClass} from "@/lib/jpa/decorator/entity-class.decorator";
+import Customer from "@/components/database/schemas/public/Customer";
 
 @EntityClass("customer")
-export class CustomerTable extends Entity {
+export class CustomerTable extends Entity implements Customer {
     @PrimaryKey
     @Field()
     email: string;
     @Field()
-    title: string | undefined;
+    title: string | null;
     @Field("first_name")
     firstName: string;
     @Field("middle_name")
-    middleName: string | undefined;
+    middleName: string | null;
     @Field("last_name")
     lastName: string;
     @Field("street_lines")
@@ -25,7 +26,7 @@ export class CustomerTable extends Entity {
     @Field("country")
     country: string;
     @Field("state_or_province")
-    stateOrProvinceCode: string;
+    stateOrProvince: string;
     @Field("phone_number")
     phoneNumber: string;
     @PrimaryKey
@@ -34,9 +35,9 @@ export class CustomerTable extends Entity {
 
     constructor(
         email: string,
-        title: string | undefined,
+        title: string | null,
         firstName: string,
-        middleName: string | undefined,
+        middleName: string | null,
         lastName: string,
         streetLines: string[],
         postalCode: string,
@@ -56,7 +57,7 @@ export class CustomerTable extends Entity {
         this.postalCode = postalCode;
         this.city = city;
         this.country = country;
-        this.stateOrProvinceCode = stateOrProvince;
+        this.stateOrProvince = stateOrProvince;
         this.phoneNumber = phoneNumber;
         this.company = company;
     }

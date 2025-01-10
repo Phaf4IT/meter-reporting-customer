@@ -2,22 +2,23 @@ import {Entity} from "@/lib/jpa/entity";
 import {PrimaryKey} from "@/lib/jpa/decorator/primary-key.decorator";
 import {Field} from "@/lib/jpa/decorator/field.decorator";
 import {EntityClass} from "@/lib/jpa/decorator/entity-class.decorator";
+import Campaign from "@/components/database/schemas/public/Campaign";
 
 @EntityClass("campaign")
-export class CampaignTable extends Entity {
+export class CampaignTable extends Entity implements Campaign {
     @PrimaryKey
     @Field()
     name: string;
-    @Field()
-    start_date: Date;
-    @Field()
-    end_date: Date;
-    @Field()
-    reminder_dates: Date[];
-    @Field()
-    customer_emails: string[];
-    @Field()
-    measure_values: any[];
+    @Field("start_date")
+    startDate: Date;
+    @Field("end_date")
+    endDate: Date;
+    @Field("reminder_dates")
+    reminderDates: Date[];
+    @Field("customer_emails")
+    customerEmails: string[];
+    @Field("measure_values")
+    measureValues: any[];
     @PrimaryKey
     @Field()
     company: string;
@@ -31,11 +32,11 @@ export class CampaignTable extends Entity {
                 company: string) {
         super();
         this.name = name;
-        this.start_date = new Date(start_date);
-        this.end_date = new Date(end_date);
-        this.reminder_dates = reminder_dates?.map(value => new Date(value));
-        this.customer_emails = customer_emails;
-        this.measure_values = measure_values;
+        this.startDate = new Date(start_date);
+        this.endDate = new Date(end_date);
+        this.reminderDates = reminder_dates?.map(value => new Date(value));
+        this.customerEmails = customer_emails;
+        this.measureValues = measure_values;
         this.company = company;
     }
 }

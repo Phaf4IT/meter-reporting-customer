@@ -2,9 +2,10 @@ import {Entity} from "@/lib/jpa/entity";
 import {PrimaryKey} from "@/lib/jpa/decorator/primary-key.decorator";
 import {Field} from "@/lib/jpa/decorator/field.decorator";
 import {EntityClass} from "@/lib/jpa/decorator/entity-class.decorator";
+import CustomerMeasurement from "@/components/database/schemas/public/CustomerMeasurement";
 
 @EntityClass("customer_measurement")
-export class CustomerMeasurementTable extends Entity {
+export class CustomerMeasurementTable extends Entity implements CustomerMeasurement {
     @PrimaryKey
     @Field("campaign_name")
     campaignName: string;

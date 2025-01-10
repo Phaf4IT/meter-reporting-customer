@@ -6,8 +6,7 @@ export async function saveCustomer(customer: Customer, company: string): Promise
     return getEntityManager(NonActiveCustomerTable)
         .create(new NonActiveCustomerTable(
             customer.email,
-            // TODO
-            undefined,
+            customer.title,
             customer.firstName,
             customer.middleName,
             customer.lastName,
@@ -18,7 +17,7 @@ export async function saveCustomer(customer: Customer, company: string): Promise
             customer.stateOrProvinceCode,
             customer.phoneNumber,
             company,
-            undefined))
+            new Date()))
         .then((customerTable: NonActiveCustomerTable) => mapTableToDomain(customerTable)
         )
 }
@@ -26,15 +25,15 @@ export async function saveCustomer(customer: Customer, company: string): Promise
 function mapTableToDomain(customerTable: NonActiveCustomerTable): Customer {
     return {
         email: customerTable.email,
-        title: customerTable.title,
+        title: customerTable.title || undefined,
         firstName: customerTable.firstName,
-        middleName: customerTable.middleName,
+        middleName: customerTable.middleName || undefined,
         lastName: customerTable.lastName,
         streetLines: customerTable.streetLines,
         postalCode: customerTable.postalCode,
         city: customerTable.city,
         country: customerTable.country,
-        stateOrProvinceCode: customerTable.stateOrProvinceCode,
+        stateOrProvinceCode: customerTable.stateOrProvince,
         phoneNumber: customerTable.phoneNumber
     };
 }
