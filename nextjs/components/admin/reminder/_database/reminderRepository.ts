@@ -88,8 +88,12 @@ function groupRemindersByCompany(reminders: ReminderTable[]): Record<string, Rem
 }
 
 async function getCustomersForReminders(groupedRemindersByCompanyElement: ReminderTable[], company: string) {
-    const customerIds: string[] = Array.from(new Set(groupedRemindersByCompanyElement.flatMap(value => value.customerIds)));
-    return await findCustomersByIds(customerIds, company);
+    if (groupedRemindersByCompanyElement.length > 0) {
+        const customerIds: string[] = Array.from(new Set(groupedRemindersByCompanyElement.flatMap(value => value.customerIds)));
+        return customerIds.length > 0 ? await findCustomersByIds(customerIds, company) : [];
+    } else {
+        return [];
+    }
 }
 
 async function matchGenericRemindersWithCustomers(reminders: ReminderTable[]) {
