@@ -92,7 +92,7 @@ describe('Report API Endpoints', () => {
             const session = await loginAndGetSession(customer.email, wiremock, serverUrl, request);
             response = await request.get(`/api/report?token=${reminderSent.token}`)
                 .set('Cookie', session);
-        }, 10_000);
+        });
 
         then('The response should return the report details', () => {
             expect(response.status).eq(200);
@@ -188,7 +188,7 @@ describe('Report API Endpoints', () => {
             response = await request.post(`/api/report?token=${reminderSent.token}`)
                 .send(reportData)
                 .set('Cookie', session);
-        }, 10_000);
+        });
 
         then('The response should return a redirect indicating already reported', () => {
             expect(response.status).eq(307);
@@ -222,7 +222,7 @@ describe('Report API Endpoints', () => {
             response = await request.post('/api/report')
                 .send(invalidReportData)
                 .set('Cookie', session);
-        }, 10_000);
+        });
 
         then('The response should return an internal server error', () => {
             expect(response.status).eq(500);

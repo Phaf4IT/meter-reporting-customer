@@ -51,7 +51,7 @@ describe('Open admin in browser', () => {
             });
             page = await loginAndGoToAdminPage(context, serverUrl, adminUrl, email, wiremock);
             await page.waitForSelector('table', {timeout: 50_000});
-        }, 100_000)
+        })
 
         then('The response should contain the new campaign', async () => {
             Logger.info(await page.content())

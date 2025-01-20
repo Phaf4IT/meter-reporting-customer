@@ -8,7 +8,8 @@
     "build": "next build --debug",
     "start": "next start",
     "lint": "next lint",
-    "test": "mocha --config=.mocharc.json"
+    "test": "mocha --config=.mocharc.json",
+    "test:cicd": "mocha --config=.mocharc.json --timeout 100000"
   },
   "dependencies": {
     "@auth/xata-adapter": "^1.7.4",
