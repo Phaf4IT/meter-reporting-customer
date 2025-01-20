@@ -47,6 +47,7 @@ export async function saveReminderSent(reminderSent: ReminderSent, company: stri
 function mapTableToDomain(reminderSent: ReminderSentTable): ReminderSent {
     return {
         campaignName: reminderSent.campaignName,
+        customerId: reminderSent.customerId,
         customerEmail: reminderSent.customerEmail,
         reminderDate: reminderSent.reminderDate,
         token: reminderSent.token
@@ -54,10 +55,13 @@ function mapTableToDomain(reminderSent: ReminderSentTable): ReminderSent {
 }
 
 function mapDomainToTable(reminderSent: ReminderSent, company: string) {
-    return new ReminderSentTable(
-        reminderSent.campaignName,
-        reminderSent.customerEmail,
-        reminderSent.token,
-        reminderSent.reminderDate,
-        company);
+    return ReminderSentTable.ofReminderSentTable(
+        {
+            campaignName: reminderSent.campaignName,
+            customerId: reminderSent.customerId,
+            customerEmail: reminderSent.customerEmail,
+            token: reminderSent.token,
+            reminderDate: reminderSent.reminderDate,
+            company
+        });
 }

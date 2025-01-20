@@ -6,17 +6,20 @@ export function getNewReminderSent() {
         campaignName: `Campaign-${randomUUID()}`,
         reminderDate: "2025-01-02T12:00:00.000Z",
         customerEmail: getRandomEmail(),
+        customerId: randomUUID(),
         token: randomUUID(),
     };
 }
 
-export function getNewReminderSentByParams({campaignName, customerEmail}: {
+export function getNewReminderSentByParams({campaignName, customerEmail, customerId}: {
     campaignName?: string,
     customerEmail?: string
+    customerId?: string
 }) {
     return {
         ...getNewReminderSent(),
         ...(campaignName && {campaignName}),
-        ...(customerEmail && {customerEmail})
+        ...(customerEmail && {customerEmail}),
+        ...(customerId && {customerId})
     };
 }

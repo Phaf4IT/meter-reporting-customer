@@ -1,5 +1,6 @@
 DROP TABLE IF EXISTS company;
 DROP TABLE IF EXISTS campaign;
+DROP TABLE IF EXISTS reminder;
 DROP TABLE IF EXISTS campaign_reminder_sent;
 DROP TABLE IF EXISTS customer;
 DROP TABLE IF EXISTS non_active_customer;
@@ -41,10 +42,10 @@ CREATE INDEX if not exists search_campaign_idx ON campaign USING btree (start_da
 
 CREATE TABLE IF NOT EXISTS reminder
 (
-    campaign_name   text         NOT NULL,
-    customer_emails text[]       NOT NULL,
-    reminder_date   timestamptz  NOT NULL,
-    company         varchar(255) NOT NULL,
+    campaign_name text         NOT NULL,
+    customer_ids  uuid[]       NOT NULL,
+    reminder_date timestamptz  NOT NULL,
+    company       varchar(255) NOT NULL,
     PRIMARY KEY (campaign_name, reminder_date, company)
 );
 
@@ -52,6 +53,7 @@ CREATE TABLE IF NOT EXISTS campaign_reminder_sent
 (
     campaign_name  text         NOT NULL,
     reminder_date  timestamptz  NOT NULL,
+    customer_id    text         NOT NULL,
     customer_email text         NOT NULL,
     token          text         NOT NULL,
     company        varchar(255) NOT NULL,

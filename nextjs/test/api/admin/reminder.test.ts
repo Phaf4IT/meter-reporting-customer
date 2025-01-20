@@ -26,7 +26,7 @@ describe('Reminder API Endpoints', () => {
                 customerIds: [customer.id],
                 customerEmails: [customer.email]
             });
-            newReminder = getNewReminder({campaignName: newCampaign.name});
+            newReminder = getNewReminder({campaignName: newCampaign.name, customer});
         });
 
         when('The reminder is posted to the server', async () => {
@@ -72,7 +72,7 @@ describe('Reminder API Endpoints', () => {
                 customerIds: [customer.id],
                 customerEmails: [customer.email]
             });
-            newReminder = getNewReminder({campaignName: newCampaign.name});
+            newReminder = getNewReminder({campaignName: newCampaign.name, customer});
             await request.post('/api/admin/reminder').send(newReminder)
                 .set('Cookie', sessionCookie);
         });
@@ -100,7 +100,7 @@ describe('Reminder API Endpoints', () => {
                 customerIds: [customer.id],
                 customerEmails: [customer.email]
             });
-            newReminder = getNewReminder({campaignName: newCampaign.name});
+            newReminder = getNewReminder({campaignName: newCampaign.name, customer});
             await request.post('/api/admin/reminder').send(newReminder)
                 .set('Cookie', sessionCookie);
         });
@@ -148,7 +148,7 @@ describe('Reminder API Endpoints', () => {
                 customerIds: [customer.id],
                 customerEmails: [customer.email]
             });
-            newReminder = getNewReminder({campaignName: newCampaign.name});
+            newReminder = getNewReminder({campaignName: newCampaign.name, customer});
         });
 
         when('The reminder is posted without authorization', async () => {

@@ -37,7 +37,11 @@ describe('Campaign API Endpoints', () => {
                 customerIds: [customer.id]
             })
             randomEmail = customer.email;
-            reminderSent = getNewReminderSentByParams({campaignName: campaign.name, customerEmail: randomEmail});
+            reminderSent = getNewReminderSentByParams({
+                campaignName: campaign.name,
+                customerEmail: randomEmail,
+                customerId: customer.id
+            });
             await request.post('/api/admin/reminder-sent')
                 .send(reminderSent)
                 .set('Cookie', sessionCookie);
@@ -84,7 +88,7 @@ describe('Campaign API Endpoints', () => {
             const session = await loginAndGetSession(reminderSent.customerEmail, wiremock, serverUrl, request);
             response = await request.get(`/api/campaign?token=${reminderSent.token}`)
                 .set('Cookie', session);
-        }, 10_000);
+        });
 
         then('The response should indicate a redirect due to already reported status', () => {
             expect(response.status).eq(307);

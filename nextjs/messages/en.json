@@ -14,7 +14,9 @@
     "gas": "Gas Consumption",
     "water": "Water Consumption",
     "light": "Electricity Consumption",
-    "loading": "Please wait..."
+    "loading": "Please wait...",
+    "false": "No",
+    "true": "Yes"
   },
   "admin": {
     "meter": {

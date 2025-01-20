@@ -65,7 +65,7 @@ describe('Complete Scenario: Customer should receive a reminder for a campaign',
                 dateTime: customerMeasurement.dateTime,
             };
             await Promise.all(measureValuePromises);
-        }, 10_000);
+        });
 
         when('A campaign is created and customer is linked', async () => {
 
@@ -79,7 +79,7 @@ describe('Complete Scenario: Customer should receive a reminder for a campaign',
             const reminderResponse = await request.get(`/api/admin/reminder`)
                 .set('Cookie', sessionCookie);
 
-            reminder = reminderResponse.body.find((reminder: any) => reminder.campaignName === campaign.name && reminder.reminderDate === reminderDate);
+            reminder = (await reminderResponse.body).find((reminder: any) => reminder.campaignName === campaign.name && reminder.reminderDate === reminderDate);
 
             // eslint-disable-next-line @typescript-eslint/no-unused-expressions
             expect(reminder).to.not.be.undefined;
@@ -100,7 +100,7 @@ describe('Complete Scenario: Customer should receive a reminder for a campaign',
             token = callbackUrlObj.searchParams.get('token')!;
             const loggedIn: any = await request.get(url);
             customerSessionCookie = getCookies(loggedIn.get('set-cookie'), 'authjs.session-token');
-        }, 10_000);
+        });
 
         when('Customer fills report', async () => {
             reportResponse = await request.post(`/api/report?token=${token}`)
