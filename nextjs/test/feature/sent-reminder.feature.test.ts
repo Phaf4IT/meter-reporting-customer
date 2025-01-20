@@ -1,13 +1,11 @@
 /* eslint-disable-next-line @typescript-eslint/no-unused-expressions */
 import {given, then, when} from '@/testlib/givenWhenThen';
 import {getAllTypeMeasureValues} from "@/testlib/fixtures/measure-value.fixture";
-import {WiremockRequest} from "@/testlib/testcontainers/wiremock";
 import {expect} from "chai";
 import supertest from "supertest";
 import {WireMock} from "wiremock-captain";
 import {getEnvironmentVariableProvider} from "@/testlib/environmentVariableProvider";
-import waitForExpect from "@sadams/wait-for-expect";
-import {getCookies, getLoginUrlFromMail} from "@/testlib/authSessionProvider";
+import {getCookies, getLoginUrl} from "@/testlib/authSessionProvider";
 import {
     generateRandomMeasurements,
     getNewCustomerMeasurementByParams
@@ -95,23 +93,13 @@ describe('Complete Scenario: Customer should receive a reminder for a campaign',
 
         then('The reminder should be triggered, and Wiremock should be called', async () => {
             expect(sentReminderResponse.status).eq(200);
-
-            await waitForExpect(async () => {
-                const requests: WiremockRequest[] = await wiremock.getRequestsForAPI("POST", "/v3.1/send") as WiremockRequest[];
-
-                const customerEmailSent = requests.map(value => JSON.parse(value.request.body))
-                    .find(requestBody => requestBody.messages[0].To.some((recipient: any) => recipient.Email === newCustomer.email))
-
-                expect(customerEmailSent).is.not.undefined;
-
-                const url = await getLoginUrlFromMail(requests, newCustomer.email, serverUrl);
-                const urlObj = new URL(`${serverUrl}${url}`);
-                const callbackUrl = urlObj.searchParams.get('callbackUrl')!;
-                const callbackUrlObj = new URL(callbackUrl);
-                token = callbackUrlObj.searchParams.get('token')!;
-                const loggedIn: any = await request.get(url);
-                customerSessionCookie = getCookies(loggedIn.get('set-cookie'), 'authjs.session-token');
-            });
+            const url = await getLoginUrl(wiremock, newCustomer.email, serverUrl)
+            const urlObj = new URL(`${serverUrl}${url}`);
+            const callbackUrl = urlObj.searchParams.get('callbackUrl')!;
+            const callbackUrlObj = new URL(callbackUrl);
+            token = callbackUrlObj.searchParams.get('token')!;
+            const loggedIn: any = await request.get(url);
+            customerSessionCookie = getCookies(loggedIn.get('set-cookie'), 'authjs.session-token');
         }, 10_000);
 
         when('Customer fills report', async () => {
