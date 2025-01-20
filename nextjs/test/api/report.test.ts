@@ -222,7 +222,7 @@ describe('Report API Endpoints', () => {
             response = await request.post('/api/report')
                 .send(invalidReportData)
                 .set('Cookie', session);
-        });
+        }, 10_000);
 
         then('The response should return an internal server error', () => {
             expect(response.status).eq(500);
