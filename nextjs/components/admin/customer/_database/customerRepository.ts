@@ -10,7 +10,17 @@ export async function findCustomers(company: string) {
         .then((customers) =>
             customers.map((customerTable: CustomerTable) => mapTableToDomain(customerTable))
         );
+}
 
+export async function findCustomersByIds(ids: string[], company: string) {
+    return getEntityManager(CustomerTable)
+        .findBy({
+            company: company,
+            id: ids
+        })
+        .then((customers) =>
+            customers.map((customerTable: CustomerTable) => mapTableToDomain(customerTable))
+        );
 }
 
 export async function saveCustomer(customer: Customer, company: string) {
@@ -35,6 +45,7 @@ export async function deleteCustomer(customer: Customer, company: string) {
 
 function mapDomainToTable(customer: Customer, company: string) {
     return new CustomerTable(
+        customer.id,
         customer.email,
         customer.title,
         customer.firstName,
@@ -51,6 +62,7 @@ function mapDomainToTable(customer: Customer, company: string) {
 
 function mapTableToDomain(customerTable: CustomerTable): Customer {
     return {
+        id: customerTable.id,
         email: customerTable.email,
         title: customerTable.title || undefined,
         firstName: customerTable.firstName,

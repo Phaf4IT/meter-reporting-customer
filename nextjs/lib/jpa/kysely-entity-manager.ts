@@ -3,11 +3,11 @@ import {Entity, EntityClasss} from './entity';
 import {ExpressionBuilder, Kysely, sql} from 'kysely';
 import {retry} from "ts-retry";
 
-export abstract class XyselyEntityManager<T extends Entity> extends EntityManager<T> {
+export abstract class KyselyEntityManager<T extends Entity> extends EntityManager<T> {
 
-    private db: Kysely<any>;
-    private entityClass: T
-    private EntityClasss: EntityClasss<T>;
+    private readonly db: Kysely<any>;
+    private readonly entityClass: T
+    private readonly EntityClasss: EntityClasss<T>;
 
     protected constructor(kysely: Kysely<any>, entityClass: EntityClasss<T>) {
         super();
@@ -20,12 +20,14 @@ export abstract class XyselyEntityManager<T extends Entity> extends EntityManage
     async create(entity: T): Promise<T> {
         const fields = entity.getFieldAndValues();
         const tableName = entity.getTableName();
-        let result;
+
+        let result: any;
         await retry(
             async () => {
                 result = await this.db
                     .insertInto(tableName)
                     .values(fields)
+                    .returningAll()
                     .executeTakeFirst();
             },
             {delay: 100, maxTry: 3}
@@ -37,7 +39,7 @@ export abstract class XyselyEntityManager<T extends Entity> extends EntityManage
 
     async findOne(
         primaryKeyValues: Record<string, any>
-    ): Promise<T | null> {
+    ): Promise<T | undefined> {
         const tableName = this.entityClass.getTableName();
         const fieldNames = this.entityClass.getFields();
 
@@ -50,7 +52,7 @@ export abstract class XyselyEntityManager<T extends Entity> extends EntityManage
         const result = await query.execute();
 
         if (result.length === 0) {
-            return null;
+            return undefined;
         }
 
         return new this.EntityClasss(...Object.values(result[0]));

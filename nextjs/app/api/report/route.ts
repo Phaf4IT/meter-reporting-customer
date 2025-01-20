@@ -4,6 +4,7 @@ import {customerMeasurementFromJson} from "@/components/admin/customer-measureme
 import {report} from "@/app/api/report/reportAction";
 import {findReport} from "@/app/api/report/findReportAction";
 import {AlreadyReported} from "@/components/admin/campaign/action/alreadyReported";
+import {Logger} from "@/lib/logger";
 
 export async function POST(
     request: NextRequest
@@ -24,6 +25,7 @@ export async function POST(
             if (reason instanceof AlreadyReported) {
                 return new NextResponse(`/success?token=${token}`, {status: 307})
             }
+            Logger.error("Something went wrong during reporting", reason)
             return new NextResponse("Internal Server Error", {status: 500});
         });
 }

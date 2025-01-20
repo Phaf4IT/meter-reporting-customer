@@ -1,4 +1,5 @@
 export interface Customer {
+    id: string;
     email: string;
     title?: string;
     firstName: string;
@@ -14,6 +15,7 @@ export interface Customer {
 
 export function customerFromJson(json: any): Customer {
     return {
+        id: json.id,
         email: json.email,
         title: json.title,
         firstName: json.firstName,
@@ -30,6 +32,7 @@ export function customerFromJson(json: any): Customer {
 
 export function emptyCustomer(): Customer {
     return {
+        id: '',
         email: '',
         title: '',
         firstName: '',

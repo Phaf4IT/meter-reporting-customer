@@ -1,14 +1,15 @@
 import {given, then, when} from '@/testlib/givenWhenThen';
-import {getNewCampaign, getNewCampaignByParams} from "@/testlib/fixtures/campaign.fixture";
 import {getNewReminderSentByParams} from "@/testlib/fixtures/reminder-sent.fixture";
 import {getNewCustomerMeasurementByParams} from "@/testlib/fixtures/customer-measurement.fixture";
-import {getRandomEmail} from "@/testlib/fixtures/email.fixture";
 import {loginAndGetSession} from "@/testlib/authSessionProvider";
 import {createUser} from "@/testlib/db_fixtures/user.fixture";
 import {expect} from "chai";
 import supertest from "supertest";
 import {WireMock} from "wiremock-captain";
 import {getEnvironmentVariableProvider} from "@/testlib/environmentVariableProvider";
+import {createCustomer} from "@/testlib/api_fixtures/admin/customer-api.fixture";
+import {createCampaign} from "@/testlib/api_fixtures/admin/campaign-api.fixture";
+import {createReminderSent} from "@/testlib/api_fixtures/admin/reminder-sent-api.fixture";
 
 describe('Campaign API Endpoints', () => {
     let request: any;
@@ -25,15 +26,18 @@ describe('Campaign API Endpoints', () => {
     });
 
     describe('GET /api/campaign', () => {
-        const randomEmail = getRandomEmail();
-        const campaign: any = getNewCampaignByParams({customerEmails: [randomEmail]});
-        const reminderSent: any = getNewReminderSentByParams({campaignName: campaign.name, customerEmail: randomEmail});
+        let randomEmail: string;
+        let reminderSent: any;
         let response: any;
 
         given('A valid campaign is created', async () => {
-            await request.post('/api/admin/campaign')
-                .send(campaign)
-                .set('Cookie', sessionCookie);
+            const customer = await createCustomer(request, sessionCookie);
+            const campaign = await createCampaign(request, sessionCookie, {
+                customerEmails: [customer.email],
+                customerIds: [customer.id]
+            })
+            randomEmail = customer.email;
+            reminderSent = getNewReminderSentByParams({campaignName: campaign.name, customerEmail: randomEmail});
             await request.post('/api/admin/reminder-sent')
                 .send(reminderSent)
                 .set('Cookie', sessionCookie);
@@ -54,25 +58,22 @@ describe('Campaign API Endpoints', () => {
     });
 
     describe('GET /api/campaign - Already Reported', () => {
-        const customerEmail = getRandomEmail();
-        const campaign: any = getNewCampaignByParams({customerEmails: [customerEmail]});
-        const reminderSent: any = getNewReminderSentByParams({
-            campaignName: campaign.name,
-            customerEmail: customerEmail
-        });
-        const customerMeasurement: any = getNewCustomerMeasurementByParams({
-            customerMail: customerEmail,
-            campaignName: campaign.name
-        });
+        let reminderSent: any;
         let response: any;
 
         given('A valid campaign is created', async () => {
-            await request.post('/api/admin/campaign')
-                .send(campaign)
-                .set('Cookie', sessionCookie);
-            await request.post('/api/admin/reminder-sent')
-                .send(reminderSent)
-                .set('Cookie', sessionCookie);
+            const customer = await createCustomer(request, sessionCookie);
+            const customerEmail = customer.email;
+            const campaign = await createCampaign(request, sessionCookie, {
+                customerEmails: [customer.email],
+                customerIds: [customer.id]
+            })
+            reminderSent = await createReminderSent(request, sessionCookie, {campaign, customer});
+            const customerMeasurement = getNewCustomerMeasurementByParams({
+                customerMail: customerEmail,
+                campaignName: campaign.name
+            });
+
             await request.post('/api/admin/customer-measurement')
                 .send(customerMeasurement)
                 .set('Cookie', sessionCookie);
@@ -92,15 +93,20 @@ describe('Campaign API Endpoints', () => {
     });
 
     describe('GET /api/campaign - Unauthorized Access', () => {
-        let campaign: any;
         let response: any;
+        let reminderSent: any;
 
-        given('A campaign token', () => {
-            campaign = getNewCampaign();
+        given('A campaign token', async () => {
+            const customer = await createCustomer(request, sessionCookie);
+            const campaign = await createCampaign(request, sessionCookie, {
+                customerEmails: [customer.email],
+                customerIds: [customer.id]
+            })
+            reminderSent = await createReminderSent(request, sessionCookie, {campaign, customer});
         });
 
         when('The campaign is fetched without authorization', async () => {
-            response = await request.get(`/api/campaign?token=${campaign.token}`);
+            response = await request.get(`/api/campaign?token=${reminderSent.token}`);
         });
 
         then('The response should return 401 Unauthorized', () => {

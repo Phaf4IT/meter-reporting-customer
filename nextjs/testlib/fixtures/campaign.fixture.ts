@@ -40,13 +40,24 @@ export function getNewCampaign() {
     };
 }
 
-export function getNewCampaignByParams({measureValues, customerEmails, reminderDates}: {
-    measureValues?: any[], customerEmails?: string[], reminderDates?: string[]
-}) {
+export function getNewCampaignByParams({
+                                           measureValues,
+                                           customerEmails,
+                                           reminderDates,
+                                           customerIds
+                                       }: NewCampaignDetails) {
     return {
         ...getNewCampaign(),
         ...(measureValues && {measureValues}),
+        ...(customerIds && {customerIds}),
         ...(customerEmails && {customerEmails}),
         ...(reminderDates && {reminderDates}),
     };
+}
+
+export interface NewCampaignDetails {
+    measureValues?: any[];
+    customerEmails?: string[];
+    reminderDates?: string[];
+    customerIds?: string[];
 }

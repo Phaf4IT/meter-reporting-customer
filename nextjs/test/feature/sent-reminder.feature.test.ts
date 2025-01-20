@@ -1,8 +1,6 @@
 /* eslint-disable-next-line @typescript-eslint/no-unused-expressions */
 import {given, then, when} from '@/testlib/givenWhenThen';
-import {getNewCustomer} from "@/testlib/fixtures/customer.fixture";
 import {getAllTypeMeasureValues} from "@/testlib/fixtures/measure-value.fixture";
-import {getNewCampaignByParams} from "@/testlib/fixtures/campaign.fixture";
 import {WiremockRequest} from "@/testlib/testcontainers/wiremock";
 import {expect} from "chai";
 import supertest from "supertest";
@@ -14,26 +12,16 @@ import {
     generateRandomMeasurements,
     getNewCustomerMeasurementByParams
 } from "@/testlib/fixtures/customer-measurement.fixture";
+import {createCustomer} from "@/testlib/api_fixtures/admin/customer-api.fixture";
+import {createCampaign} from "@/testlib/api_fixtures/admin/campaign-api.fixture";
 
 describe('Complete Scenario: Customer should receive a reminder for a campaign', () => {
-    const newCustomer = getNewCustomer();
-    const customerEmail = newCustomer.email;
+    let newCustomer: any;
     const measureValues = getAllTypeMeasureValues();
     const reminderDate = new Date(Date.now() - 1000000).toISOString();
-    const campaign = getNewCampaignByParams({
-        measureValues,
-        customerEmails: [customerEmail],
-        reminderDates: [reminderDate]
-    });
-    const customerMeasurement: any = getNewCustomerMeasurementByParams({
-        customerMail: newCustomer.email,
-        measurements: generateRandomMeasurements(campaign.measureValues)
-    });
-    const reportData = {
-        measurements: customerMeasurement.measurements,
-        dateTime: customerMeasurement.dateTime,
-    };
-    const campaignName = campaign.name;
+    let campaign: any;
+    let customerMeasurement: any;
+    let reportData: any;
 
     let request: any;
     let sessionCookie: string;
@@ -50,35 +38,42 @@ describe('Complete Scenario: Customer should receive a reminder for a campaign',
     });
 
     context('-', () => {
-        let customerResponse: any;
-        let campaignResponse: any;
         let sentReminderResponse: any;
         let reportResponse: any;
         let customerSessionCookie: string;
         let token: string;
 
         given('A new customer and measure values are created', async () => {
-            customerResponse = await request.post('/api/admin/customer')
-                .send(newCustomer)
-                .set('Cookie', sessionCookie);
+            newCustomer = await createCustomer(request, sessionCookie)
+            campaign = await createCampaign(request, sessionCookie, {
+                measureValues,
+                customerEmails: [newCustomer.email],
+                customerIds: [newCustomer.id],
+                reminderDates: [reminderDate]
+            });
+            customerMeasurement = getNewCustomerMeasurementByParams({
+                customerMail: newCustomer.email,
+                measurements: generateRandomMeasurements(campaign.measureValues)
+            })
 
             const measureValuePromises = measureValues.map((value) =>
                 request.post('/api/admin/measure-value')
                     .send(value)
                     .set('Cookie', sessionCookie)
             );
+
+            reportData = {
+                measurements: customerMeasurement.measurements,
+                dateTime: customerMeasurement.dateTime,
+            };
             await Promise.all(measureValuePromises);
         }, 10_000);
 
         when('A campaign is created and customer is linked', async () => {
-            campaignResponse = await request.post('/api/admin/campaign')
-                .send(campaign)
-                .set('Cookie', sessionCookie);
+
         });
 
         then('The customer, measure values, and campaign should be created successfully', () => {
-            expect(customerResponse.status).eq(200);
-            expect(campaignResponse.status).eq(200);
             expect(measureValues.length).eq(3);
         });
 
@@ -86,7 +81,7 @@ describe('Complete Scenario: Customer should receive a reminder for a campaign',
             const reminderResponse = await request.get(`/api/admin/reminder`)
                 .set('Cookie', sessionCookie);
 
-            reminder = reminderResponse.body.find((reminder: any) => reminder.campaignName === campaignName && reminder.reminderDate === reminderDate);
+            reminder = reminderResponse.body.find((reminder: any) => reminder.campaignName === campaign.name && reminder.reminderDate === reminderDate);
 
             // eslint-disable-next-line @typescript-eslint/no-unused-expressions
             expect(reminder).to.not.be.undefined;
@@ -105,7 +100,7 @@ describe('Complete Scenario: Customer should receive a reminder for a campaign',
                 const requests: WiremockRequest[] = await wiremock.getRequestsForAPI("POST", "/v3.1/send") as WiremockRequest[];
 
                 const customerEmailSent = requests.map(value => JSON.parse(value.request.body))
-                    .find(requestBody => requestBody.messages[0].To.some((recipient: any) => recipient.Email === customerEmail))
+                    .find(requestBody => requestBody.messages[0].To.some((recipient: any) => recipient.Email === newCustomer.email))
 
                 expect(customerEmailSent).is.not.undefined;
 

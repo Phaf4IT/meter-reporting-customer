@@ -8,6 +8,8 @@ import NonActiveCustomer from "@/components/database/schemas/public/NonActiveCus
 export class NonActiveCustomerTable extends Entity implements NonActiveCustomer {
     @PrimaryKey
     @Field()
+    id: string;
+    @Field()
     email: string;
     @Field()
     title: string | null;
@@ -36,6 +38,7 @@ export class NonActiveCustomerTable extends Entity implements NonActiveCustomer 
     archiveDate: Date;
 
     constructor(
+        id: string,
         email: string,
         title: string | undefined,
         firstName: string,
@@ -51,6 +54,7 @@ export class NonActiveCustomerTable extends Entity implements NonActiveCustomer 
         archiveDate: Date,
     ) {
         super();
+        this.id = id;
         this.email = email;
         this.title = title || null;
         this.firstName = firstName;

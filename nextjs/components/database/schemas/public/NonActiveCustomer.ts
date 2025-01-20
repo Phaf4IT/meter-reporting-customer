@@ -3,88 +3,94 @@
 
 /** Represents the table public.non_active_customer */
 export default interface NonActiveCustomer {
-  email: string;
+    id: string;
 
-  title: string | null;
+    email: string;
 
-  firstName: string;
+    title: string | null;
 
-  middleName: string | null;
+    firstName: string;
 
-  lastName: string;
+    middleName: string | null;
 
-  streetLines: string[];
+    lastName: string;
 
-  postalCode: string;
+    streetLines: string[];
 
-  city: string;
+    postalCode: string;
 
-  country: string;
+    city: string;
 
-  stateOrProvince: string;
+    country: string;
 
-  phoneNumber: string;
+    stateOrProvince: string;
 
-  company: string;
+    phoneNumber: string;
 
-  archiveDate: Date;
+    company: string;
+
+    archiveDate: Date;
 }
 
 /** Represents the initializer for the table public.non_active_customer */
 export interface NonActiveCustomerInitializer {
-  email: string;
+    id: string;
 
-  title?: string | null;
+    email: string;
 
-  firstName: string;
+    title?: string | null;
 
-  middleName?: string | null;
+    firstName: string;
 
-  lastName: string;
+    middleName?: string | null;
 
-  streetLines: string[];
+    lastName: string;
 
-  postalCode: string;
+    streetLines: string[];
 
-  city: string;
+    postalCode: string;
 
-  country: string;
+    city: string;
 
-  stateOrProvince: string;
+    country: string;
 
-  phoneNumber: string;
+    stateOrProvince: string;
 
-  company: string;
+    phoneNumber: string;
 
-  /** Default value: now() */
-  archiveDate?: Date;
+    company: string;
+
+    /** Default value: now() */
+    archiveDate?: Date;
 }
 
 /** Represents the mutator for the table public.non_active_customer */
 export interface NonActiveCustomerMutator {
-  email?: string;
+    id?: string;
 
-  title?: string | null;
+    email?: string;
 
-  firstName?: string;
+    title?: string | null;
 
-  middleName?: string | null;
+    firstName?: string;
 
-  lastName?: string;
+    middleName?: string | null;
 
-  streetLines?: string[];
+    lastName?: string;
 
-  postalCode?: string;
+    streetLines?: string[];
 
-  city?: string;
+    postalCode?: string;
 
-  country?: string;
+    city?: string;
 
-  stateOrProvince?: string;
+    country?: string;
 
-  phoneNumber?: string;
+    stateOrProvince?: string;
 
-  company?: string;
+    phoneNumber?: string;
 
-  archiveDate?: Date;
+    company?: string;
+
+    archiveDate?: Date;
 }

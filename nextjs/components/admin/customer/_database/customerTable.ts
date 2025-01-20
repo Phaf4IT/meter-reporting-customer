@@ -8,6 +8,8 @@ import Customer from "@/components/database/schemas/public/Customer";
 export class CustomerTable extends Entity implements Customer {
     @PrimaryKey
     @Field()
+    id: string;
+    @Field()
     email: string;
     @Field()
     title: string | null;
@@ -34,6 +36,7 @@ export class CustomerTable extends Entity implements Customer {
     company: string;
 
     constructor(
+        id: string,
         email: string,
         title: string | undefined,
         firstName: string,
@@ -48,6 +51,7 @@ export class CustomerTable extends Entity implements Customer {
         company: string
     ) {
         super();
+        this.id = id;
         this.email = email;
         this.title = title || null;
         this.firstName = firstName;

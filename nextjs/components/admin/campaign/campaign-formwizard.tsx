@@ -57,6 +57,8 @@ const CampaignFormWizard: React.FC<CampaignFormWizardProps> = ({
             endDate: endDate!,
             reminderDates: reminderDates,
             customerEmails: selectedCustomers,
+            // TODO!
+            customerIds: [],
             measureValues: selectedMeasures
         };
         return onSubmit(campaignData)

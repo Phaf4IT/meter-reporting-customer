@@ -7,6 +7,17 @@ DROP TABLE IF EXISTS measure_value;
 DROP TABLE IF EXISTS customer_measurement;
 DROP TABLE IF EXISTS overruled_customer_measurement;
 
+CREATE OR REPLACE FUNCTION uuidv7_sub_ms() RETURNS uuid
+AS
+$$
+select encode(
+               substring(int8send(floor(t_ms)::int8) from 3) ||
+               int2send((7 << 12)::int2 | ((t_ms - floor(t_ms)) * 4096)::int2) ||
+               substring(uuid_send(gen_random_uuid()) from 9 for 8)
+           , 'hex')::uuid
+from (select extract(epoch from clock_timestamp()) * 1000 as t_ms) s
+$$ LANGUAGE sql volatile;
+
 CREATE TABLE IF NOT EXISTS company
 (
     name  varchar(255) NOT NULL,
@@ -16,13 +27,13 @@ CREATE TABLE IF NOT EXISTS company
 
 CREATE TABLE IF NOT EXISTS campaign
 (
-    name            text          NOT NULL,
-    start_date      date          NOT NULL,
-    end_date        date          NOT NULL,
-    reminder_dates  timestamptz[] NOT NULL,
-    customer_emails text[],
-    measure_values  json[]        NOT NULL,
-    company         varchar(255)  NOT NULL,
+    name           text          NOT NULL,
+    start_date     date          NOT NULL,
+    end_date       date          NOT NULL,
+    reminder_dates timestamptz[] NOT NULL,
+    customer_ids   uuid[]        NOT NULL,
+    measure_values json[]        NOT NULL,
+    company        varchar(255)  NOT NULL,
     PRIMARY KEY (name, company)
 );
 
@@ -51,6 +62,7 @@ CREATE INDEX if not exists campaign_reminder_sent_idx ON campaign_reminder_sent 
 
 CREATE TABLE IF NOT EXISTS customer
 (
+    id                uuid         NOT NULL DEFAULT uuidv7_sub_ms(),
     email             text         NOT NULL,
     title             varchar(255) NULL,
     first_name        varchar(255) NOT NULL,
@@ -68,6 +80,7 @@ CREATE TABLE IF NOT EXISTS customer
 
 CREATE TABLE IF NOT EXISTS non_active_customer
 (
+    id                uuid         NOT NULL,
     email             text         NOT NULL,
     title             varchar(255) NULL,
     first_name        varchar(255) NOT NULL,
@@ -83,7 +96,7 @@ CREATE TABLE IF NOT EXISTS non_active_customer
     archive_date      timestamptz  NOT NULL default now()
 );
 
-CREATE INDEX if not exists non_active_customer_company_email_idx ON non_active_customer USING btree (email, company);
+CREATE INDEX if not exists non_active_customer_company_email_idx ON non_active_customer USING btree (id, email, company);
 
 CREATE TABLE IF NOT EXISTS measure_value
 (
