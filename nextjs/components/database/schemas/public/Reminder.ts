@@ -12,33 +12,33 @@ export type ReminderCompany = string;
 
 /** Represents the table public.reminder */
 export default interface Reminder {
-  campaignName: ReminderCampaign_name;
+    campaignName: ReminderCampaign_name;
 
-  reminderDate: ReminderReminder_date;
+    reminderDate: ReminderReminder_date;
 
-  company: ReminderCompany;
+    company: ReminderCompany;
 
-  customerEmails: string[];
+    customerIds: string[];
 }
 
 /** Represents the initializer for the table public.reminder */
 export interface ReminderInitializer {
-  campaignName: ReminderCampaign_name;
+    campaignName: ReminderCampaign_name;
 
-  reminderDate: ReminderReminder_date;
+    reminderDate: ReminderReminder_date;
 
-  company: ReminderCompany;
+    company: ReminderCompany;
 
-  customerEmails: string[];
+    customerIds: string[];
 }
 
 /** Represents the mutator for the table public.reminder */
 export interface ReminderMutator {
-  campaignName?: ReminderCampaign_name;
+    campaignName?: ReminderCampaign_name;
 
-  reminderDate?: ReminderReminder_date;
+    reminderDate?: ReminderReminder_date;
 
-  company?: ReminderCompany;
+    company?: ReminderCompany;
 
-  customerEmails?: string[];
+    customerIds?: string[];
 }

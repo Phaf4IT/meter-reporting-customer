@@ -4,7 +4,6 @@ import {getReminders} from "@/components/admin/reminder/action/getRemindersActio
 import {createReminder} from "@/components/admin/reminder/action/createReminderAction";
 import {performReminder} from "@/components/admin/reminder/action/performReminderAction";
 import {reminderFromJson} from "@/components/admin/reminder/reminder";
-import {genericReminderFromJson} from "@/components/admin/reminder/action/findExpiredRemindersAction";
 import {removeReminder} from "@/components/admin/reminder/action/deleteReminderAction";
 
 export async function POST(
@@ -38,7 +37,8 @@ export async function PUT(
     }
     try {
         const data = await request.json();
-        return performReminder(genericReminderFromJson(data, session.user.company), `${request.nextUrl.protocol}//${request.nextUrl.host}`)
+        const reminder = reminderFromJson(data);
+        return performReminder(reminder, session.user.company, `${request.nextUrl.protocol}//${request.nextUrl.host}`)
             .then(() => NextResponse.json({}));
     } catch (err) {
         console.error("Error creating reminder:", err);

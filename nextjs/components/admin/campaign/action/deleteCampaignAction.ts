@@ -8,7 +8,9 @@ export async function removeCampaign(campaign: Campaign, company: string) {
         .then(() => campaign.reminderDates.flatMap(date =>
             removeReminder({
                 reminderDate: date,
-                customerEmails: campaign.customerEmails,
+                // can be left empty, they are no primary keys...
+                customerEmails: [],
+                customerIds: [],
                 campaignName: campaign.name,
             }, company)
         ));

@@ -37,7 +37,11 @@ describe('Campaign API Endpoints', () => {
                 customerIds: [customer.id]
             })
             randomEmail = customer.email;
-            reminderSent = getNewReminderSentByParams({campaignName: campaign.name, customerEmail: randomEmail});
+            reminderSent = getNewReminderSentByParams({
+                campaignName: campaign.name,
+                customerEmail: randomEmail,
+                customerId: customer.id
+            });
             await request.post('/api/admin/reminder-sent')
                 .send(reminderSent)
                 .set('Cookie', sessionCookie);

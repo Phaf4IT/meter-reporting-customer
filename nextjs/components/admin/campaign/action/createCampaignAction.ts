@@ -8,6 +8,7 @@ export async function createCampaign(campaign: Campaign, company: string) {
     const reminderPromises = savedCampaign.reminderDates.map(date => createReminder({
             reminderDate: date,
             customerEmails: savedCampaign.customerEmails,
+            customerIds: savedCampaign.customerIds,
             campaignName: savedCampaign.name
         }, company)
     );

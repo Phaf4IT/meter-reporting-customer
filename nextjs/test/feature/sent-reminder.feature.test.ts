@@ -79,7 +79,7 @@ describe('Complete Scenario: Customer should receive a reminder for a campaign',
             const reminderResponse = await request.get(`/api/admin/reminder`)
                 .set('Cookie', sessionCookie);
 
-            reminder = reminderResponse.body.find((reminder: any) => reminder.campaignName === campaign.name && reminder.reminderDate === reminderDate);
+            reminder = (await reminderResponse.body).find((reminder: any) => reminder.campaignName === campaign.name && reminder.reminderDate === reminderDate);
 
             // eslint-disable-next-line @typescript-eslint/no-unused-expressions
             expect(reminder).to.not.be.undefined;

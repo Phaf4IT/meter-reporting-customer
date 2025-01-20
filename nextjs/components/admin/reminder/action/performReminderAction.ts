@@ -8,23 +8,26 @@ import {randomUUID} from "node:crypto";
 import {createReminderSent} from "@/components/admin/reminder-sent/action/createReminderSentAction";
 import {signIn} from "@/node_modules/@auth/core/lib/actions";
 import {findCustomerMeasurement} from "@/components/admin/customer-measurement/action/findCustomerMeasurementAction";
+import {Reminder} from "@/components/admin/reminder/reminder";
+import {findCustomersByIds} from "@/components/admin/customer/_database/customerRepository";
 
-export async function performReminder(reminder: GenericReminder, host: string) {
+export async function performReminder(reminder: Reminder, company: string, host: string) {
     const authAdapter: any = getAdapter();
     const provider: any = getEmailProvider();
-    return handleReminder(authAdapter, provider, host, reminder)
+    const customers = await findCustomersByIds(reminder.customerIds, company);
+    return handleReminder(authAdapter, provider, host, {...reminder, customers, company})
 }
 
 export async function handleReminder(adapter: Adapter, provider: Provider, host: string, reminder: GenericReminder) {
-    for (const customerEmail of reminder.customerEmails) {
-        if (!await hasAlreadyCustomerMeasurement(reminder, customerEmail)) {
+    for (const customer of reminder.customers) {
+        if (!await hasAlreadyCustomerMeasurement(reminder, customer.email)) {
             const customerToken: string = randomUUID()
             await signIn({
                 headers: [],
                 method: 'GET',
                 url: host,
                 body: {
-                    email: customerEmail,
+                    email: customer.email,
                 }
             }, [], {
                 adapter,
@@ -40,13 +43,19 @@ export async function handleReminder(adapter: Adapter, provider: Provider, host:
             })
                 .then(() => createReminderSent({
                     campaignName: reminder.campaignName,
-                    customerEmail: customerEmail,
+                    customerId: customer.id,
+                    customerEmail: customer.email,
                     reminderDate: reminder.reminderDate,
                     token: customerToken
                 }, reminder.company))
         }
     }
-    return removeReminder(reminder, reminder.company)
+    return removeReminder({
+        campaignName: reminder.campaignName,
+        customerEmails: reminder.customers.map(c => c.email),
+        customerIds: reminder.customers.map(c => c.id),
+        reminderDate: reminder.reminderDate,
+    }, reminder.company)
 }
 
 async function hasAlreadyCustomerMeasurement(reminder: GenericReminder, customerEmail: string) {
