@@ -50,8 +50,8 @@ describe('Open admin in browser', () => {
                 locale: defaultLocale,
             });
             page = await loginAndGoToAdminPage(context, serverUrl, adminUrl, email, wiremock);
-            await page.waitForSelector('table');
-        }, 50000)
+            await page.waitForSelector('table', {timeout: 50_000});
+        }, 50_000)
 
         then('The response should contain the new campaign', async () => {
             Logger.info(await page.content())
