@@ -1,17 +1,18 @@
 import {given, then, when} from '@/testlib/givenWhenThen';
-import {getNewCampaignByParams} from "@/testlib/fixtures/campaign.fixture";
 import {
     generateRandomMeasurements,
     getNewCustomerMeasurementByParams
 } from "@/testlib/fixtures/customer-measurement.fixture";
-import {getRandomEmail} from "@/testlib/fixtures/email.fixture";
 import {loginAndGetSession} from "@/testlib/authSessionProvider";
-import {getNewReminderSentByParams} from "@/testlib/fixtures/reminder-sent.fixture";
 import {createUser} from "@/testlib/db_fixtures/user.fixture";
 import {expect} from "chai";
 import supertest from "supertest";
 import {WireMock} from "wiremock-captain";
 import {getEnvironmentVariableProvider} from "@/testlib/environmentVariableProvider";
+import {createCustomer} from "@/testlib/api_fixtures/admin/customer-api.fixture";
+import {createCampaign} from "@/testlib/api_fixtures/admin/campaign-api.fixture";
+import {createReminderSent} from "@/testlib/api_fixtures/admin/reminder-sent-api.fixture";
+import {createCustomerMeasurement} from "@/testlib/api_fixtures/admin/customer-measurement-api.fixture";
 
 describe('Report API Endpoints', () => {
     let request: any;
@@ -28,31 +29,33 @@ describe('Report API Endpoints', () => {
     });
 
     describe('POST /api/report', () => {
-        const randomEmail = getRandomEmail();
-        const campaign: any = getNewCampaignByParams({customerEmails: [randomEmail]});
-        const reminderSent: any = getNewReminderSentByParams({campaignName: campaign.name, customerEmail: randomEmail});
-        const customerMeasurement: any = getNewCustomerMeasurementByParams({
-            customerMail: randomEmail,
-            measurements: generateRandomMeasurements(campaign.measureValues)
-        });
-        const reportData = {
-            measurements: customerMeasurement.measurements,
-            dateTime: customerMeasurement.dateTime,
-        };
+        let customer: any;
+        let campaign: any;
+        let reminderSent: any;
+        let customerMeasurement: any
+        let reportData: any;
         let response: any;
 
         given('A valid campaign is created', async () => {
-            await request.post('/api/admin/campaign')
-                .send(campaign)
-                .set('Cookie', sessionCookie);
-            await request.post('/api/admin/reminder-sent')
-                .send(reminderSent)
-                .set('Cookie', sessionCookie);
+            customer = await createCustomer(request, sessionCookie)
+            campaign = await createCampaign(request, sessionCookie, {
+                customerIds: [customer.id],
+                customerEmails: [customer.email]
+            });
+            reminderSent = await createReminderSent(request, sessionCookie, {campaign, customer});
+            customerMeasurement = getNewCustomerMeasurementByParams({
+                customerMail: customer.email,
+                measurements: generateRandomMeasurements(campaign.measureValues)
+            });
+            reportData = {
+                measurements: customerMeasurement.measurements,
+                dateTime: customerMeasurement.dateTime,
+            };
         });
 
         when('The report is submitted successfully', async () => {
-            await createUser(randomEmail);
-            const session = await loginAndGetSession(randomEmail, wiremock, serverUrl, request);
+            await createUser(customer);
+            const session = await loginAndGetSession(customer.email, wiremock, serverUrl, request);
             response = await request.post(`/api/report?token=${reminderSent.token}`)
                 .send(reportData)
                 .set('Cookie', session);
@@ -65,31 +68,28 @@ describe('Report API Endpoints', () => {
     });
 
     describe('GET /api/report', () => {
-        const randomEmail = getRandomEmail();
-        const campaign: any = getNewCampaignByParams({customerEmails: [randomEmail]});
-        const reminderSent: any = getNewReminderSentByParams({campaignName: campaign.name, customerEmail: randomEmail});
-        const customerMeasurement: any = getNewCustomerMeasurementByParams({
-            customerMail: randomEmail,
-            campaignName: campaign.name,
-            measurements: generateRandomMeasurements(campaign.measureValues)
-        });
+        let customer: any;
+        let campaign: any;
+        let reminderSent: any;
         let response: any;
 
         given('A valid report exists', async () => {
-            await request.post('/api/admin/campaign')
-                .send(campaign)
-                .set('Cookie', sessionCookie);
-            await request.post('/api/admin/reminder-sent')
-                .send(reminderSent)
-                .set('Cookie', sessionCookie);
-            await request.post('/api/admin/customer-measurement')
-                .send(customerMeasurement)
-                .set('Cookie', sessionCookie);
+            customer = await createCustomer(request, sessionCookie)
+            campaign = await createCampaign(request, sessionCookie, {
+                customerIds: [customer.id],
+                customerEmails: [customer.email]
+            });
+            reminderSent = await createReminderSent(request, sessionCookie, {campaign, customer});
+
+            await createCustomerMeasurement(request, sessionCookie, {
+                campaign,
+                customerMail: customer.email
+            })
         });
 
         when('The report is fetched successfully', async () => {
-            await createUser(randomEmail);
-            const session = await loginAndGetSession(randomEmail, wiremock, serverUrl, request);
+            await createUser(customer.email);
+            const session = await loginAndGetSession(customer.email, wiremock, serverUrl, request);
             response = await request.get(`/api/report?token=${reminderSent.token}`)
                 .set('Cookie', session);
         }, 10_000);
@@ -101,7 +101,7 @@ describe('Report API Endpoints', () => {
         });
     });
 
-    describe('POST /api/report - Unauthorized Access', () => {
+    describe('POST /api/report - Unauthorized Access and Random report', () => {
         const reportData = {
             campaignName: 'some-token',
             customerMail: 'customer@example.com',
@@ -121,39 +121,70 @@ describe('Report API Endpoints', () => {
         });
     });
 
-    describe('POST /api/report - Already Reported', () => {
-        const customerEmail = getRandomEmail();
-        const campaign: any = getNewCampaignByParams({customerEmails: [customerEmail]});
-        const reminderSent: any = getNewReminderSentByParams({
-            campaignName: campaign.name,
-            customerEmail: customerEmail
-        });
-        const customerMeasurement: any = getNewCustomerMeasurementByParams({
-            customerMail: customerEmail,
-            campaignName: campaign.name,
-            measurements: generateRandomMeasurements(campaign.measureValues)
-        });
-        const reportData = {
-            measurements: customerMeasurement.measurements,
-            dateTime: customerMeasurement.dateTime,
-        };
+    describe('POST /api/report - Unauthorized Access', () => {
+        let customer: any;
+        let campaign: any;
+        let reminderSent: any;
+        let customerMeasurement: any
+        let reportData: any;
         let response: any;
 
-        given('The report has already been submitted for this campaign', async () => {
-            await request.post('/api/admin/campaign')
-                .send(campaign)
-                .set('Cookie', sessionCookie);
-            await request.post('/api/admin/reminder-sent')
-                .send(reminderSent)
-                .set('Cookie', sessionCookie);
-            await request.post('/api/admin/customer-measurement')
-                .send(customerMeasurement)
-                .set('Cookie', sessionCookie);
-        }, 10_000);
+        given('A valid campaign is created', async () => {
+            customer = await createCustomer(request, sessionCookie)
+            campaign = await createCampaign(request, sessionCookie, {
+                customerIds: [customer.id],
+                customerEmails: [customer.email]
+            });
+            reminderSent = await createReminderSent(request, sessionCookie, {campaign, customer});
+            customerMeasurement = getNewCustomerMeasurementByParams({
+                customerMail: customer.email,
+                measurements: generateRandomMeasurements(campaign.measureValues)
+            });
+            reportData = {
+                measurements: customerMeasurement.measurements,
+                dateTime: customerMeasurement.dateTime,
+            };
+        });
+
+        when('The report is submitted successfully', async () => {
+            response = await request.post(`/api/report?token=${reminderSent.token}`)
+                .send(reportData);
+        });
+
+        then('The response should return 401 Unauthorized', () => {
+            expect(response.status).eq(401);
+            expect(response.text).eq('Unauthorized');
+        });
+    });
+
+    describe('POST /api/report - Already Reported', () => {
+        let customer: any;
+        let campaign: any;
+        let reminderSent: any;
+        let reportData: any;
+        let response: any;
+
+        given('A valid report exists', async () => {
+            customer = await createCustomer(request, sessionCookie)
+            campaign = await createCampaign(request, sessionCookie, {
+                customerIds: [customer.id],
+                customerEmails: [customer.email]
+            });
+            reminderSent = await createReminderSent(request, sessionCookie, {campaign, customer});
+
+            const customerMeasurement = await createCustomerMeasurement(request, sessionCookie, {
+                campaign,
+                customerMail: customer.email
+            });
+            reportData = {
+                measurements: customerMeasurement.measurements,
+                dateTime: customerMeasurement.dateTime,
+            };
+        });
 
         when('A report is submitted for the same campaign again', async () => {
-            await createUser(customerEmail);
-            const session = await loginAndGetSession(customerEmail, wiremock, serverUrl, request);
+            await createUser(customer.email);
+            const session = await loginAndGetSession(customer.email, wiremock, serverUrl, request);
             response = await request.post(`/api/report?token=${reminderSent.token}`)
                 .send(reportData)
                 .set('Cookie', session);
@@ -167,33 +198,31 @@ describe('Report API Endpoints', () => {
 
 
     describe('POST /api/report - Internal Server Error', () => {
-
-        const randomEmail = getRandomEmail();
-        const campaign: any = getNewCampaignByParams({customerEmails: [randomEmail]});
-        const reminderSent: any = getNewReminderSentByParams({campaignName: campaign.name, customerEmail: randomEmail});
-        const invalidReportData = {
-            campaignName: 'invalid-token',
-            customerMail: 'customer@example.com',
-            measurements: [{name: 'Height', value: ''}],
-            dateTime: new Date().toISOString(),
-        };
+        let customer: any;
+        let campaign: any;
+        let invalidReportData: any;
         let response: any;
 
-        given('A valid campaign is created', async () => {
-            await request.post('/api/admin/campaign')
-                .send(campaign)
-                .set('Cookie', sessionCookie);
-            await request.post('/api/admin/reminder-sent')
-                .send(reminderSent)
-                .set('Cookie', sessionCookie);
-        }, 10_000);
-
+        given('A valid report exists', async () => {
+            customer = await createCustomer(request, sessionCookie)
+            campaign = await createCampaign(request, sessionCookie, {
+                customerIds: [customer.id],
+                customerEmails: [customer.email]
+            });
+            await createReminderSent(request, sessionCookie, {campaign, customer});
+            invalidReportData = {
+                measurements: [{name: 'Height', value: ''}],
+                dateTime: new Date().toISOString(),
+            };
+        });
 
         when('A report is submitted with invalid data', async () => {
+            await createUser(customer);
+            const session = await loginAndGetSession(customer.email, wiremock, serverUrl, request);
             response = await request.post('/api/report')
                 .send(invalidReportData)
-                .set('Cookie', sessionCookie);
-        });
+                .set('Cookie', session);
+        }, 10_000);
 
         then('The response should return an internal server error', () => {
             expect(response.status).eq(500);

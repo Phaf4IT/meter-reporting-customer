@@ -5,7 +5,7 @@ export abstract class EntityManager<T extends Entity> {
 
     abstract findOne(
         primaryKeyValues: Record<string, any>
-    ): Promise<T | null>;
+    ): Promise<T | undefined>;
 
     abstract findAll(): Promise<T[]>;
 

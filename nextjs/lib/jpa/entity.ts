@@ -23,12 +23,12 @@ export abstract class Entity {
         return fields;
     }
 
-    getFieldAndColumnNames(): Record<string, any> {
-        const fieldAndColumnNames: Record<string, any> = {};
+    getFieldAndColumnNames(): Record<string, ColumnProperties> {
+        const fieldAndColumnNames: Record<string, ColumnProperties> = {};
         const keys = Object.getOwnPropertyNames(this);
 
         for (const key of keys) {
-            fieldAndColumnNames[key] = this.getColumnName(key);
+            fieldAndColumnNames[key] = {columnName: this.getColumnName(key), isGenerated: this.isGeneratedColumn(key)};
         }
         return fieldAndColumnNames;
     }
@@ -40,14 +40,17 @@ export abstract class Entity {
         }
     }
 
-    getFieldAndValues(): Record<string, any> {
+    isGeneratedColumn(key: string) {
+        return !!Reflect.getMetadata("field_generated", this.constructor.prototype, key);
+    }
 
-        const fieldAndColumnNames: Record<string, any> = this.getFieldAndColumnNames();
+    getFieldAndValues(): Record<string, any> {
+        const fieldAndColumnNames: Record<string, ColumnProperties> = this.getFieldAndColumnNames();
         const fields: Record<string, any> = {};
         for (const fieldAndColumnNamesKey in fieldAndColumnNames) {
-            const columnName = fieldAndColumnNames[fieldAndColumnNamesKey];
-            if (columnName) {
-                fields[columnName] = this[fieldAndColumnNamesKey as keyof Entity]
+            const columnProperties = fieldAndColumnNames[fieldAndColumnNamesKey];
+            if (!columnProperties.isGenerated && columnProperties.columnName) {
+                fields[columnProperties.columnName] = this[fieldAndColumnNamesKey as keyof Entity]
             }
         }
         return fields;
@@ -71,3 +74,7 @@ export interface EntityClasss<T extends Entity> {
     getTableName(): string;
 }
 
+interface ColumnProperties {
+    columnName: string;
+    isGenerated: boolean;
+}

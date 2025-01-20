@@ -2,17 +2,26 @@ import {IWireMockRequest, IWireMockResponse, WireMock} from "wiremock-captain";
 import cookie from "cookie";
 import {WiremockRequest} from "@/testlib/testcontainers/wiremock";
 import TestAgent from "supertest/lib/agent";
+import {retry} from "ts-retry";
 
-export function getLoginUrlFromMail(requests: WiremockRequest[], email: string, serverBaseUrl: string) {
+export async function getLoginUrl(wiremock: WireMock, email: string, serverBaseUrl: string) {
+    return retry(
+        async () => {
+            const requests: WiremockRequest[] = await wiremock.getRequestsForAPI("POST", "/v3.1/send") as WiremockRequest[];
+            return getLoginUrlFromMail(requests, email, serverBaseUrl);
+        },
+        {delay: 1000, maxTry: 3});
+}
+
+function getLoginUrlFromMail(requests: WiremockRequest[], email: string, serverBaseUrl: string) {
     const loginEmail = requests.map(value => JSON.parse(value.request.body))
         .find(value => value.messages[0].To.some((recipient: any) => recipient.Email === email));
 
-    return loginEmail.messages[0].TextPart.replace("Please click here to authenticate - " + serverBaseUrl, "");
-}
+    if (!loginEmail) {
+        throw Error("Could not find email")
+    }
 
-export async function getLoginUrl(wiremock: WireMock, email: string, serverBaseUrl: string) {
-    const requests: WiremockRequest[] = await wiremock.getRequestsForAPI("POST", "/v3.1/send") as WiremockRequest[];
-    return getLoginUrlFromMail(requests, email, serverBaseUrl);
+    return loginEmail.messages[0].TextPart.replace("Please click here to authenticate - " + serverBaseUrl, "");
 }
 
 export async function loginAndGetSession(email: string, wiremock: WireMock, serverBaseUrl: string, request: TestAgent): Promise<string> {

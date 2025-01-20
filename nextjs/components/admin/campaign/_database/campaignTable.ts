@@ -15,8 +15,8 @@ export class CampaignTable extends Entity implements Campaign {
     endDate: Date;
     @Field("reminder_dates")
     reminderDates: Date[];
-    @Field("customer_emails")
-    customerEmails: string[];
+    @Field("customer_ids")
+    customerIds: string[];
     @Field("measure_values")
     measureValues: any[];
     @PrimaryKey
@@ -27,7 +27,7 @@ export class CampaignTable extends Entity implements Campaign {
                 start_date: Date | string,
                 end_date: Date | string,
                 reminder_dates: Date[],
-                customer_emails: string[],
+                customerIds: string[],
                 measure_values: Record<any, any>[],
                 company: string) {
         super();
@@ -35,7 +35,7 @@ export class CampaignTable extends Entity implements Campaign {
         this.startDate = new Date(start_date);
         this.endDate = new Date(end_date);
         this.reminderDates = reminder_dates?.map(value => new Date(value));
-        this.customerEmails = customer_emails;
+        this.customerIds = customerIds;
         this.measureValues = measure_values;
         this.company = company;
     }

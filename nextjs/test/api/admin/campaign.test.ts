@@ -1,10 +1,11 @@
 import {given, then, when} from "@/testlib/givenWhenThen";
-import {getNewCampaign} from "@/testlib/fixtures/campaign.fixture";
+import {getNewCampaignByParams} from "@/testlib/fixtures/campaign.fixture";
 import {expect} from "chai";
 import supertest from "supertest";
 import {getEnvironmentVariableProvider} from "@/testlib/environmentVariableProvider";
+import {createCustomer} from "@/testlib/api_fixtures/admin/customer-api.fixture";
 
-describe('Campaign API Endpoints', () => {
+describe('Admin Campaign API Endpoints', () => {
     let request: any;
     let sessionCookie: string;
 
@@ -18,8 +19,12 @@ describe('Campaign API Endpoints', () => {
         let newCampaign: any;
         let response: any;
 
-        given('A new campaign', () => {
-            newCampaign = getNewCampaign();
+        given('A new campaign', async () => {
+            const customer = await createCustomer(request, sessionCookie);
+            newCampaign = getNewCampaignByParams({
+                customerIds: [customer.id],
+                customerEmails: [customer.email]
+            });
         });
 
         when('The campaign is posted to the server', async () => {
@@ -41,7 +46,8 @@ describe('Campaign API Endpoints', () => {
         let response: any;
 
         given('A new campaign is created', async () => {
-            newCampaign = getNewCampaign();
+            const customer = await createCustomer(request, sessionCookie);
+            newCampaign = getNewCampaignByParams({customerIds: [customer.id]});
             await request.post('/api/admin/campaign').send(newCampaign)
                 .set('Cookie', sessionCookie);
         });
@@ -65,7 +71,8 @@ describe('Campaign API Endpoints', () => {
         let response: any;
 
         given('A new campaign is created', async () => {
-            newCampaign = getNewCampaign();
+            const customer = await createCustomer(request, sessionCookie);
+            newCampaign = getNewCampaignByParams({customerIds: [customer.id]});
             await request.post('/api/admin/campaign').send(newCampaign)
                 .set('Cookie', sessionCookie);
         });

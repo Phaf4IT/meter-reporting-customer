@@ -21,7 +21,7 @@ export async function POST(
 
         return NextResponse.json(customer);
     } catch (err) {
-        console.error("Error creating campaign:", err);
+        console.error("Error creating customer:", err);
         return new NextResponse("Internal Server Error", {status: 500});
     }
 }
@@ -41,7 +41,7 @@ export async function PUT(
 
         return NextResponse.json(customer);
     } catch (err) {
-        console.error("Error creating campaign:", err);
+        console.error("Error creating customer:", err);
         return new NextResponse("Internal Server Error", {status: 500});
     }
 }
@@ -57,7 +57,7 @@ export async function GET(): Promise<Response> {
         return getCustomers()
             .then(value => NextResponse.json(value));
     } catch (err) {
-        console.error("Error creating campaign:", err);
+        console.error("Error creating customer:", err);
         return new NextResponse("Internal Server Error", {status: 500});
     }
 }
@@ -77,7 +77,7 @@ export async function DELETE(
 
         return NextResponse.json({});
     } catch (err) {
-        console.error("Error creating campaign:", err);
+        console.error("Error creating customer:", err);
         return new NextResponse("Internal Server Error", {status: 500});
     }
 }

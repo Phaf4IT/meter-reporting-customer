@@ -5,6 +5,7 @@ import {NonActiveCustomerTable} from "@/components/admin/customer/_database/nonA
 export async function saveCustomer(customer: Customer, company: string): Promise<Customer> {
     return getEntityManager(NonActiveCustomerTable)
         .create(new NonActiveCustomerTable(
+            customer.id,
             customer.email,
             customer.title,
             customer.firstName,
@@ -24,6 +25,7 @@ export async function saveCustomer(customer: Customer, company: string): Promise
 
 function mapTableToDomain(customerTable: NonActiveCustomerTable): Customer {
     return {
+        id: customerTable.id,
         email: customerTable.email,
         title: customerTable.title || undefined,
         firstName: customerTable.firstName,

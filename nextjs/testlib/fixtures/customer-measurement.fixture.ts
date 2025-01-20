@@ -39,11 +39,7 @@ export function getNewCustomerMeasurementByParams({
                                                       customerMail,
                                                       campaignName,
                                                       measurements
-                                                  }: {
-    customerMail?: string,
-    campaignName?: string,
-    measurements?: { name: string, value: string }[]
-}) {
+                                                  }: CustomerMeasurementFixture) {
     // Als er geen 'measurements' worden meegegeven, gebruiken we de standaard metingen van 'getNewCustomerMeasurement'
     const defaultMeasurement = getNewCustomerMeasurement();
 
@@ -53,4 +49,11 @@ export function getNewCustomerMeasurementByParams({
         ...(customerMail && {customerMail}),
         ...(measurements && {measurements})
     };
+}
+
+export interface CustomerMeasurementFixture {
+    customerMail?: string,
+    campaign?: any,
+    campaignName?: string,
+    measurements?: { name: string, value: string }[]
 }

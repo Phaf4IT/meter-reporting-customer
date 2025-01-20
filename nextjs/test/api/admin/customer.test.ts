@@ -97,8 +97,10 @@ describe('Customer API Endpoints', () => {
 
         given('A new customer is created', async () => {
             newCustomer = getNewCustomer();
-            await request.post('/api/admin/customer').send(newCustomer)
+            const createdCustomerResponse = await request.post('/api/admin/customer').send(newCustomer)
                 .set('Cookie', sessionCookie);
+            const createdCustomer = await createdCustomerResponse.body;
+            newCustomer = {...newCustomer, id: createdCustomer.id}
         });
 
         when('The customer is deleted', async () => {

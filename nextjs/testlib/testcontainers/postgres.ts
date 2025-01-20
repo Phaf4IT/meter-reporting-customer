@@ -32,7 +32,7 @@ export async function createPostgresServer(): Promise<{
         .start();
     info("inserting sql data")
     await new GenericContainer("ghcr.io/phaf4it/docker-pg-client:main@sha256:64764ad64d495a4b1ff7ae272accb1644cd4793ba1de400d6050d4954fca19a7")
-        .withReuse()
+        // .withReuse()
         .withEnvironment({
             "PGDATABASE": "main",
             "PGHOST": "postgresTest",
