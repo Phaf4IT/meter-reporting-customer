@@ -10,7 +10,7 @@ import {getUtcDateAtStartOfDay} from "@/lib/dateUTCConverter";
 import {format} from "date-fns";
 import {toZonedTime} from "date-fns-tz";
 import {createCustomer} from "@/testlib/api_fixtures/admin/customer-api.fixture";
-import {createCampaign} from "@/testlib/api_fixtures/admin/campaign-api.fixture";
+import {createCampaign, getCampaignByName} from "@/testlib/api_fixtures/admin/campaign-api.fixture";
 
 describe('Open admin in browser', () => {
     let browser: Browser;
@@ -42,6 +42,7 @@ describe('Open admin in browser', () => {
                 customerIds: [customer.id],
                 customerEmails: [customer.email]
             });
+            expect(await getCampaignByName(request, sessionCookie, campaign.name)).is.not.undefined;
         })
 
         when('The response should contain the new campaign', async () => {
@@ -51,8 +52,10 @@ describe('Open admin in browser', () => {
                 locale: defaultLocale,
             });
             page = await loginAndGoToAdminPage(context, serverUrl, adminUrl, email, wiremock);
+            await page.waitForLoadState('networkidle', {timeout: 50_000});
+
             await page.waitForSelector('table', {timeout: 50_000});
-        }, 50_000)
+        }, 100_000)
 
         then('The response should contain the new campaign', async () => {
             Logger.info(await page.content())
