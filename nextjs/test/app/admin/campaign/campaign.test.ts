@@ -35,8 +35,9 @@ describe('Open admin in browser', () => {
 
     describe('Open admin campaigns in browser', () => {
         let campaign: any;
+        let customer: any;
         given('The campaign is posted to the server', async () => {
-            const customer = await createCustomer(request, sessionCookie)
+            customer = await createCustomer(request, sessionCookie)
             campaign = await createCampaign(request, sessionCookie, {
                 customerIds: [customer.id],
                 customerEmails: [customer.email]
@@ -51,7 +52,7 @@ describe('Open admin in browser', () => {
             });
             page = await loginAndGoToAdminPage(context, serverUrl, adminUrl, email, wiremock);
             await page.waitForSelector('table', {timeout: 50_000});
-        })
+        }, 50_000)
 
         then('The response should contain the new campaign', async () => {
             Logger.info(await page.content())
@@ -82,7 +83,7 @@ describe('Open admin in browser', () => {
             expect(startDate).to.equal(formattedStartDate);
             expect(endDate).to.equal(formattedEndDate);
             expect(reminderDates).to.have.members(formattedReminderDates);
-            expect(customerEmails).to.have.members(campaign.customerEmails);
+            expect(customerEmails).to.have.members([customer.email]);
             const expectedMeasureValues = campaign.measureValues.map((value: any) => value.name).join(', ');
             expect(measureValues).to.include(expectedMeasureValues);
         })

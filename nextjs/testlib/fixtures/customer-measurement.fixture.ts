@@ -3,6 +3,7 @@ import {randomUUID} from "node:crypto";
 export function getNewCustomerMeasurement() {
     return {
         customerMail: `customer${randomUUID()}@example.com`,
+        customerId: `${randomUUID()}`,
         campaignName: `Campaign-${randomUUID()}`,
         measurements: getMeasurement('10', '20'),
         dateTime: new Date().toISOString(),

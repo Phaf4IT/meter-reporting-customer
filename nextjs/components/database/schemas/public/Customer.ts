@@ -9,88 +9,88 @@ export type CustomerCompany = string;
 
 /** Represents the table public.customer */
 export default interface Customer {
-    email: CustomerEmail;
+  email: CustomerEmail;
 
-    company: CustomerCompany;
+  company: CustomerCompany;
 
-    id: string;
+  id: string;
 
-    title: string | null;
+  title: string | null;
 
-    firstName: string;
+  firstName: string;
 
-    middleName: string | null;
+  middleName: string | null;
 
-    lastName: string;
+  lastName: string;
 
-    streetLines: string[];
+  streetLines: string[];
 
-    postalCode: string;
+  postalCode: string;
 
-    city: string;
+  city: string;
 
-    country: string;
+  country: string;
 
-    stateOrProvince: string;
+  stateOrProvince: string;
 
-    phoneNumber: string;
+  phoneNumber: string;
 }
 
 /** Represents the initializer for the table public.customer */
 export interface CustomerInitializer {
-    email: CustomerEmail;
+  email: CustomerEmail;
 
-    company: CustomerCompany;
+  company: CustomerCompany;
 
-    /** Default value: uuidv7_sub_ms() */
-    id?: string;
+  /** Default value: uuidv7_sub_ms() */
+  id?: string;
 
-    title?: string | null;
+  title?: string | null;
 
-    firstName: string;
+  firstName: string;
 
-    middleName?: string | null;
+  middleName?: string | null;
 
-    lastName: string;
+  lastName: string;
 
-    streetLines: string[];
+  streetLines: string[];
 
-    postalCode: string;
+  postalCode: string;
 
-    city: string;
+  city: string;
 
-    country: string;
+  country: string;
 
-    stateOrProvince: string;
+  stateOrProvince: string;
 
-    phoneNumber: string;
+  phoneNumber: string;
 }
 
 /** Represents the mutator for the table public.customer */
 export interface CustomerMutator {
-    email?: CustomerEmail;
+  email?: CustomerEmail;
 
-    company?: CustomerCompany;
+  company?: CustomerCompany;
 
-    id?: string;
+  id?: string;
 
-    title?: string | null;
+  title?: string | null;
 
-    firstName?: string;
+  firstName?: string;
 
-    middleName?: string | null;
+  middleName?: string | null;
 
-    lastName?: string;
+  lastName?: string;
 
-    streetLines?: string[];
+  streetLines?: string[];
 
-    postalCode?: string;
+  postalCode?: string;
 
-    city?: string;
+  city?: string;
 
-    country?: string;
+  country?: string;
 
-    stateOrProvince?: string;
+  stateOrProvince?: string;
 
-    phoneNumber?: string;
+  phoneNumber?: string;
 }

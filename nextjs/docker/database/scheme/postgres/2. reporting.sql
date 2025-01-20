@@ -116,19 +116,21 @@ CREATE TABLE IF NOT EXISTS customer_measurement
 (
     measurements  json[]       NOT NULL,
     campaign_name TEXT         NOT NULL,
+    customer_id   uuid         NOT NULL,
     customer_mail TEXT         NOT NULL,
     date_time     TIMESTAMP    NOT NULL,
     company       varchar(255) NOT NULL,
-    PRIMARY KEY (campaign_name, customer_mail, company)
+    PRIMARY KEY (campaign_name, customer_id, company)
 );
 
 CREATE TABLE IF NOT EXISTS overruled_customer_measurement
 (
     measurements       json[]       NOT NULL,
     campaign_name      TEXT         NOT NULL,
+    customer_id        uuid         NOT NULL,
     customer_mail      TEXT         NOT NULL,
     original_date_time TIMESTAMP    NOT NULL,
     overrule_date_time TIMESTAMP    NOT NULL,
     company            varchar(255) NOT NULL,
-    PRIMARY KEY (campaign_name, customer_mail, company, overrule_date_time)
+    PRIMARY KEY (campaign_name, customer_id, company, overrule_date_time)
 );

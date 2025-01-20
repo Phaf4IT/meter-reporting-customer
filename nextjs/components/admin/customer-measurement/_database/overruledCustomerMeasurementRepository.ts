@@ -30,6 +30,7 @@ export async function saveCustomerMeasurement(measurement: CustomerMeasurement, 
 function mapTableToDomain(measurement: OverruledCustomerMeasurementTable): CustomerMeasurement {
     return {
         campaignName: measurement.campaignName,
+        customerId: measurement.customerId,
         customerMail: measurement.customerMail,
         measurements: measurement.measurements,
         dateTime: measurement.originalDateTime,
@@ -39,12 +40,15 @@ function mapTableToDomain(measurement: OverruledCustomerMeasurementTable): Custo
 function mapDomainToTable(measurement: CustomerMeasurement,
                           company: string):
     OverruledCustomerMeasurementTable {
-    return new OverruledCustomerMeasurementTable(
-        measurement.campaignName,
-        measurement.customerMail,
-        company,
-        measurement.measurements,
-        measurement.dateTime,
-        new Date()
+    return OverruledCustomerMeasurementTable.of(
+        {
+            campaignName: measurement.campaignName,
+            customerId: measurement.customerId,
+            customerMail: measurement.customerMail,
+            company,
+            measurements: measurement.measurements,
+            originalDateTime: measurement.dateTime,
+            overruleDateTime: new Date()
+        }
     );
 }

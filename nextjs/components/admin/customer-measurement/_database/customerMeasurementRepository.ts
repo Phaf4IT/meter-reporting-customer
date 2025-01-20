@@ -53,6 +53,7 @@ export async function saveCustomerMeasurement(measurement: CustomerMeasurement, 
 function mapTableToDomain(measurement: CustomerMeasurementTable): CustomerMeasurement {
     return {
         campaignName: measurement.campaignName,
+        customerId: measurement.customerId,
         customerMail: measurement.customerMail,
         measurements: measurement.measurements,
         dateTime: measurement.dateTime,
@@ -62,11 +63,14 @@ function mapTableToDomain(measurement: CustomerMeasurementTable): CustomerMeasur
 function mapDomainToTable(measurement: CustomerMeasurement,
                           company: string):
     CustomerMeasurementTable {
-    return new CustomerMeasurementTable(
-        measurement.campaignName,
-        measurement.customerMail,
-        company,
-        measurement.measurements,
-        measurement.dateTime
+    return CustomerMeasurementTable.of(
+        {
+            campaignName: measurement.campaignName,
+            customerId: measurement.customerId,
+            customerMail: measurement.customerMail,
+            company,
+            measurements: measurement.measurements,
+            dateTime: measurement.dateTime
+        }
     );
 }

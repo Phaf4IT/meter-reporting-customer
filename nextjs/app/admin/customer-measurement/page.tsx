@@ -43,10 +43,10 @@ export default function CustomerMeasurementsPage() {
         saveCustomerMeasurement(customerMeasurement, isNew).then((savedMeasurement) => {
             setCustomerMeasurements((prev) => {
                 const existing = prev.find(
-                    (m) => m.customerMail === savedMeasurement.customerMail && m.campaignName === savedMeasurement.campaignName
+                    (m) => m.customerId === savedMeasurement.customerId && m.campaignName === savedMeasurement.campaignName
                 );
                 return existing
-                    ? prev.map((m) => (m.customerMail === savedMeasurement.customerMail && m.campaignName === savedMeasurement.campaignName ? savedMeasurement : m))
+                    ? prev.map((m) => (m.customerId === savedMeasurement.customerId && m.campaignName === savedMeasurement.campaignName ? savedMeasurement : m))
                     : [...prev, savedMeasurement];
             });
             closeEditor();
@@ -66,9 +66,9 @@ export default function CustomerMeasurementsPage() {
         setIsDialogOpen(false);
     }
 
-    const getMeasurementForCustomer = (campaignName: string, customerEmail: string): CustomerMeasurement | null => {
+    const getMeasurementForCustomer = (campaignName: string, customerId: string): CustomerMeasurement | null => {
         return customerMeasurements.find(
-            (measurement) => measurement.campaignName === campaignName && measurement.customerMail === customerEmail
+            (measurement) => measurement.campaignName === campaignName && measurement.customerId === customerId
         ) || null;
     };
 
@@ -114,12 +114,12 @@ export default function CustomerMeasurementsPage() {
                             </tr>
                             </thead>
                             <tbody>
-                            {campaign.customerEmails.map((customerEmail) => {
-                                const measurement = getMeasurementForCustomer(campaign.name, customerEmail);
-                                const reminderSent = hasReminderBeenSent(campaign.name, customerEmail);
+                            {campaign.customers.map((customer) => {
+                                const measurement = getMeasurementForCustomer(campaign.name, customer.id);
+                                const reminderSent = hasReminderBeenSent(campaign.name, customer.email);
                                 return (
-                                    <tr key={customerEmail} className="border-b border-cyan-700">
-                                        <td className="py-2 px-4">{customerEmail}</td>
+                                    <tr key={customer.id} className="border-b border-cyan-700">
+                                        <td className="py-2 px-4">{customer.email}</td>
                                         <td className="py-2 px-4">
                                             {measurement ? (
                                                 <>
@@ -153,7 +153,8 @@ export default function CustomerMeasurementsPage() {
                                                             campaign,
                                                             {
                                                                 campaignName: campaign.name,
-                                                                customerMail: customerEmail,
+                                                                customerId: customer.id,
+                                                                customerMail: customer.email,
                                                                 measurements: [],
                                                                 dateTime: new Date(),
                                                             },

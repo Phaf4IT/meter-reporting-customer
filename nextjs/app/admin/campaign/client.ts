@@ -1,7 +1,8 @@
 'use client';
 import {Campaign, campaignFromJson} from "@/components/admin/campaign/campaign";
+import {ModifiableCampaign} from "@/app/api/admin/campaign/route";
 
-export async function getCampaigns() : Promise<Campaign[]> {
+export async function getCampaigns(): Promise<Campaign[]> {
     const data = await fetch("/api/admin/campaign", {
         method: "GET",
         credentials: "include"
@@ -26,9 +27,13 @@ export async function saveCampaign(campaign: Campaign): Promise<Campaign> {
 }
 
 export async function deleteCampaign(campaign: Campaign): Promise<Response> {
+    const campaignToDelete: ModifiableCampaign = {
+        ...campaign,
+        customerIds: campaign.customers.map(c => c.id)
+    }
     const response = await fetch("/api/admin/campaign", {
         method: "DELETE",
-        body: JSON.stringify(campaign),
+        body: JSON.stringify(campaignToDelete),
         credentials: "include"
     });
     if (!response.ok) {

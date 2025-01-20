@@ -18,9 +18,10 @@ describe('Admin Campaign API Endpoints', () => {
     describe('POST /api/admin/campaigns', () => {
         let newCampaign: any;
         let response: any;
+        let customer: any;
 
         given('A new campaign', async () => {
-            const customer = await createCustomer(request, sessionCookie);
+            customer = await createCustomer(request, sessionCookie);
             newCampaign = getNewCampaignByParams({
                 customerIds: [customer.id],
                 customerEmails: [customer.email]
@@ -36,7 +37,7 @@ describe('Admin Campaign API Endpoints', () => {
         then('The response should indicate successful creation', async () => {
             expect(response.status).eq(200);
             expect(response.body.name).eq(newCampaign.name);
-            expect(response.body.customerEmails).to.deep.eq(newCampaign.customerEmails);
+            expect(response.body.customers).to.deep.eq([customer]);
         });
     });
 

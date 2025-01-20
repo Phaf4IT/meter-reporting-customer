@@ -28,7 +28,7 @@ export class CampaignTable extends Entity implements Campaign {
                 end_date: Date | string,
                 reminder_dates: Date[],
                 customerIds: string[],
-                measure_values: Record<any, any>[],
+                measure_values: any[],
                 company: string) {
         super();
         this.name = name;
@@ -38,5 +38,17 @@ export class CampaignTable extends Entity implements Campaign {
         this.customerIds = customerIds;
         this.measureValues = measure_values;
         this.company = company;
+    }
+
+    static of({
+                  name,
+                  startDate,
+                  endDate,
+                  reminderDates,
+                  customerIds,
+                  measureValues,
+                  company
+              }: Campaign): CampaignTable {
+        return new CampaignTable(name, startDate, endDate, reminderDates, customerIds, measureValues, company);
     }
 }

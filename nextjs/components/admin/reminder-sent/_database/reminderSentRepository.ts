@@ -55,7 +55,7 @@ function mapTableToDomain(reminderSent: ReminderSentTable): ReminderSent {
 }
 
 function mapDomainToTable(reminderSent: ReminderSent, company: string) {
-    return ReminderSentTable.ofReminderSentTable(
+    return ReminderSentTable.of(
         {
             campaignName: reminderSent.campaignName,
             customerId: reminderSent.customerId,

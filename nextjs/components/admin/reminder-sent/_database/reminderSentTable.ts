@@ -39,14 +39,14 @@ export class ReminderSentTable extends Entity implements CampaignReminderSent {
         this.company = company;
     }
 
-    static ofReminderSentTable({
-                                   campaignName,
-                                   customerEmail,
-                                   customerId,
-                                   token,
-                                   reminderDate,
-                                   company
-                               }: CampaignReminderSent) {
+    static of({
+                  campaignName,
+                  customerEmail,
+                  customerId,
+                  token,
+                  reminderDate,
+                  company
+              }: CampaignReminderSent) {
         return new ReminderSentTable(campaignName, customerEmail, customerId, token, reminderDate, company)
     }
 }
