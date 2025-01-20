@@ -7,7 +7,7 @@ import Customer from "@/components/database/schemas/public/Customer";
 @EntityClass("customer")
 export class CustomerTable extends Entity implements Customer {
     @PrimaryKey
-    @Field()
+    @Field('id', true)
     id: string;
     @Field()
     email: string;

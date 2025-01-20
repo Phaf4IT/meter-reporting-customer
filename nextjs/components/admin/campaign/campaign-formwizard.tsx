@@ -28,7 +28,7 @@ const CampaignFormWizard: React.FC<CampaignFormWizardProps> = ({
                                                                }: any) => {
     const [customers, setCustomers] = useState<Customer[]>([]);
     const [selectedMeasures, setSelectedMeasures] = useState<MeasureValue[]>([]);
-    const [selectedCustomers, setSelectedCustomers] = useState<string[]>([]);
+    const [selectedCustomers, setSelectedCustomers] = useState<Customer[]>([]);
     const [reminderDates, setReminderDates] = useState<Date[]>([]);
     const [startDate, setStartDate] = useState<Date | undefined>(undefined);
     const [name, setName] = useState<string>('');
@@ -45,7 +45,7 @@ const CampaignFormWizard: React.FC<CampaignFormWizardProps> = ({
             getCustomers()
                 .then(customers => {
                     setCustomers(customers);
-                    setSelectedCustomers(customers.map((c: Customer) => c.email));
+                    setSelectedCustomers(customers.map((c: Customer) => c));
                 });
         }
     }, [isOpen]);
@@ -56,9 +56,8 @@ const CampaignFormWizard: React.FC<CampaignFormWizardProps> = ({
             startDate: startDate!,
             endDate: endDate!,
             reminderDates: reminderDates,
-            customerEmails: selectedCustomers,
-            // TODO!
-            customerIds: [],
+            customerEmails: selectedCustomers.map((c: Customer) => c.email),
+            customerIds: selectedCustomers.map((c: Customer) => c.id),
             measureValues: selectedMeasures
         };
         return onSubmit(campaignData)
