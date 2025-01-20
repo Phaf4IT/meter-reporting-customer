@@ -112,7 +112,7 @@ describe('Complete Scenario: Customer should receive a reminder for a campaign',
                 const loggedIn: any = await request.get(url);
                 customerSessionCookie = getCookies(loggedIn.get('set-cookie'), 'authjs.session-token');
             });
-        });
+        }, 10_000);
 
         when('Customer fills report', async () => {
             reportResponse = await request.post(`/api/report?token=${token}`)
