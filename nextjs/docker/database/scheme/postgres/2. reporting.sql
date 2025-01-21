@@ -1,4 +1,6 @@
 DROP TABLE IF EXISTS company;
+DROP TABLE IF EXISTS entity_type;
+DROP TABLE IF EXISTS entity;
 DROP TABLE IF EXISTS campaign;
 DROP TABLE IF EXISTS reminder;
 DROP TABLE IF EXISTS campaign_reminder_sent;
@@ -24,6 +26,28 @@ CREATE TABLE IF NOT EXISTS company
     name  varchar(255) NOT NULL,
     email TEXT         NOT NULL,
     PRIMARY KEY (name)
+);
+
+CREATE TABLE IF NOT EXISTS entity_type
+(
+    name    varchar(255) NOT NULL,
+    fields  jsonb        NOT NULL,
+    company varchar(255) NOT NULL,
+    PRIMARY KEY (name)
+--     street_lines      text[]       NOT NULL,
+--     postal_code       varchar(255) NOT NULL,
+--     city              varchar(255) NOT NULL,
+--     country           varchar(255) NOT NULL,
+--     state_or_province varchar(255) NOT NULL,
+);
+
+CREATE TABLE IF NOT EXISTS entity
+(
+    id           uuid         NOT NULL DEFAULT uuidv7_sub_ms(),
+    entity_type  varchar(255) NOT NULL,
+    field_values jsonb        NOT NULL,
+    company      varchar(255) NOT NULL,
+    PRIMARY KEY (id)
 );
 
 CREATE TABLE IF NOT EXISTS campaign
@@ -64,41 +88,35 @@ CREATE INDEX if not exists campaign_reminder_sent_idx ON campaign_reminder_sent 
 
 CREATE TABLE IF NOT EXISTS customer
 (
-    id                uuid         NOT NULL DEFAULT uuidv7_sub_ms(),
-    email             text         NOT NULL,
-    title             varchar(255) NULL,
-    first_name        varchar(255) NOT NULL,
-    middle_name       varchar(255) NULL,
-    last_name         varchar(255) NOT NULL,
-    street_lines      text[]       NOT NULL,
-    postal_code       varchar(255) NOT NULL,
-    city              varchar(255) NOT NULL,
-    country           varchar(255) NOT NULL,
-    state_or_province varchar(255) NOT NULL,
-    phone_number      varchar(255) NOT NULL,
-    company           varchar(255) NOT NULL,
-    PRIMARY KEY (email, company)
+    id           uuid         NOT NULL DEFAULT uuidv7_sub_ms(),
+    email        text         NOT NULL,
+    title        varchar(255) NULL,
+    first_name   varchar(255) NOT NULL,
+    middle_name  varchar(255) NULL,
+    last_name    varchar(255) NOT NULL,
+    phone_number varchar(255) NOT NULL,
+    company      varchar(255) NOT NULL,
+    entity_id    uuid         NOT NULL,
+    PRIMARY KEY (id, company)
 );
+
+CREATE INDEX IF NOT EXISTS customer_secondary_idx ON customer USING btree (email);
 
 CREATE TABLE IF NOT EXISTS non_active_customer
 (
-    id                uuid         NOT NULL,
-    email             text         NOT NULL,
-    title             varchar(255) NULL,
-    first_name        varchar(255) NOT NULL,
-    middle_name       varchar(255) NULL,
-    last_name         varchar(255) NOT NULL,
-    street_lines      text[]       NOT NULL,
-    postal_code       varchar(255) NOT NULL,
-    city              varchar(255) NOT NULL,
-    country           varchar(255) NOT NULL,
-    state_or_province varchar(255) NOT NULL,
-    phone_number      varchar(255) NOT NULL,
-    company           varchar(255) NOT NULL,
-    archive_date      timestamptz  NOT NULL default now()
+    id           uuid         NOT NULL,
+    email        text         NOT NULL,
+    title        varchar(255) NULL,
+    first_name   varchar(255) NOT NULL,
+    middle_name  varchar(255) NULL,
+    last_name    varchar(255) NOT NULL,
+    phone_number varchar(255) NOT NULL,
+    company      varchar(255) NOT NULL,
+    entity_id    uuid         NOT NULL,
+    archive_date timestamptz  NOT NULL default now()
 );
 
-CREATE INDEX if not exists non_active_customer_company_email_idx ON non_active_customer USING btree (id, email, company);
+CREATE INDEX if not exists non_active_customer_company_email_idx ON non_active_customer USING btree (email, company);
 
 CREATE TABLE IF NOT EXISTS measure_value
 (

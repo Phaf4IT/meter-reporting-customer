@@ -5,6 +5,7 @@ export interface Customer {
     firstName: string;
     middleName?: string;
     lastName: string;
+    entityId?: string;
     streetLines: string[];
     postalCode: string;
     city: string;
@@ -21,6 +22,7 @@ export function customerFromJson(json: any): Customer {
         firstName: json.firstName,
         middleName: json.middleName,
         lastName: json.lastName,
+        entityId: json.entityId,
         streetLines: json.streetLines,
         postalCode: json.postalCode,
         city: json.city,

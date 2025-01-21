@@ -19,16 +19,8 @@ export class CustomerTable extends Entity implements Customer {
     middleName: string | null;
     @Field("last_name")
     lastName: string;
-    @Field("street_lines")
-    streetLines: string[];
-    @Field("postal_code")
-    postalCode: string;
-    @Field("city")
-    city: string;
-    @Field("country")
-    country: string;
-    @Field("state_or_province")
-    stateOrProvince: string;
+    @Field("entity_id")
+    entityId: string;
     @Field("phone_number")
     phoneNumber: string;
     @PrimaryKey
@@ -42,11 +34,7 @@ export class CustomerTable extends Entity implements Customer {
         firstName: string,
         middleName: string | undefined,
         lastName: string,
-        streetLines: string[],
-        postalCode: string,
-        city: string,
-        country: string,
-        stateOrProvince: string,
+        entityId: string,
         phoneNumber: string,
         company: string
     ) {
@@ -57,12 +45,12 @@ export class CustomerTable extends Entity implements Customer {
         this.firstName = firstName;
         this.middleName = middleName || null;
         this.lastName = lastName;
-        this.streetLines = streetLines;
-        this.postalCode = postalCode;
-        this.city = city;
-        this.country = country;
-        this.stateOrProvince = stateOrProvince;
+        this.entityId = entityId;
         this.phoneNumber = phoneNumber;
         this.company = company;
+    }
+
+    static of({id, email, title, firstName, middleName, lastName, entityId, phoneNumber, company}: Customer) {
+        return new CustomerTable(id, email, title || undefined, firstName, middleName || undefined, lastName, entityId, phoneNumber, company);
     }
 }
