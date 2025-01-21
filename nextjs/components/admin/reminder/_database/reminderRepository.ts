@@ -69,7 +69,7 @@ function mapTableToGenericReminder(reminder: ReminderTable, customers: Customer[
 }
 
 function mapDomainToTable(reminder: Reminder, company: string) {
-    return ReminderTable.ofReminderTable({
+    return ReminderTable.of({
         campaignName: reminder.campaignName,
         customerIds: reminder.customerIds,
         reminderDate: reminder.reminderDate,

@@ -34,6 +34,7 @@ export async function POST(request: NextRequest): Promise<NextResponse> {
     try {
         const data = customerMeasurementFromJson(await request.json());
         return createCustomerMeasurement({
+            customerId: data.customerId,
             customerMail: data.customerMail,
             measurements: data.measurements,
             campaignName: data.campaignName,
@@ -54,6 +55,7 @@ export async function PUT(request: NextRequest): Promise<NextResponse> {
     try {
         const data = customerMeasurementFromJson(await request.json());
         return overrideCustomerMeasurement({
+            customerId: data.customerId,
             customerMail: data.customerMail,
             measurements: data.measurements,
             campaignName: data.campaignName,

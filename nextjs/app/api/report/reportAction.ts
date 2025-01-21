@@ -6,6 +6,7 @@ import {
 import {CustomerMeasurement} from "@/components/report/customerMeasurement";
 import {findCustomerMeasurement} from "@/components/admin/customer-measurement/action/findCustomerMeasurementAction";
 import {Logger} from "@/lib/logger";
+import {findCustomerByEmail} from "@/components/admin/customer/_database/customerRepository";
 
 export async function report(customerMeasurement: CustomerMeasurement, token: string, email: string): Promise<any> {
     return findCampaignAndCompany(token)
@@ -17,7 +18,9 @@ export async function report(customerMeasurement: CustomerMeasurement, token: st
             if (!validateCustomerMeasurement(campaignAndCompany.campaign, customerMeasurement)) {
                 throw Error("Invalid data")
             }
+            const customer = await findCustomerByEmail(email, campaignAndCompany.company);
             return createCustomerMeasurement({
+                customerId: customer.id,
                 customerMail: email,
                 measurements: customerMeasurement.measurements,
                 campaignName: campaignAndCompany.campaign.name,

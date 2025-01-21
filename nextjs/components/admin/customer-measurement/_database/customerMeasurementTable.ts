@@ -11,6 +11,9 @@ export class CustomerMeasurementTable extends Entity implements CustomerMeasurem
     campaignName: string;
 
     @PrimaryKey
+    @Field("customer_id")
+    customerId: string;
+
     @Field("customer_mail")
     customerMail: string;
 
@@ -26,6 +29,7 @@ export class CustomerMeasurementTable extends Entity implements CustomerMeasurem
 
     constructor(
         campaignName: string,
+        customerId: string,
         customerMail: string,
         company: string,
         measurements: any[],
@@ -33,9 +37,14 @@ export class CustomerMeasurementTable extends Entity implements CustomerMeasurem
     ) {
         super();
         this.campaignName = campaignName;
+        this.customerId = customerId;
         this.customerMail = customerMail;
         this.company = company;
         this.measurements = measurements;
         this.dateTime = new Date(dateTime);
+    }
+
+    static of({campaignName, customerId, customerMail, company, measurements, dateTime}: CustomerMeasurement) {
+        return new CustomerMeasurementTable(campaignName, customerId, customerMail, company, measurements, dateTime)
     }
 }

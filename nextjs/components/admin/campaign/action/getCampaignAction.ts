@@ -28,7 +28,7 @@ export async function findCampaignAndCompany(token: string | null): Promise<{ ca
             findCampaignByCompanyAndName(reminderSentAndCompany.reminderSent!.campaignName, reminderSentAndCompany.company!)
                 .then(value => value!)
                 .then(campaign => {
-                    if (!campaign.customerEmails.some(value => value.toLowerCase() === session.user.email!.toLowerCase())) {
+                    if (!campaign.customers.some(value => value.email.toLowerCase() === session.user.email!.toLowerCase())) {
                         Logger.error(`User ${session.user.email!} tried to report for campaign ${campaign.name}, but was not found.`);
                         throw Error("Invalid data")
                     }

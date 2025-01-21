@@ -3,6 +3,7 @@ import {Campaign} from "@/components/admin/campaign/campaign";
 import {getEntityManager} from "@/lib/jpa/entity-fetcher";
 import {Customer} from "@/components/admin/customer/customer";
 import {findCustomersByIds} from "@/components/admin/customer/_database/customerRepository";
+import {ModifiableCampaign} from "@/app/api/admin/campaign/route";
 
 export async function findCampaignsByCompany(company: string) {
     return getEntityManager(CampaignTable)
@@ -31,12 +32,12 @@ export async function findCampaignByCompanyAndName(name: string, company: string
         })
 }
 
-export async function deleteCampaign(campaign: Campaign, company: string) {
+export async function deleteCampaign(campaign: ModifiableCampaign, company: string) {
     return getEntityManager(CampaignTable)
         .delete(mapDomainToTable(campaign, company))
 }
 
-export async function saveCampaign(campaign: Campaign, company: string) {
+export async function saveCampaign(campaign: ModifiableCampaign, company: string) {
     return getEntityManager(CampaignTable)
         .create(mapDomainToTable(campaign, company))
         .then(async campaign => {
@@ -45,7 +46,7 @@ export async function saveCampaign(campaign: Campaign, company: string) {
         });
 }
 
-export async function updateCampaign(campaign: Campaign, company: string) {
+export async function updateCampaign(campaign: ModifiableCampaign, company: string) {
     return getEntityManager(CampaignTable)
         .update(mapDomainToTable(campaign, company))
         .then(campaign => campaign)
@@ -54,8 +55,7 @@ export async function updateCampaign(campaign: Campaign, company: string) {
 function mapTableToDomain(campaign: CampaignTable, customers: Customer[]): Campaign {
     return {
         name: campaign.name,
-        customerEmails: campaign.customerIds.map(id => customers.find(c => c.id === id)!.email!),
-        customerIds: campaign.customerIds,
+        customers: campaign.customerIds.map(id => customers.find(c => c.id === id)!),
         endDate: campaign.endDate,
         measureValues: campaign.measureValues,
         reminderDates: campaign.reminderDates,
@@ -63,13 +63,15 @@ function mapTableToDomain(campaign: CampaignTable, customers: Customer[]): Campa
     }
 }
 
-function mapDomainToTable(campaign: Campaign, company: string) {
-    return new CampaignTable(
-        campaign.name,
-        campaign.startDate,
-        campaign.endDate,
-        campaign.reminderDates,
-        campaign.customerIds,
-        campaign.measureValues,
-        company);
+function mapDomainToTable(campaign: ModifiableCampaign, company: string) {
+    return CampaignTable.of(
+        {
+            name: campaign.name,
+            startDate: campaign.startDate,
+            endDate: campaign.endDate,
+            reminderDates: campaign.reminderDates,
+            customerIds: campaign.customerIds,
+            measureValues: campaign.measureValues,
+            company
+        });
 }

@@ -68,8 +68,8 @@ const CampaignList = ({campaigns, t, onDelete}: CampaignListProps) => {
                                 <td className="px-4 py-2">
                                     <div className="max-h-32 overflow-y-auto pr-2">
                                         <ul className="list-disc pl-5">
-                                            {campaign.customerEmails.map((email, idx) => (
-                                                <li key={idx}>{email}</li>
+                                            {campaign.customers.map((c, idx) => (
+                                                <li key={idx}>{c.email}</li>
                                             ))}
                                         </ul>
                                     </div>

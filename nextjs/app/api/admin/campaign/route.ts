@@ -2,8 +2,8 @@ import {NextRequest, NextResponse} from 'next/server';
 import {createCampaign} from "@/components/admin/campaign/action/createCampaignAction";
 import {auth} from "@/auth";
 import {getCampaigns} from "@/components/admin/campaign/action/getCampaignsAction";
-import {campaignFromJson} from "@/components/admin/campaign/campaign";
 import {removeCampaign} from "@/components/admin/campaign/action/deleteCampaignAction";
+import {MeasureValue} from "@/components/admin/measure-value/measureValue";
 
 export async function POST(
     request: NextRequest
@@ -16,7 +16,7 @@ export async function POST(
     }
     try {
         const data = await request.json();
-        const campaign = await createCampaign(campaignFromJson(data), session.user.company);
+        const campaign = await createCampaign(createCampaignFromJson(data), session.user.company);
 
         return NextResponse.json(campaign);
     } catch (err) {
@@ -36,7 +36,7 @@ export async function DELETE(
     }
     try {
         const data = await request.json();
-        await removeCampaign(campaignFromJson(data), session.user.company);
+        await removeCampaign(createCampaignFromJson(data), session.user.company);
 
         return NextResponse.json({});
     } catch (err) {
@@ -61,3 +61,22 @@ export async function GET(): Promise<Response> {
     }
 }
 
+export interface ModifiableCampaign {
+    readonly name: string;
+    readonly customerIds: string[];
+    readonly endDate: Date;
+    readonly measureValues: MeasureValue[];
+    readonly reminderDates: Date[];
+    readonly startDate: Date;
+}
+
+function createCampaignFromJson(json: any): ModifiableCampaign {
+    return {
+        name: json.name,
+        customerIds: json.customerIds,
+        endDate: new Date(json.endDate),
+        measureValues: json.measureValues,
+        reminderDates: json.reminderDates.map((date: string) => new Date(date)),
+        startDate: new Date(json.startDate),
+    }
+}

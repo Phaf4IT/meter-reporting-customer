@@ -9,8 +9,7 @@ export async function getCustomerMeasurements(): Promise<CustomerMeasurement[]> 
     if (!response.ok) {
         throw new Error("Failed to fetch customer measurements");
     }
-    const data: CustomerMeasurement[] = await response.json();
-    return data;
+    return await response.json();
 }
 
 export async function saveCustomerMeasurement(customerMeasurement: CustomerMeasurement, isNew: boolean): Promise<CustomerMeasurement> {
@@ -29,11 +28,10 @@ export async function saveCustomerMeasurement(customerMeasurement: CustomerMeasu
     return customerMeasurementFromJson(await response.json());
 }
 
-export async function getRemindersSent() {
+export async function getRemindersSent(): Promise<ReminderSent[]> {
     const response = await fetch("/api/admin/reminder-sent");
     if (!response.ok) {
         throw new Error("Failed to fetch customer measurements");
     }
-    const data: ReminderSent[] = await response.json();
-    return data;
+    return await response.json();
 }

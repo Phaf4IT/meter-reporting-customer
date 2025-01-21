@@ -11,6 +11,9 @@ export class OverruledCustomerMeasurementTable extends Entity implements Overrul
     campaignName: string;
 
     @PrimaryKey
+    @Field("customer_id")
+    customerId: string;
+
     @Field("customer_mail")
     customerMail: string;
 
@@ -30,6 +33,7 @@ export class OverruledCustomerMeasurementTable extends Entity implements Overrul
 
     constructor(
         campaignName: string,
+        customerId: string,
         customerMail: string,
         company: string,
         measurements: any[],
@@ -38,10 +42,30 @@ export class OverruledCustomerMeasurementTable extends Entity implements Overrul
     ) {
         super();
         this.campaignName = campaignName;
+        this.customerId = customerId;
         this.customerMail = customerMail;
         this.company = company;
         this.measurements = measurements;
         this.originalDateTime = new Date(originalDateTime);
         this.overruleDateTime = new Date(overruleDateTime);
+    }
+
+    static of({
+                  campaignName,
+                  customerId,
+                  customerMail,
+                  company,
+                  measurements,
+                  overruleDateTime,
+                  originalDateTime
+              }: OverruledCustomerMeasurement) {
+        return new OverruledCustomerMeasurementTable(
+            campaignName,
+            customerId,
+            customerMail,
+            company,
+            measurements,
+            originalDateTime,
+            overruleDateTime);
     }
 }

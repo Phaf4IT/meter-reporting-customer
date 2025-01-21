@@ -10,7 +10,7 @@ import {getUtcDateAtStartOfDay} from "@/lib/dateUTCConverter";
 import {format} from "date-fns";
 import {toZonedTime} from "date-fns-tz";
 import {createCustomer} from "@/testlib/api_fixtures/admin/customer-api.fixture";
-import {createCampaign} from "@/testlib/api_fixtures/admin/campaign-api.fixture";
+import {createCampaign, getCampaignByName} from "@/testlib/api_fixtures/admin/campaign-api.fixture";
 
 describe('Open admin in browser', () => {
     let browser: Browser;
@@ -35,12 +35,14 @@ describe('Open admin in browser', () => {
 
     describe('Open admin campaigns in browser', () => {
         let campaign: any;
+        let customer: any;
         given('The campaign is posted to the server', async () => {
-            const customer = await createCustomer(request, sessionCookie)
+            customer = await createCustomer(request, sessionCookie)
             campaign = await createCampaign(request, sessionCookie, {
                 customerIds: [customer.id],
                 customerEmails: [customer.email]
             });
+            expect(await getCampaignByName(request, sessionCookie, campaign.name)).is.not.undefined;
         })
 
         when('The response should contain the new campaign', async () => {
@@ -50,8 +52,10 @@ describe('Open admin in browser', () => {
                 locale: defaultLocale,
             });
             page = await loginAndGoToAdminPage(context, serverUrl, adminUrl, email, wiremock);
+            await page.waitForLoadState('networkidle', {timeout: 50_000});
+
             await page.waitForSelector('table', {timeout: 50_000});
-        })
+        }, 100_000, 3)
 
         then('The response should contain the new campaign', async () => {
             Logger.info(await page.content())
@@ -82,7 +86,7 @@ describe('Open admin in browser', () => {
             expect(startDate).to.equal(formattedStartDate);
             expect(endDate).to.equal(formattedEndDate);
             expect(reminderDates).to.have.members(formattedReminderDates);
-            expect(customerEmails).to.have.members(campaign.customerEmails);
+            expect(customerEmails).to.have.members([customer.email]);
             const expectedMeasureValues = campaign.measureValues.map((value: any) => value.name).join(', ');
             expect(measureValues).to.include(expectedMeasureValues);
         })

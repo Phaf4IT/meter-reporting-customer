@@ -12,6 +12,19 @@ export async function findCustomers(company: string) {
         );
 }
 
+export async function findCustomerByEmail(email: string, company: string) {
+    return getEntityManager(CustomerTable)
+        .findBy({
+            company: company,
+            email: email
+        })
+        .then((customers) =>
+            customers
+                .map((customerTable: CustomerTable) => mapTableToDomain(customerTable))
+                .find(() => true)!
+        );
+}
+
 export async function findCustomersByIds(ids: string[], company: string) {
     return getEntityManager(CustomerTable)
         .findBy({

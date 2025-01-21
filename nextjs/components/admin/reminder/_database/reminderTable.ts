@@ -30,12 +30,12 @@ export class ReminderTable extends Entity implements Reminder {
         this.company = company;
     }
 
-    static ofReminderTable({
-                               campaignName,
-                               customerIds,
-                               reminderDate,
-                               company
-                           }: Reminder) {
+    static of({
+                  campaignName,
+                  customerIds,
+                  reminderDate,
+                  company
+              }: Reminder) {
         return new ReminderTable(campaignName, customerIds, reminderDate, company);
     }
 }

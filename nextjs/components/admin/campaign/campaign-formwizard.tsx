@@ -10,6 +10,7 @@ import {Campaign} from "@/components/admin/campaign/campaign";
 import FormWizard from "@/components/admin/form-wizard";
 import {getMeasureValues} from "@/app/admin/measure-value/client";
 import CampaignNameForm from "@/components/admin/campaign/campaign-name-form";
+import {ModifiableCampaign} from "@/app/api/admin/campaign/route";
 
 interface CampaignFormWizardProps {
     isOpen: boolean;
@@ -51,13 +52,12 @@ const CampaignFormWizard: React.FC<CampaignFormWizardProps> = ({
     }, [isOpen]);
 
     const handleFormSubmit = () => {
-        const campaignData: Campaign = {
+        const campaignData: ModifiableCampaign = {
             name: name,
             startDate: startDate!,
             endDate: endDate!,
             reminderDates: reminderDates,
-            customerEmails: selectedCustomers.map((c: Customer) => c.email),
-            customerIds: selectedCustomers.map((c: Customer) => c.id),
+            customerIds: selectedCustomers.map(c => c.id),
             measureValues: selectedMeasures
         };
         return onSubmit(campaignData)

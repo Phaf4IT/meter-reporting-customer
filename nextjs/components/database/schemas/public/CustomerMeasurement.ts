@@ -5,7 +5,7 @@
 export type Customer_measurementCampaign_name = string;
 
 /** Identifier type for public.customer_measurement */
-export type Customer_measurementCustomer_mail = string;
+export type Customer_measurementCustomer_id = string;
 
 /** Identifier type for public.customer_measurement */
 export type Customer_measurementCompany = string;
@@ -14,11 +14,13 @@ export type Customer_measurementCompany = string;
 export default interface CustomerMeasurement {
   campaignName: Customer_measurementCampaign_name;
 
-  customerMail: Customer_measurementCustomer_mail;
+  customerId: Customer_measurementCustomer_id;
 
   company: Customer_measurementCompany;
 
   measurements: unknown[];
+
+  customerMail: string;
 
   dateTime: Date;
 }
@@ -27,11 +29,13 @@ export default interface CustomerMeasurement {
 export interface CustomerMeasurementInitializer {
   campaignName: Customer_measurementCampaign_name;
 
-  customerMail: Customer_measurementCustomer_mail;
+  customerId: Customer_measurementCustomer_id;
 
   company: Customer_measurementCompany;
 
   measurements: unknown[];
+
+  customerMail: string;
 
   dateTime: Date;
 }
@@ -40,11 +44,13 @@ export interface CustomerMeasurementInitializer {
 export interface CustomerMeasurementMutator {
   campaignName?: Customer_measurementCampaign_name;
 
-  customerMail?: Customer_measurementCustomer_mail;
+  customerId?: Customer_measurementCustomer_id;
 
   company?: Customer_measurementCompany;
 
   measurements?: unknown[];
+
+  customerMail?: string;
 
   dateTime?: Date;
 }

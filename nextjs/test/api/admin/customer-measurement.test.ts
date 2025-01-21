@@ -68,9 +68,10 @@ describe('Customer Measurement API Endpoints', () => {
 
         given('An existing customer measurement is created', async () => {
             newCustomerMeasurement = getNewCustomerMeasurement();
-            await request.post('/api/admin/customer-measurement')
+            const created = await request.post('/api/admin/customer-measurement')
                 .send(newCustomerMeasurement)
                 .set('Cookie', sessionCookie);
+            expect(created.status).eq(200);
         });
 
         given('An updated customer measurement payload', () => {

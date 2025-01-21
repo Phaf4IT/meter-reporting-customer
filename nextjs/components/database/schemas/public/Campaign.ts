@@ -9,51 +9,51 @@ export type CampaignCompany = string;
 
 /** Represents the table public.campaign */
 export default interface Campaign {
-    name: CampaignName;
+  name: CampaignName;
 
-    company: CampaignCompany;
+  company: CampaignCompany;
 
-    startDate: Date;
+  startDate: Date;
 
-    endDate: Date;
+  endDate: Date;
 
-    reminderDates: Date[];
+  reminderDates: Date[];
 
-    customerIds: string[];
+  customerIds: string[];
 
-    measureValues: unknown[];
+  measureValues: unknown[];
 }
 
 /** Represents the initializer for the table public.campaign */
 export interface CampaignInitializer {
-    name: CampaignName;
+  name: CampaignName;
 
-    company: CampaignCompany;
+  company: CampaignCompany;
 
-    startDate: Date;
+  startDate: Date;
 
-    endDate: Date;
+  endDate: Date;
 
-    reminderDates: Date[];
+  reminderDates: Date[];
 
-    customerIds: string[];
+  customerIds: string[];
 
-    measureValues: unknown[];
+  measureValues: unknown[];
 }
 
 /** Represents the mutator for the table public.campaign */
 export interface CampaignMutator {
-    name?: CampaignName;
+  name?: CampaignName;
 
-    company?: CampaignCompany;
+  company?: CampaignCompany;
 
-    startDate?: Date;
+  startDate?: Date;
 
-    endDate?: Date;
+  endDate?: Date;
 
-    reminderDates?: Date[];
+  reminderDates?: Date[];
 
-    customerIds?: string[];
+  customerIds?: string[];
 
-    measureValues?: unknown[];
+  measureValues?: unknown[];
 }
