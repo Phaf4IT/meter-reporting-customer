@@ -55,7 +55,7 @@ describe('Open admin in browser', () => {
             await page.waitForLoadState('networkidle', {timeout: 50_000});
 
             await page.waitForSelector('table', {timeout: 50_000});
-        }, 100_000)
+        }, 100_000, 3)
 
         then('The response should contain the new campaign', async () => {
             Logger.info(await page.content())
