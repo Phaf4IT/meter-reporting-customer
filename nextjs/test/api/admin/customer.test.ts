@@ -65,9 +65,9 @@ describe('Customer API Endpoints', () => {
         let response: any;
 
         given('A new customer is created', async () => {
-            newCustomer = getNewCustomer();
-            await request.post('/api/admin/customer').send(newCustomer)
+            const response = await request.post('/api/admin/customer').send(getNewCustomer())
                 .set('Cookie', sessionCookie);
+            newCustomer = response.body;
         });
 
         given('The customer information needs to be updated', () => {
