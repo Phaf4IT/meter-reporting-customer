@@ -10,20 +10,24 @@ export class EntityTypeTable extends Entity implements EntityType {
     @Field()
     name: string;
 
-    @Field("fields")
+    @Field()
     fields: any;
+
+    @Field()
+    translations: any;
 
     @Field()
     company: string;
 
-    constructor(name: string, fields: any, company: string) {
+    constructor(name: string, fields: any, translations: any, company: string) {
         super();
         this.name = name;
         this.fields = fields;
+        this.translations = translations;
         this.company = company;
     }
 
-    static of({name, fields, company}: EntityType): EntityTypeTable {
-        return new EntityTypeTable(name, fields, company);
+    static of({name, fields, company, translations}: EntityType): EntityTypeTable {
+        return new EntityTypeTable(name, fields, translations, company);
     }
 }

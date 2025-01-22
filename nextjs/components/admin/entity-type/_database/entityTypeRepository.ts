@@ -40,6 +40,7 @@ function mapTableToDomain(entityType: EntityTypeTable): EntityType {
     return {
         name: entityType.name,
         fields: entityType.fields,
+        translations: entityType.translations,
     }
 }
 
@@ -47,6 +48,7 @@ function mapDomainToTable(entityType: EntityType, company: string): EntityTypeTa
     return EntityTypeTable.of({
         name: entityType.name,
         fields: entityType.fields,
+        translations: entityType.translations,
         company
     });
 }

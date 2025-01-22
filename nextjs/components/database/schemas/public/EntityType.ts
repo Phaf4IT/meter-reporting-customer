@@ -11,6 +11,8 @@ export default interface EntityType {
   fields: unknown;
 
   company: string;
+
+  translations: unknown;
 }
 
 /** Represents the initializer for the table public.entity_type */
@@ -20,6 +22,8 @@ export interface EntityTypeInitializer {
   fields: unknown;
 
   company: string;
+
+  translations: unknown;
 }
 
 /** Represents the mutator for the table public.entity_type */
@@ -29,4 +33,6 @@ export interface EntityTypeMutator {
   fields?: unknown;
 
   company?: string;
+
+  translations?: unknown;
 }

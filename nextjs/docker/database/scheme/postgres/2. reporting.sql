@@ -30,9 +30,10 @@ CREATE TABLE IF NOT EXISTS company
 
 CREATE TABLE IF NOT EXISTS entity_type
 (
-    name    varchar(255) NOT NULL,
-    fields  jsonb        NOT NULL,
-    company varchar(255) NOT NULL,
+    name         varchar(255) NOT NULL,
+    fields       jsonb        NOT NULL,
+    company      varchar(255) NOT NULL,
+    translations json         NOT NULL,
     PRIMARY KEY (name)
 --     street_lines      text[]       NOT NULL,
 --     postal_code       varchar(255) NOT NULL,
