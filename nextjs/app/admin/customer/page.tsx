@@ -96,7 +96,7 @@ export default function CustomersPage() {
                             </thead>
                             <tbody>
                             {customers.map((customer) => (
-                                <tr key={customer.email} className="border-b border-cyan-700">
+                                <tr key={customer.id} className="border-b border-cyan-700">
                                     <td className="py-2 px-4">{customer.title ? t(customer.title) : ''}</td>
                                     <td className="py-2 px-4">{customer.email}</td>
                                     <td className="py-2 px-4">

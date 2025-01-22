@@ -1,14 +1,23 @@
 import {getEntityManager} from "@/lib/jpa/entity-fetcher";
 import {CustomerTable} from "@/components/admin/customer/_database/customerTable";
 import {Customer} from "@/components/admin/customer/customer";
+import {
+    findEntitiesByCompanyAndIds,
+    findEntityByCompanyAndId
+} from "@/components/admin/entity/_database/entityRepository";
+import {EntityTable} from "@/components/admin/entity/_database/entityTable";
+import {getLocation} from "@/components/admin/entity/temporaryLocation";
 
 export async function findCustomers(company: string) {
     return getEntityManager(CustomerTable)
         .findBy({
             company: company
         })
-        .then((customers) =>
-            customers.map((customerTable: CustomerTable) => mapTableToDomain(customerTable))
+        .then(async (customers) => {
+                const entities = await findEntitiesByCompanyAndIds(customers.map(c => c.entityId), company);
+                return customers.map((customerTable: CustomerTable) =>
+                    mapTableToDomain(customerTable, entities.find(entity => customerTable.entityId === entity.id)!));
+            }
         );
 }
 
@@ -20,7 +29,9 @@ export async function findCustomerByEmail(email: string, company: string) {
         })
         .then((customers) =>
             customers
-                .map((customerTable: CustomerTable) => mapTableToDomain(customerTable))
+                .map((customerTable: CustomerTable) =>
+                    findEntityByCompanyAndId(customerTable.entityId, company)
+                        .then(entity => mapTableToDomain(customerTable, entity!)))
                 .find(() => true)!
         );
 }
@@ -31,18 +42,25 @@ export async function findCustomersByIds(ids: string[], company: string) {
             company: company,
             id: ids
         })
-        .then((customers) =>
-            customers.map((customerTable: CustomerTable) => mapTableToDomain(customerTable))
+        .then(async (customers) => {
+                const entities = await findEntitiesByCompanyAndIds(customers.map(c => c.entityId), company);
+                return customers.map((customerTable: CustomerTable) => mapTableToDomain(customerTable,
+                    entities.find(entity => customerTable.entityId === entity.id)!));
+            }
         );
 }
 
 export async function saveCustomer(customer: Customer, company: string) {
     return getEntityManager(CustomerTable)
         .create(mapDomainToTable(customer, company))
-        .then(customerTable => mapTableToDomain(customerTable)
+        .then(customerTable =>
+            findEntityByCompanyAndId(customerTable.entityId, company)
+                .then(entity => {
+                        return mapTableToDomain(customerTable, entity!);
+                    }
+                )
         )
 }
-
 
 export async function updateCustomer(customer: Customer, company: string) {
     return getEntityManager(CustomerTable)
@@ -57,35 +75,30 @@ export async function deleteCustomer(customer: Customer, company: string) {
 }
 
 function mapDomainToTable(customer: Customer, company: string) {
-    return new CustomerTable(
-        customer.id,
-        customer.email,
-        customer.title,
-        customer.firstName,
-        customer.middleName,
-        customer.lastName,
-        customer.streetLines,
-        customer.postalCode,
-        customer.city,
-        customer.country,
-        customer.stateOrProvinceCode,
-        customer.phoneNumber,
-        company);
+    return CustomerTable.of({
+        id: customer.id,
+        email: customer.email,
+        title: customer.title || null,
+        firstName: customer.firstName,
+        middleName: customer.middleName || null,
+        lastName: customer.lastName,
+        entityId: customer.entityId!,
+        phoneNumber: customer.phoneNumber,
+        company
+    });
 }
 
-function mapTableToDomain(customerTable: CustomerTable): Customer {
+function mapTableToDomain(customerTable: CustomerTable, entityTable: EntityTable): Customer {
+    const location = getLocation(entityTable);
     return {
         id: customerTable.id,
         email: customerTable.email,
         title: customerTable.title || undefined,
+        entityId: customerTable.entityId,
         firstName: customerTable.firstName,
         middleName: customerTable.middleName || undefined,
         lastName: customerTable.lastName,
-        streetLines: customerTable.streetLines,
-        postalCode: customerTable.postalCode,
-        city: customerTable.city,
-        country: customerTable.country,
-        stateOrProvinceCode: customerTable.stateOrProvince,
+        ...location,
         phoneNumber: customerTable.phoneNumber
     };
 }

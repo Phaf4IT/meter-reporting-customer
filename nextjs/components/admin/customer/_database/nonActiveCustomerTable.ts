@@ -19,16 +19,8 @@ export class NonActiveCustomerTable extends Entity implements NonActiveCustomer 
     middleName: string | null;
     @Field("last_name")
     lastName: string;
-    @Field("street_lines")
-    streetLines: string[];
-    @Field("postal_code")
-    postalCode: string;
-    @Field("city")
-    city: string;
-    @Field("country")
-    country: string;
-    @Field("state_or_province")
-    stateOrProvince: string;
+    @Field("entity_id")
+    entityId: string;
     @Field("phone_number")
     phoneNumber: string;
     @PrimaryKey
@@ -44,11 +36,7 @@ export class NonActiveCustomerTable extends Entity implements NonActiveCustomer 
         firstName: string,
         middleName: string | undefined,
         lastName: string,
-        streetLines: string[],
-        postalCode: string,
-        city: string,
-        country: string,
-        stateOrProvince: string,
+        entityId: string,
         phoneNumber: string,
         company: string,
         archiveDate: Date,
@@ -60,13 +48,26 @@ export class NonActiveCustomerTable extends Entity implements NonActiveCustomer 
         this.firstName = firstName;
         this.middleName = middleName || null;
         this.lastName = lastName;
-        this.streetLines = streetLines;
-        this.postalCode = postalCode;
-        this.city = city;
-        this.country = country;
-        this.stateOrProvince = stateOrProvince;
+        this.entityId = entityId;
         this.phoneNumber = phoneNumber;
         this.company = company;
         this.archiveDate = archiveDate;
+    }
+
+    static of({
+                  id,
+                  email,
+                  title,
+                  firstName,
+                  middleName,
+                  lastName,
+                  entityId,
+                  phoneNumber,
+                  company,
+                  archiveDate
+              }: NonActiveCustomer): NonActiveCustomerTable {
+        return new NonActiveCustomerTable(
+            id, email, title || undefined, firstName, middleName || undefined, lastName, entityId, phoneNumber, company, archiveDate
+        )
     }
 }

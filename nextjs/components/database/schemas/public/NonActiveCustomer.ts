@@ -3,94 +3,70 @@
 
 /** Represents the table public.non_active_customer */
 export default interface NonActiveCustomer {
-    id: string;
+  id: string;
 
-    email: string;
+  email: string;
 
-    title: string | null;
+  title: string | null;
 
-    firstName: string;
+  firstName: string;
 
-    middleName: string | null;
+  middleName: string | null;
 
-    lastName: string;
+  lastName: string;
 
-    streetLines: string[];
+  phoneNumber: string;
 
-    postalCode: string;
+  company: string;
 
-    city: string;
+  entityId: string;
 
-    country: string;
-
-    stateOrProvince: string;
-
-    phoneNumber: string;
-
-    company: string;
-
-    archiveDate: Date;
+  archiveDate: Date;
 }
 
 /** Represents the initializer for the table public.non_active_customer */
 export interface NonActiveCustomerInitializer {
-    id: string;
+  id: string;
 
-    email: string;
+  email: string;
 
-    title?: string | null;
+  title?: string | null;
 
-    firstName: string;
+  firstName: string;
 
-    middleName?: string | null;
+  middleName?: string | null;
 
-    lastName: string;
+  lastName: string;
 
-    streetLines: string[];
+  phoneNumber: string;
 
-    postalCode: string;
+  company: string;
 
-    city: string;
+  entityId: string;
 
-    country: string;
-
-    stateOrProvince: string;
-
-    phoneNumber: string;
-
-    company: string;
-
-    /** Default value: now() */
-    archiveDate?: Date;
+  /** Default value: now() */
+  archiveDate?: Date;
 }
 
 /** Represents the mutator for the table public.non_active_customer */
 export interface NonActiveCustomerMutator {
-    id?: string;
+  id?: string;
 
-    email?: string;
+  email?: string;
 
-    title?: string | null;
+  title?: string | null;
 
-    firstName?: string;
+  firstName?: string;
 
-    middleName?: string | null;
+  middleName?: string | null;
 
-    lastName?: string;
+  lastName?: string;
 
-    streetLines?: string[];
+  phoneNumber?: string;
 
-    postalCode?: string;
+  company?: string;
 
-    city?: string;
+  entityId?: string;
 
-    country?: string;
-
-    stateOrProvince?: string;
-
-    phoneNumber?: string;
-
-    company?: string;
-
-    archiveDate?: Date;
+  archiveDate?: Date;
 }

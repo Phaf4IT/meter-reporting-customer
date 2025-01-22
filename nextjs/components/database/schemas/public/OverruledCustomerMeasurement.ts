@@ -15,51 +15,51 @@ export type Overruled_customer_measurementCompany = string;
 
 /** Represents the table public.overruled_customer_measurement */
 export default interface OverruledCustomerMeasurement {
-    campaignName: Overruled_customer_measurementCampaign_name;
+  campaignName: Overruled_customer_measurementCampaign_name;
 
-    customerId: Overruled_customer_measurementCustomer_id;
+  customerId: Overruled_customer_measurementCustomer_id;
 
-    overruleDateTime: Overruled_customer_measurementOverrule_date_time;
+  overruleDateTime: Overruled_customer_measurementOverrule_date_time;
 
-    company: Overruled_customer_measurementCompany;
+  company: Overruled_customer_measurementCompany;
 
-    measurements: unknown[];
+  measurements: unknown[];
 
-    customerMail: string;
+  customerMail: string;
 
-    originalDateTime: Date;
+  originalDateTime: Date;
 }
 
 /** Represents the initializer for the table public.overruled_customer_measurement */
 export interface OverruledCustomerMeasurementInitializer {
-    campaignName: Overruled_customer_measurementCampaign_name;
+  campaignName: Overruled_customer_measurementCampaign_name;
 
-    customerId: Overruled_customer_measurementCustomer_id;
+  customerId: Overruled_customer_measurementCustomer_id;
 
-    overruleDateTime: Overruled_customer_measurementOverrule_date_time;
+  overruleDateTime: Overruled_customer_measurementOverrule_date_time;
 
-    company: Overruled_customer_measurementCompany;
+  company: Overruled_customer_measurementCompany;
 
-    measurements: unknown[];
+  measurements: unknown[];
 
-    customerMail: string;
+  customerMail: string;
 
-    originalDateTime: Date;
+  originalDateTime: Date;
 }
 
 /** Represents the mutator for the table public.overruled_customer_measurement */
 export interface OverruledCustomerMeasurementMutator {
-    campaignName?: Overruled_customer_measurementCampaign_name;
+  campaignName?: Overruled_customer_measurementCampaign_name;
 
-    customerId?: Overruled_customer_measurementCustomer_id;
+  customerId?: Overruled_customer_measurementCustomer_id;
 
-    overruleDateTime?: Overruled_customer_measurementOverrule_date_time;
+  overruleDateTime?: Overruled_customer_measurementOverrule_date_time;
 
-    company?: Overruled_customer_measurementCompany;
+  company?: Overruled_customer_measurementCompany;
 
-    measurements?: unknown[];
+  measurements?: unknown[];
 
-    customerMail?: string;
+  customerMail?: string;
 
-    originalDateTime?: Date;
+  originalDateTime?: Date;
 }
