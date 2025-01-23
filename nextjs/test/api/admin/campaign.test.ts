@@ -4,6 +4,9 @@ import {expect} from "chai";
 import supertest from "supertest";
 import {getEnvironmentVariableProvider} from "@/testlib/environmentVariableProvider";
 import {createCustomer} from "@/testlib/api_fixtures/admin/customer-api.fixture";
+import {createEntityType} from "@/testlib/api_fixtures/admin/entity-type-api";
+import {createEntity} from "@/testlib/api_fixtures/admin/entity-api";
+import {Customer} from "@/components/admin/customer/customer";
 
 describe('Admin Campaign API Endpoints', () => {
     let request: any;
@@ -18,10 +21,14 @@ describe('Admin Campaign API Endpoints', () => {
     describe('POST /api/admin/campaigns', () => {
         let newCampaign: any;
         let response: any;
-        let customer: any;
+        let customer: Customer;
 
         given('A new campaign', async () => {
-            customer = await createCustomer(request, sessionCookie);
+            const entityType = await createEntityType(request, sessionCookie);
+            const entity = await createEntity(request, sessionCookie, entityType.name);
+            // eslint-disable-next-line @typescript-eslint/no-unused-vars
+            const {entityId, ...customerWithoutEntityId} = await createCustomer(request, sessionCookie, entity.id);
+            customer = {...customerWithoutEntityId, entity};
             newCampaign = getNewCampaignByParams({
                 customerIds: [customer.id],
                 customerEmails: [customer.email]
@@ -47,7 +54,9 @@ describe('Admin Campaign API Endpoints', () => {
         let response: any;
 
         given('A new campaign is created', async () => {
-            const customer = await createCustomer(request, sessionCookie);
+            const entityType = await createEntityType(request, sessionCookie);
+            const entity = await createEntity(request, sessionCookie, entityType.name);
+            const customer = await createCustomer(request, sessionCookie, entity.id);
             newCampaign = getNewCampaignByParams({customerIds: [customer.id]});
             await request.post('/api/admin/campaign').send(newCampaign)
                 .set('Cookie', sessionCookie);
@@ -72,7 +81,9 @@ describe('Admin Campaign API Endpoints', () => {
         let response: any;
 
         given('A new campaign is created', async () => {
-            const customer = await createCustomer(request, sessionCookie);
+            const entityType = await createEntityType(request, sessionCookie);
+            const entity = await createEntity(request, sessionCookie, entityType.name);
+            const customer = await createCustomer(request, sessionCookie, entity.id);
             newCampaign = getNewCampaignByParams({customerIds: [customer.id]});
             await request.post('/api/admin/campaign').send(newCampaign)
                 .set('Cookie', sessionCookie);

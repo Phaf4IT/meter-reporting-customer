@@ -5,6 +5,9 @@ import {createReminder} from "@/components/admin/reminder/action/createReminderA
 import {performReminder} from "@/components/admin/reminder/action/performReminderAction";
 import {reminderFromJson} from "@/components/admin/reminder/reminder";
 import {removeReminder} from "@/components/admin/reminder/action/deleteReminderAction";
+import {isEmpty} from 'lodash';
+import {Logger} from "@/lib/logger";
+import {NoCampaignFoundError} from "@/components/admin/campaign/_database/campaignRepository";
 
 export async function POST(
     request: NextRequest
@@ -17,11 +20,17 @@ export async function POST(
     }
     try {
         const data = await request.json();
-        const reminder = await createReminder(reminderFromJson(data), session.user.company);
-
-        return NextResponse.json(reminder);
-    } catch (err) {
-        console.error("Error creating reminder:", err);
+        const reminder = reminderFromJson(data);
+        if (isEmpty(reminder.customerIds) || isEmpty(reminder.customerEmails)) {
+            return new NextResponse("No customers defined", {status: 400});
+        }
+        const createdReminder = await createReminder(reminder, session.user.company);
+        return NextResponse.json(createdReminder);
+    } catch (err: any) {
+        if (err instanceof NoCampaignFoundError) {
+            return new NextResponse("No correct campaign defined", {status: 400});
+        }
+        Logger.error("Error creating reminder:", err);
         return new NextResponse("Internal Server Error", {status: 500});
     }
 }
@@ -40,8 +49,8 @@ export async function PUT(
         const reminder = reminderFromJson(data);
         return performReminder(reminder, session.user.company, `${request.nextUrl.protocol}//${request.nextUrl.host}`)
             .then(() => NextResponse.json({}));
-    } catch (err) {
-        console.error("Error creating reminder:", err);
+    } catch (err: any) {
+        Logger.error("Error creating reminder:", err);
         return new NextResponse("Internal Server Error", {status: 500});
     }
 }
@@ -56,8 +65,8 @@ export async function GET(): Promise<Response> {
     try {
         return getReminders()
             .then(value => NextResponse.json(value));
-    } catch (err) {
-        console.error("Error creating reminder:", err);
+    } catch (err: any) {
+        Logger.error("Error creating reminder:", err);
         return new NextResponse("Internal Server Error", {status: 500});
     }
 }
@@ -76,8 +85,8 @@ export async function DELETE(
         await removeReminder(reminderFromJson(data), session.user.company);
 
         return NextResponse.json({});
-    } catch (err) {
-        console.error("Error creating reminder:", err);
+    } catch (err: any) {
+        Logger.error("Error creating reminder:", err);
         return new NextResponse("Internal Server Error", {status: 500});
     }
 }

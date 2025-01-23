@@ -3,6 +3,8 @@ import {getNewCustomer} from "@/testlib/fixtures/customer.fixture";
 import {expect} from "chai";
 import supertest from "supertest";
 import {getEnvironmentVariableProvider} from "@/testlib/environmentVariableProvider";
+import {createEntityType} from "@/testlib/api_fixtures/admin/entity-type-api";
+import {createEntity} from "@/testlib/api_fixtures/admin/entity-api";
 
 describe('Customer API Endpoints', () => {
     let request: any;
@@ -18,8 +20,10 @@ describe('Customer API Endpoints', () => {
         let newCustomer: any;
         let response: any;
 
-        given('A new customer', () => {
-            newCustomer = getNewCustomer();
+        given('A new customer', async () => {
+            const entityType = await createEntityType(request, sessionCookie);
+            const entity = await createEntity(request, sessionCookie, entityType.name);
+            newCustomer = getNewCustomer(entity.id);
         });
 
         when('The customer is posted to the server', async () => {
@@ -41,7 +45,9 @@ describe('Customer API Endpoints', () => {
         let response: any;
 
         given('A new customer is created', async () => {
-            newCustomer = getNewCustomer();
+            const entityType = await createEntityType(request, sessionCookie);
+            const entity = await createEntity(request, sessionCookie, entityType.name);
+            newCustomer = getNewCustomer(entity.id);
             await request.post('/api/admin/customer').send(newCustomer)
                 .set('Cookie', sessionCookie);
         });
@@ -65,7 +71,10 @@ describe('Customer API Endpoints', () => {
         let response: any;
 
         given('A new customer is created', async () => {
-            const response = await request.post('/api/admin/customer').send(getNewCustomer())
+            const entityType = await createEntityType(request, sessionCookie);
+            const entity = await createEntity(request, sessionCookie, entityType.name);
+            newCustomer = getNewCustomer(entity.id);
+            const response = await request.post('/api/admin/customer').send(newCustomer)
                 .set('Cookie', sessionCookie);
             newCustomer = response.body;
         });
@@ -96,7 +105,9 @@ describe('Customer API Endpoints', () => {
         let response: any;
 
         given('A new customer is created', async () => {
-            newCustomer = getNewCustomer();
+            const entityType = await createEntityType(request, sessionCookie);
+            const entity = await createEntity(request, sessionCookie, entityType.name);
+            newCustomer = getNewCustomer(entity.id);
             const createdCustomerResponse = await request.post('/api/admin/customer').send(newCustomer)
                 .set('Cookie', sessionCookie);
             const createdCustomer = await createdCustomerResponse.body;

@@ -31,7 +31,7 @@ export default function Success() {
     }, []);
 
     const getTranslation = (measureName: string, measureTranslations: MeasureValueTranslation[]): string => {
-        const translation = measureTranslations.find(t => t.locale === locale);
+        const translation = measureTranslations.find(t => t.locale.split(/[-_]/)[0] === locale);
         return translation ? translation.value : measureName;
     };
 

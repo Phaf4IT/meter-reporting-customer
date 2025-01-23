@@ -2,10 +2,10 @@ import {getEntityManager} from "@/lib/jpa/entity-fetcher";
 import {Customer} from "@/components/admin/customer/customer";
 import {NonActiveCustomerTable} from "@/components/admin/customer/_database/nonActiveCustomerTable";
 import {findEntityByCompanyAndId} from "@/components/admin/entity/_database/entityRepository";
-import {EntityTable} from "@/components/admin/entity/_database/entityTable";
-import {getLocation} from "@/components/admin/entity/temporaryLocation";
+import {ModifiableCustomer} from "@/components/admin/customer/modifiable-customer";
+import {Entity} from "@/components/admin/entity/entity";
 
-export async function saveCustomer(customer: Customer, company: string): Promise<Customer> {
+export async function saveCustomer(customer: ModifiableCustomer, company: string): Promise<Customer> {
     return getEntityManager(NonActiveCustomerTable)
         .create(NonActiveCustomerTable.of({
             id: customer.id,
@@ -25,8 +25,7 @@ export async function saveCustomer(customer: Customer, company: string): Promise
         )
 }
 
-function mapTableToDomain(customerTable: NonActiveCustomerTable, entityTable: EntityTable): Customer {
-    const location = getLocation(entityTable);
+function mapTableToDomain(customerTable: NonActiveCustomerTable, entityTable: Entity): Customer {
     return {
         id: customerTable.id,
         email: customerTable.email,
@@ -34,8 +33,7 @@ function mapTableToDomain(customerTable: NonActiveCustomerTable, entityTable: En
         firstName: customerTable.firstName,
         middleName: customerTable.middleName || undefined,
         lastName: customerTable.lastName,
-        entityId: customerTable.entityId,
-        ...location,
+        entity: entityTable,
         phoneNumber: customerTable.phoneNumber
     };
 }

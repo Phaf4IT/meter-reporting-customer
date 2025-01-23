@@ -69,7 +69,7 @@ export default function CampaignForm() {
     };
 
     const getTranslationOrDefault = (measure: DetailedMeasureValue) => {
-        const translation = measure.translations.find((value) => value.locale === locale);
+        const translation = measure.translations.find((value) => value.locale.split(/[-_]/)[0] === locale);
         return translation ? translation.value : measure.name;
     };
 

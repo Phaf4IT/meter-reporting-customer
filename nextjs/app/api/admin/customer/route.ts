@@ -2,9 +2,9 @@ import {NextRequest, NextResponse} from 'next/server';
 import {auth} from "@/auth";
 import {getCustomers} from "@/components/admin/customer/action/getCustomersAction";
 import {createCustomer} from "@/components/admin/customer/action/createCustomerAction";
-import {customerFromJson} from "@/components/admin/customer/customer";
 import {updateCustomer} from "@/components/admin/customer/action/updateCustomerAction";
 import {deleteCustomer} from "@/components/admin/customer/action/deleteCustomerAction";
+import {modifiableCustomerFromJson} from "@/components/admin/customer/modifiable-customer";
 
 export async function POST(
     request: NextRequest
@@ -17,7 +17,7 @@ export async function POST(
     }
     try {
         const data = await request.json();
-        const customer = await createCustomer(customerFromJson(data), session.user.company);
+        const customer = await createCustomer(modifiableCustomerFromJson(data), session.user.company);
 
         return NextResponse.json(customer);
     } catch (err) {
@@ -37,7 +37,7 @@ export async function PUT(
     }
     try {
         const data = await request.json();
-        const customer = await updateCustomer(customerFromJson(data), session.user.company);
+        const customer = await updateCustomer(modifiableCustomerFromJson(data), session.user.company);
 
         return NextResponse.json(customer);
     } catch (err) {
@@ -73,7 +73,7 @@ export async function DELETE(
     }
     try {
         const data = await request.json();
-        await deleteCustomer(customerFromJson(data), session.user.company);
+        await deleteCustomer(modifiableCustomerFromJson(data), session.user.company);
 
         return NextResponse.json({});
     } catch (err) {

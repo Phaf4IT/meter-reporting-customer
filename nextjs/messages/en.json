@@ -19,6 +19,22 @@
     "true": "Yes"
   },
   "admin": {
+    "entity": {
+      "entityListTitle": "Entities for {entityTypeName}",
+      "addEntity": "Add Entity",
+      "editEntity": "Edit",
+      "confirmDelete": "Are you sure you want to delete this entity?",
+      "loading": "Loading...",
+      "errorFetchingData": "There was an error fetching data.",
+      "errorDeletingEntity": "There was an error deleting the entity.",
+      "entitySaved": "Entity saved successfully!",
+      "errorSavingEntity": "There was an error saving the entity.",
+      "entityName": "Name",
+      "description": "Description",
+      "cancel": "Cancel",
+      "save": "Save",
+      "saving": "Saving..."
+    },
     "meter": {
       "pageTitle": "Meter Readings",
       "customer": "Customer",
@@ -83,6 +99,11 @@
       "newCustomer": "New Customer",
       "email": "Email",
       "address": "Address (Street name and house number)",
+      "entity": "Entity",
+      "selectEntity": "Select entity",
+      "entityRequired": "Please select an entity",
+      "noEntitySelected": "No entity selected",
+      "select": "Select",
       "addressAdditional": "Apartment, Suite, Building (optional)",
       "addressOther": "Other",
       "addressLines": "Address Lines",

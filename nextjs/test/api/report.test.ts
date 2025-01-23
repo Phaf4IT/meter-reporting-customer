@@ -13,6 +13,8 @@ import {createCustomer} from "@/testlib/api_fixtures/admin/customer-api.fixture"
 import {createCampaign} from "@/testlib/api_fixtures/admin/campaign-api.fixture";
 import {createReminderSent} from "@/testlib/api_fixtures/admin/reminder-sent-api.fixture";
 import {createCustomerMeasurement} from "@/testlib/api_fixtures/admin/customer-measurement-api.fixture";
+import {createEntityType} from "@/testlib/api_fixtures/admin/entity-type-api";
+import {createEntity} from "@/testlib/api_fixtures/admin/entity-api";
 
 describe('Report API Endpoints', () => {
     let request: any;
@@ -37,7 +39,9 @@ describe('Report API Endpoints', () => {
         let response: any;
 
         given('A valid campaign is created', async () => {
-            customer = await createCustomer(request, sessionCookie)
+            const entityType = await createEntityType(request, sessionCookie);
+            const entity = await createEntity(request, sessionCookie, entityType.name);
+            customer = await createCustomer(request, sessionCookie, entity.id);
             campaign = await createCampaign(request, sessionCookie, {
                 customerIds: [customer.id],
                 customerEmails: [customer.email]
@@ -74,7 +78,9 @@ describe('Report API Endpoints', () => {
         let response: any;
 
         given('A valid report exists', async () => {
-            customer = await createCustomer(request, sessionCookie)
+            const entityType = await createEntityType(request, sessionCookie);
+            const entity = await createEntity(request, sessionCookie, entityType.name);
+            customer = await createCustomer(request, sessionCookie, entity.id);
             campaign = await createCampaign(request, sessionCookie, {
                 customerIds: [customer.id],
                 customerEmails: [customer.email]
@@ -130,7 +136,9 @@ describe('Report API Endpoints', () => {
         let response: any;
 
         given('A valid campaign is created', async () => {
-            customer = await createCustomer(request, sessionCookie)
+            const entityType = await createEntityType(request, sessionCookie);
+            const entity = await createEntity(request, sessionCookie, entityType.name);
+            customer = await createCustomer(request, sessionCookie, entity.id);
             campaign = await createCampaign(request, sessionCookie, {
                 customerIds: [customer.id],
                 customerEmails: [customer.email]
@@ -165,7 +173,9 @@ describe('Report API Endpoints', () => {
         let response: any;
 
         given('A valid report exists', async () => {
-            customer = await createCustomer(request, sessionCookie)
+            const entityType = await createEntityType(request, sessionCookie);
+            const entity = await createEntity(request, sessionCookie, entityType.name);
+            customer = await createCustomer(request, sessionCookie, entity.id);
             campaign = await createCampaign(request, sessionCookie, {
                 customerIds: [customer.id],
                 customerEmails: [customer.email]
@@ -204,7 +214,9 @@ describe('Report API Endpoints', () => {
         let response: any;
 
         given('A valid report exists', async () => {
-            customer = await createCustomer(request, sessionCookie)
+            const entityType = await createEntityType(request, sessionCookie);
+            const entity = await createEntity(request, sessionCookie, entityType.name);
+            customer = await createCustomer(request, sessionCookie, entity.id);
             campaign = await createCampaign(request, sessionCookie, {
                 customerIds: [customer.id],
                 customerEmails: [customer.email]
