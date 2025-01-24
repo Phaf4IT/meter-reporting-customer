@@ -5,6 +5,8 @@ import supertest from "supertest";
 import {getEnvironmentVariableProvider} from "@/testlib/environmentVariableProvider";
 import {createCustomer} from "@/testlib/api_fixtures/admin/customer-api.fixture";
 import {createCampaign} from "@/testlib/api_fixtures/admin/campaign-api.fixture";
+import {createEntityType} from "@/testlib/api_fixtures/admin/entity-type-api";
+import {createEntity} from "@/testlib/api_fixtures/admin/entity-api";
 
 describe('Reminder API Endpoints', () => {
     let request: any;
@@ -21,7 +23,9 @@ describe('Reminder API Endpoints', () => {
         let response: any;
 
         given('A new reminder', async () => {
-            const customer = await createCustomer(request, sessionCookie);
+            const entityType = await createEntityType(request, sessionCookie);
+            const entity = await createEntity(request, sessionCookie, entityType.name);
+            const customer = await createCustomer(request, sessionCookie, entity.id);
             const newCampaign = await createCampaign(request, sessionCookie, {
                 customerIds: [customer.id],
                 customerEmails: [customer.email]
@@ -57,8 +61,8 @@ describe('Reminder API Endpoints', () => {
                 .set('Cookie', sessionCookie);
         });
 
-        then('The response should indicate successful creation', async () => {
-            expect(response.status).eq(500);
+        then('The response should indicate not successful creation', async () => {
+            expect(response.status).eq(400);
         });
     });
 
@@ -67,7 +71,9 @@ describe('Reminder API Endpoints', () => {
         let response: any;
 
         given('A new reminder is created', async () => {
-            const customer = await createCustomer(request, sessionCookie);
+            const entityType = await createEntityType(request, sessionCookie);
+            const entity = await createEntity(request, sessionCookie, entityType.name);
+            const customer = await createCustomer(request, sessionCookie, entity.id);
             const newCampaign = await createCampaign(request, sessionCookie, {
                 customerIds: [customer.id],
                 customerEmails: [customer.email]
@@ -95,7 +101,9 @@ describe('Reminder API Endpoints', () => {
         let response: any;
 
         given('A new reminder is created', async () => {
-            const customer = await createCustomer(request, sessionCookie);
+            const entityType = await createEntityType(request, sessionCookie);
+            const entity = await createEntity(request, sessionCookie, entityType.name);
+            const customer = await createCustomer(request, sessionCookie, entity.id);
             const newCampaign = await createCampaign(request, sessionCookie, {
                 customerIds: [customer.id],
                 customerEmails: [customer.email]
@@ -143,7 +151,9 @@ describe('Reminder API Endpoints', () => {
         let response: any;
 
         given('A reminder payload', async () => {
-            const customer = await createCustomer(request, sessionCookie);
+            const entityType = await createEntityType(request, sessionCookie);
+            const entity = await createEntity(request, sessionCookie, entityType.name);
+            const customer = await createCustomer(request, sessionCookie, entity.id);
             const newCampaign = await createCampaign(request, sessionCookie, {
                 customerIds: [customer.id],
                 customerEmails: [customer.email]

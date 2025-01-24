@@ -4,6 +4,7 @@ import {reminderSentFromJson} from "@/components/admin/reminder-sent/reminder-se
 import {createReminderSent} from "@/components/admin/reminder-sent/action/createReminderSentAction";
 import {getReminderSents} from "@/components/admin/reminder-sent/action/getReminderSentsAction";
 import {removeReminderSent} from "@/components/admin/reminder-sent/action/deleteReminderSentAction";
+import {Logger} from "@/lib/logger";
 
 
 export async function POST(
@@ -20,8 +21,8 @@ export async function POST(
         const reminderSent = await createReminderSent(reminderSentFromJson(data), session.user.company);
 
         return NextResponse.json(reminderSent);
-    } catch (err) {
-        console.error("Error creating reminderSent:", err);
+    } catch (err: any) {
+        Logger.error("Error creating reminderSent:", err);
         return new NextResponse("Internal Server Error", {status: 500});
     }
 }
@@ -36,8 +37,8 @@ export async function GET(): Promise<Response> {
     try {
         return getReminderSents()
             .then(value => NextResponse.json(value));
-    } catch (err) {
-        console.error("Error creating reminderSent:", err);
+    } catch (err: any) {
+        Logger.error("Error creating reminderSent:", err);
         return new NextResponse("Internal Server Error", {status: 500});
     }
 }
@@ -56,8 +57,8 @@ export async function DELETE(
         await removeReminderSent(reminderSentFromJson(data), session.user.company);
 
         return NextResponse.json({});
-    } catch (err) {
-        console.error("Error creating reminderSent:", err);
+    } catch (err: any) {
+        Logger.error("Error creating reminderSent:", err);
         return new NextResponse("Internal Server Error", {status: 500});
     }
 }

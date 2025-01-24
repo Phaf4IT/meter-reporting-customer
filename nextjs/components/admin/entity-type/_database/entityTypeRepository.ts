@@ -10,13 +10,24 @@ export async function findEntityTypesByCompany(company: string) {
         .then(entityTypes => entityTypes.map(entityType => mapTableToDomain(entityType)));
 }
 
-export async function findEntityTypeByCompanyAndName(name: string, company: string) {
+export async function findEntityTypeByCompanyAndName(name: string, company: string): Promise<EntityType | undefined> {
     return getEntityManager(EntityTypeTable)
         .findBy({
             name: name,
             company: company
         })
-        .then(entityTypes => entityTypes.find(() => true))
+        .then(entityTypes => entityTypes
+            .map(entityType => mapTableToDomain(entityType))
+            .find(() => true))
+}
+
+export async function findEntityTypesByCompanyAndNames(name: string[], company: string) {
+    return getEntityManager(EntityTypeTable)
+        .findBy({
+            name: name,
+            company: company
+        })
+        .then(entityTypes => entityTypes.map(entityType => mapTableToDomain(entityType)));
 }
 
 export async function deleteEntityType(entityType: EntityType, company: string) {

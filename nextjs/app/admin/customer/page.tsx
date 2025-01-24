@@ -1,12 +1,14 @@
 "use client"
 import React, {useEffect, useState} from 'react';
 import AdminLayout from "@/app/admin/adminlayout";
-import {useTranslations} from "next-intl";
+import {useLocale, useTranslations} from "next-intl";
 import {Customer, emptyCustomer} from "@/components/admin/customer/customer";
 import CustomerForm from "@/components/admin/customer/customer-form";
 import ConfirmationDialog from "@/components/admin/confirmation-dialog"; // Import confirmation dialog
 import "@/components/dialog-styles.css";
 import {deleteCustomer, getCustomers, saveCustomer} from "@/app/admin/customer/client";
+import {getTranslationForLocale} from "@/components/admin/entity-type/entityType";
+import {ModifiableCustomer} from "@/components/admin/customer/modifiable-customer";
 
 export default function CustomersPage() {
     const t = useTranslations('admin.customer');
@@ -15,6 +17,7 @@ export default function CustomersPage() {
     const [isNew, setIsNew] = useState<boolean>(true);
     const [editingCustomer, setEditingCustomer] = useState<Customer | null>(null);
     const [customerToDelete, setCustomerToDelete] = useState<Customer | null>(null);
+    const locale = useLocale();
 
     useEffect(() => {
         getCustomers()
@@ -23,12 +26,13 @@ export default function CustomersPage() {
             })
     }, []);
 
-    const handleSave = async (customer: Customer, isNew: boolean) => {
+    const handleSave = async (customer: ModifiableCustomer & Customer, isNew: boolean) => {
         saveCustomer(customer, isNew)
             .then(customerToAdd => {
+                const customerWithEntity = {...customerToAdd, entity: customer.entity};
                 setCustomers((prev) => {
-                        const c = prev.find(c => c.email === customerToAdd.email)
-                        return c ? prev.map((c) => (c.email === customerToAdd.email ? customerToAdd : c)) : [...prev, customerToAdd];
+                        const c = prev.find(c => c.id === customerWithEntity.id)
+                        return c ? prev.map((c) => (c.id === customerWithEntity.id ? customerWithEntity : c)) : [...prev, customerWithEntity];
                     }
                 );
                 setEditingCustomer(null);
@@ -47,7 +51,7 @@ export default function CustomersPage() {
 
     const handleDelete = async () => {
         if (customerToDelete) {
-            const isSuccess = await deleteCustomer(customerToDelete);
+            const isSuccess = await deleteCustomer({...customerToDelete, entityId: customerToDelete.entity?.id});
             if (isSuccess) {
                 setCustomers((prev) => prev.filter((c) => c.email !== customerToDelete.email));
                 closeDialog();
@@ -69,6 +73,7 @@ export default function CustomersPage() {
                 {editingCustomer ? (
                     <CustomerForm
                         customer={editingCustomer}
+                        entity={editingCustomer.entity!}
                         isNew={isNew}
                         onSave={handleSave}
                         onCancel={() => setEditingCustomer(null)}
@@ -89,7 +94,7 @@ export default function CustomersPage() {
                                 <th className="py-2 px-4 text-left">{t('title')}</th>
                                 <th className="py-2 px-4 text-left">{t('email')}</th>
                                 <th className="py-2 px-4 text-left">{t('name')}</th>
-                                <th className="py-2 px-4 text-left">{t('address')}</th>
+                                <th className="py-2 px-4 text-left">{t('entity')}</th>
                                 <th className="py-2 px-4 text-left">{t('phoneNumber')}</th>
                                 <th className="py-2 px-4 text-left">{t('actions')}</th>
                             </tr>
@@ -105,8 +110,14 @@ export default function CustomersPage() {
                                         {customer.lastName}
                                     </td>
                                     <td className="py-2 px-4">
-                                        {customer.streetLines.join(', ')}, {customer.postalCode}{' '}
-                                        {customer.city}, {customer.country}
+                                        {Object.keys(customer.entity?.entityType?.fields || []).map((fieldKey) => {
+                                            const fieldLabel = getTranslationForLocale(customer.entity!.entityType!, locale)[fieldKey] || fieldKey;
+                                            return (
+                                                <p key={fieldKey}>
+                                                    {fieldLabel}: {customer.entity!.fieldValues[fieldKey] || 'N/A'}
+                                                </p>
+                                            )
+                                        })}
                                     </td>
                                     <td className="py-2 px-4">{customer.phoneNumber}</td>
                                     <td className="py-2 px-4 space-x-2">

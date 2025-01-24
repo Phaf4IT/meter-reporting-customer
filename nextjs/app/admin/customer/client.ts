@@ -1,5 +1,6 @@
 'use client';
 import {Customer, customerFromJson} from "@/components/admin/customer/customer";
+import {ModifiableCustomer} from "@/components/admin/customer/modifiable-customer";
 
 export async function getCustomers(): Promise<Customer[]> {
     const data = await fetch("/api/admin/customer", {
@@ -10,7 +11,7 @@ export async function getCustomers(): Promise<Customer[]> {
     return customers.map((customerData: any) => customerFromJson(customerData))
 }
 
-export async function saveCustomer(customer: Customer, isNew: boolean): Promise<Customer> {
+export async function saveCustomer(customer: ModifiableCustomer, isNew: boolean): Promise<Customer> {
     const response = await fetch("/api/admin/customer", {
         method: isNew ? "POST" : "PUT",
         body: JSON.stringify(customer),
@@ -25,7 +26,7 @@ export async function saveCustomer(customer: Customer, isNew: boolean): Promise<
     return customerFromJson(newCustomer);
 }
 
-export async function deleteCustomer(customer: Customer): Promise<Response> {
+export async function deleteCustomer(customer: ModifiableCustomer): Promise<Response> {
     const response = await fetch("/api/admin/customer", {
         method: "DELETE",
         body: JSON.stringify(customer),

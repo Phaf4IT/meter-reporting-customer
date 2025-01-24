@@ -19,6 +19,22 @@
     "true": "Ja"
   },
   "admin": {
+    "entity": {
+      "entityListTitle": "Entiteiten voor {entityTypeName}",
+      "addEntity": "Entiteit Toevoegen",
+      "editEntity": "Bewerken",
+      "confirmDelete": "Weet je zeker dat je deze entiteit wilt verwijderen?",
+      "loading": "Laden...",
+      "errorFetchingData": "Er is een fout opgetreden bij het ophalen van gegevens.",
+      "errorDeletingEntity": "Er is een fout opgetreden bij het verwijderen van de entiteit.",
+      "entitySaved": "Entiteit succesvol opgeslagen!",
+      "errorSavingEntity": "Er is een fout opgetreden bij het opslaan van de entiteit.",
+      "entityName": "Naam",
+      "description": "Beschrijving",
+      "cancel": "Annuleren",
+      "save": "Opslaan",
+      "saving": "Bezig met opslaan..."
+    },
     "meter": {
       "pageTitle": "Meterwaardes",
       "customer": "Klant",
@@ -86,6 +102,11 @@
       "newCustomer": "Nieuwe Klant",
       "email": "Email",
       "address": "Adres (straatnaam en huisnummer)",
+      "entity": "Entiteit",
+      "selectEntity": "Selecteer een entiteit",
+      "noEntitySelected": "Geen entiteit geselecteerd",
+      "entityRequired": "Selecteer een entiteit alstublieft",
+      "select": "Selecteer",
       "addressAdditional": "Appart., Suite, Gebouw (optioneel)",
       "addressOther": "Anders",
       "addressLines": "Adresregels",

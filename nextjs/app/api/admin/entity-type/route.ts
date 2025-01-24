@@ -4,6 +4,7 @@ import {createEntityType} from "@/components/admin/entity-type/action/createEnti
 import {entityTypeFromJson} from "@/components/admin/entity-type/entityType";
 import {deleteEntityType, updateEntityType} from "@/components/admin/entity-type/_database/entityTypeRepository";
 import {getEntityTypes} from "@/components/admin/entity-type/action/getEntityTypesAction";
+import {getEntityType} from "@/components/admin/entity-type/action/getEntityTypeAction";
 
 export async function POST(
     request: NextRequest
@@ -45,7 +46,7 @@ export async function PUT(
     }
 }
 
-export async function GET(): Promise<Response> {
+export async function GET(request: NextRequest): Promise<Response> {
     const session = await auth();
     if (!session) {
         return new Response('Unauthorized', {
@@ -53,8 +54,15 @@ export async function GET(): Promise<Response> {
         });
     }
     try {
-        const entityTypes = await getEntityTypes(session.user.company);
-        return NextResponse.json(entityTypes);
+        const entityTypeName = request.nextUrl.searchParams.get("type");
+        if (!entityTypeName) {
+            const entityTypes = await getEntityTypes(session.user.company);
+            return NextResponse.json(entityTypes);
+        } else {
+            const entityType = await getEntityType(entityTypeName, session.user.company)
+            return NextResponse.json(entityType);
+        }
+
     } catch (err) {
         console.error("Error fetching entity types:", err);
         return new NextResponse("Internal Server Error", {status: 500});

@@ -11,6 +11,8 @@ import {format} from "date-fns";
 import {toZonedTime} from "date-fns-tz";
 import {createCustomer} from "@/testlib/api_fixtures/admin/customer-api.fixture";
 import {createCampaign, getCampaignByName} from "@/testlib/api_fixtures/admin/campaign-api.fixture";
+import {createEntityType} from "@/testlib/api_fixtures/admin/entity-type-api";
+import {createEntity} from "@/testlib/api_fixtures/admin/entity-api";
 
 describe('Open admin in browser', () => {
     let browser: Browser;
@@ -37,7 +39,9 @@ describe('Open admin in browser', () => {
         let campaign: any;
         let customer: any;
         given('The campaign is posted to the server', async () => {
-            customer = await createCustomer(request, sessionCookie)
+            const entityType = await createEntityType(request, sessionCookie);
+            const entity = await createEntity(request, sessionCookie, entityType.name);
+            customer = await createCustomer(request, sessionCookie, entity.id);
             campaign = await createCampaign(request, sessionCookie, {
                 customerIds: [customer.id],
                 customerEmails: [customer.email]

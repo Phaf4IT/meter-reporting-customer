@@ -10,6 +10,8 @@ import {getEnvironmentVariableProvider} from "@/testlib/environmentVariableProvi
 import {createCustomer} from "@/testlib/api_fixtures/admin/customer-api.fixture";
 import {createCampaign} from "@/testlib/api_fixtures/admin/campaign-api.fixture";
 import {createReminderSent} from "@/testlib/api_fixtures/admin/reminder-sent-api.fixture";
+import {createEntityType} from "@/testlib/api_fixtures/admin/entity-type-api";
+import {createEntity} from "@/testlib/api_fixtures/admin/entity-api";
 
 describe('Campaign API Endpoints', () => {
     let request: any;
@@ -31,7 +33,9 @@ describe('Campaign API Endpoints', () => {
         let response: any;
 
         given('A valid campaign is created', async () => {
-            const customer = await createCustomer(request, sessionCookie);
+            const entityType = await createEntityType(request, sessionCookie);
+            const entity = await createEntity(request, sessionCookie, entityType.name);
+            const customer = await createCustomer(request, sessionCookie, entity.id);
             const campaign = await createCampaign(request, sessionCookie, {
                 customerEmails: [customer.email],
                 customerIds: [customer.id]
@@ -66,7 +70,9 @@ describe('Campaign API Endpoints', () => {
         let response: any;
 
         given('A valid campaign is created', async () => {
-            const customer = await createCustomer(request, sessionCookie);
+            const entityType = await createEntityType(request, sessionCookie);
+            const entity = await createEntity(request, sessionCookie, entityType.name);
+            const customer = await createCustomer(request, sessionCookie, entity.id);
             const customerEmail = customer.email;
             const campaign = await createCampaign(request, sessionCookie, {
                 customerEmails: [customer.email],
@@ -101,7 +107,9 @@ describe('Campaign API Endpoints', () => {
         let reminderSent: any;
 
         given('A campaign token', async () => {
-            const customer = await createCustomer(request, sessionCookie);
+            const entityType = await createEntityType(request, sessionCookie);
+            const entity = await createEntity(request, sessionCookie, entityType.name);
+            const customer = await createCustomer(request, sessionCookie, entity.id);
             const campaign = await createCampaign(request, sessionCookie, {
                 customerEmails: [customer.email],
                 customerIds: [customer.id]

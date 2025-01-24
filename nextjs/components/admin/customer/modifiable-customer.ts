@@ -1,30 +1,28 @@
-import {Entity} from "@/components/admin/entity/entity";
-
-export interface Customer {
+export interface ModifiableCustomer {
     id: string;
     email: string;
     title?: string;
     firstName: string;
     middleName?: string;
     lastName: string;
-    entity?: Entity;
+    entityId?: string;
     phoneNumber: string;
 }
 
-export function customerFromJson(json: any): Customer {
+export function modifiableCustomerFromJson(json: any): ModifiableCustomer {
     return {
         id: json.id,
         email: json.email,
         title: json.title,
         firstName: json.firstName,
         middleName: json.middleName,
-        entity: json.entity,
         lastName: json.lastName,
+        entityId: json.entityId,
         phoneNumber: json.phoneNumber
     };
 }
 
-export function emptyCustomer(): Customer {
+export function emptyModifiableCustomer(): ModifiableCustomer {
     return {
         id: '',
         email: '',
