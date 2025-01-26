@@ -4,7 +4,7 @@ import React, {useEffect, useState} from 'react';
 import {useParams} from 'next/navigation';
 import {Entity} from '@/components/admin/entity/entity';
 import {useTranslations} from 'next-intl';
-import {deleteEntity, getEntities} from "@/app/admin/entity/client";
+import {deleteEntity, getEntities, saveEntity} from "@/app/admin/entity/client";
 import {Logger} from '@/lib/logger';
 import {EntityTable} from "@/components/admin/entity/entity-table";
 import {Params} from "next/dist/server/request/params";
@@ -80,6 +80,20 @@ export default function EntityListPage() {
         setIsFormOpen(false);
     };
 
+    const handleSubmitForm = async (newEntity: Entity) => {
+        await saveEntity(newEntity);
+        if (newEntity.id) {
+            setEntities(prevState => {
+                return [
+                    ...prevState.filter(value => value.id != newEntity.id),
+                    newEntity
+                ];
+            })
+        } else {
+            setEntities(prevState => [...prevState, newEntity]);
+        }
+    };
+
     if (isLoading) return <div>{t('loading')}</div>;
     if (error) return <div className="text-red-500">{error}</div>;
 
@@ -118,6 +132,7 @@ export default function EntityListPage() {
                             entity={selectedEntity}
                             entityType={entityType}
                             onClose={handleCloseForm}
+                            onSubmit={handleSubmitForm}
                         />
                     )}
                 </Dialog>

@@ -6,7 +6,7 @@ import {retry} from "ts-retry";
 
 export async function startServer(env: EnvironmentConfiguration) {
     const port = await detectPort();
-    const command = `${getEnv(env)} npm run dev -- -p ${port}`;
+    const command = `${getEnv(env)} ${process.env.NYC_ENABLED ? 'nyc ' : ''}npm run dev -- -p ${port}`;
     Logger.info(`Running cmd "${command}"`)
     const server = await setup({
         command: command,
@@ -56,4 +56,5 @@ interface EnvironmentConfiguration {
     AUTH_RESEND_KEY: string
     IS_MAIL_ENABLED: boolean
     AUTH_SECRET: string
+    IS_TEST_SERVER: boolean
 }

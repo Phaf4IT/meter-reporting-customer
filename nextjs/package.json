@@ -8,21 +8,39 @@
     "build": "next build --debug",
     "start": "next start",
     "lint": "next lint",
-    "test": "mocha --config=.mocharc.json",
-    "test:cicd": "mocha --config=.mocharc.json --timeout 100000"
+    "test": "NYC_ENABLED=true mocha --config=.mocharc.json",
+    "test:cicd": "NYC_ENABLED=true mocha --config=.mocharc.json --timeout 100000"
+  },
+  "nyc": {
+    "extends": "@istanbuljs/nyc-config-typescript",
+    "reporter": [
+      "text",
+      "html",
+      "lcov"
+    ],
+    "exclude": [
+      ".next/**",
+      "**/*.test.ts",
+      "node_modules/**",
+      "testlib/**",
+      "test/**",
+      "coverage/**"
+    ],
+    "all": true
   },
   "dependencies": {
     "@auth/xata-adapter": "^1.7.4",
     "@dnd-kit/core": "^6.3.0",
     "@hello-pangea/dnd": "^17.0.0",
+    "@types/lodash": "^4.17.14",
     "@vercel/functions": "^1.5.0",
     "@xata.io/client": "^0.30.1",
     "@xata.io/kysely": "^0.2.1",
     "cookies-next": "^5.0.2",
     "date-fns-tz": "^3.2.0",
+    "flag-icons": "^7.3.2",
     "kysely": "^0.27.4",
     "lodash": "^4.17.21",
-    "@types/lodash": "^4.17.14",
     "next": "^15.0.3",
     "next-auth": "^5.0.0-beta.25",
     "next-intl": "^3.25.3",
@@ -36,6 +54,7 @@
   },
   "devDependencies": {
     "@auth/pg-adapter": "^1.7.4",
+    "@istanbuljs/nyc-config-typescript": "^1.0.2",
     "@neondatabase/serverless": "^0.10.4",
     "@sadams/wait-for-expect": "^1.1.0",
     "@testcontainers/postgresql": "^10.16.0",
@@ -48,6 +67,7 @@
     "@types/react-dom": "^18",
     "@types/supertest": "^6.0.2",
     "chai": "^5.1.2",
+    "codecov": "^3.8.3",
     "detect-port": "^2.1.0",
     "esbuild-register": "^3.6.0",
     "eslint": "^8",
@@ -56,9 +76,11 @@
     "kanel": "^3.11.0",
     "kanel-kysely": "^0.6.0",
     "mocha": "^11.0.1",
+    "nyc": "^17.1.0",
     "playwright-core": "^1.49.1",
     "postcss": "^8",
     "supertest": "^7.0.0",
+    "swc-plugin-coverage-instrument": "^0.0.25",
     "tailwindcss": "^3.4.1",
     "testcontainers": "^10.16.0",
     "ts-node": "^10.9.2",

@@ -27,6 +27,7 @@ export default function AdminLayout({children}: { children: React.ReactNode }) {
 
     const [isDropdownOpen, setDropdownOpen] = useState(true);  // Standaard uitgeklapt
     const navItems = [
+        {name: t('entity-type.entityTypeManagement'), href: '/admin/entity-type'},
         {name: t('customer.manageCustomers'), href: '/admin/customer'},
         {name: t('campaign.pageTitle'), href: '/admin/campaign'},
         {name: t('measureValue.manageMeasureValues'), href: '/admin/measure-value'},
@@ -68,7 +69,7 @@ export default function AdminLayout({children}: { children: React.ReactNode }) {
                                         Object.entries(item.translations)
                                             .filter(([key]) => key.startsWith(languageCode))
                                             .map(([, value]) => value ? value[item.name] : item.name)
-                                            .find(() => true)
+                                            .find(() => true) || item.name
                                     }
                                 </Link>
                             </li>)}

@@ -1,16 +1,16 @@
 import React, {useEffect, useState} from 'react';
 import {useLocale, useTranslations} from 'next-intl';
 import {Entity} from './entity'; // Zorg ervoor dat deze de juiste interface heeft
-import {saveEntity} from '@/app/admin/entity/client';
 import {EntityType} from "@/components/admin/entity-type/entityType";
 
 interface EntityFormProps {
     entity?: Entity | null;  // Kan null zijn voor nieuwe entiteit
+    onSubmit: (entity: Entity) => Promise<void>;
     onClose: () => void;
     entityType?: EntityType;
 }
 
-export const EntityForm: React.FC<EntityFormProps> = ({entityType, entity, onClose}) => {
+export const EntityForm: React.FC<EntityFormProps> = ({entityType, entity, onClose, onSubmit}) => {
     const [formData, setFormData] = useState<Record<string, any>>({});
     const [isSaving, setIsSaving] = useState(false);
     const t = useTranslations('admin.entity');
@@ -36,7 +36,6 @@ export const EntityForm: React.FC<EntityFormProps> = ({entityType, entity, onClo
         return translationKey ? entityType?.translations[translationKey] : entityType?.translations['en-US'];
     }
 
-    // Handelt de formulierverzending af
     const handleSubmit = async (e: React.FormEvent) => {
         e.preventDefault();
         setIsSaving(true);
@@ -48,7 +47,7 @@ export const EntityForm: React.FC<EntityFormProps> = ({entityType, entity, onClo
         };
 
         try {
-            await saveEntity(newEntity);
+            await onSubmit(newEntity);
             alert(t('entitySaved')); // Succesmelding na opslaan
             onClose(); // Sluit het formulier na opslaan
         } catch (err) {
@@ -67,12 +66,12 @@ export const EntityForm: React.FC<EntityFormProps> = ({entityType, entity, onClo
         <form onSubmit={handleSubmit} className="space-y-4">
             <h1 className="text-2xl font-bold">{entity ? t('editEntity') : t('addEntity')}</h1>
 
-            {/* Dynamisch genereren van formulier velden op basis van entityType */}
             {Object.keys(entityType.fields).map((fieldKey) => {
                 const field = entityType.fields[fieldKey];
                 const fieldType = field.type;
                 const isRequired = field.required;
-                const fieldLabel = getTranslationForLocale(locale)![fieldKey] || fieldKey;
+                const translationForLocale = getTranslationForLocale(locale);
+                const fieldLabel = translationForLocale ? translationForLocale[fieldKey] : fieldKey;
 
                 switch (fieldType) {
                     case 'text':

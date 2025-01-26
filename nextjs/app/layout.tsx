@@ -4,12 +4,13 @@ import "./globals.css";
 import {NextIntlClientProvider} from 'next-intl';
 import {getMessages} from 'next-intl/server';
 import {getUserLocale} from "@/lib/locale";
-
+/* istanbul ignore next */
 const geistSans = localFont({
     src: "./fonts/GeistVF.woff",
     variable: "--font-geist-sans",
     weight: "100 900",
 });
+/* istanbul ignore next */
 const geistMono = localFont({
     src: "./fonts/GeistMonoVF.woff",
     variable: "--font-geist-mono",

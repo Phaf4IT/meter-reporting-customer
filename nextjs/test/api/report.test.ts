@@ -76,6 +76,7 @@ describe('Report API Endpoints', () => {
         let campaign: any;
         let reminderSent: any;
         let response: any;
+        let session: string;
 
         given('A valid report exists', async () => {
             const entityType = await createEntityType(request, sessionCookie);
@@ -93,9 +94,12 @@ describe('Report API Endpoints', () => {
             })
         });
 
-        when('The report is fetched successfully', async () => {
+        given('A session for the customer is created', async () => {
             await createUser(customer.email);
-            const session = await loginAndGetSession(customer.email, wiremock, serverUrl, request);
+            session = await loginAndGetSession(customer.email, wiremock, serverUrl, request);
+        }, 10_000)
+
+        when('The report is fetched successfully', async () => {
             response = await request.get(`/api/report?token=${reminderSent.token}`)
                 .set('Cookie', session);
         });
@@ -171,6 +175,7 @@ describe('Report API Endpoints', () => {
         let reminderSent: any;
         let reportData: any;
         let response: any;
+        let session: string;
 
         given('A valid report exists', async () => {
             const entityType = await createEntityType(request, sessionCookie);
@@ -192,9 +197,12 @@ describe('Report API Endpoints', () => {
             };
         });
 
-        when('A report is submitted for the same campaign again', async () => {
+        given('A session for the customer', async () => {
             await createUser(customer.email);
-            const session = await loginAndGetSession(customer.email, wiremock, serverUrl, request);
+            session = await loginAndGetSession(customer.email, wiremock, serverUrl, request);
+        }, 10_000);
+
+        when('A report is submitted for the same campaign again', async () => {
             response = await request.post(`/api/report?token=${reminderSent.token}`)
                 .send(reportData)
                 .set('Cookie', session);

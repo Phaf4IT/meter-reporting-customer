@@ -2,7 +2,7 @@ import {Context} from 'mocha';
 
 export function given(description: string, fn: () => void | Promise<void>, timeout?: number, retries?: number): void {
     it(`Given ${description}`, function (this: Context) {
-        this.timeout(timeout || this.timeout());
+        this.timeout(Math.max(timeout || 0, this.timeout()));
         if (retries) {
             this.retries(retries)
         }
@@ -12,7 +12,7 @@ export function given(description: string, fn: () => void | Promise<void>, timeo
 
 export function when(description: string, fn: () => void | Promise<void>, timeout?: number, retries?: number): void {
     it(`When ${description}`, function (this: Context) {
-        this.timeout(timeout || this.timeout());
+        this.timeout(Math.max(timeout || 0, this.timeout()));
         if (retries) {
             this.retries(retries)
         }
@@ -22,7 +22,7 @@ export function when(description: string, fn: () => void | Promise<void>, timeou
 
 export function then(description: string, fn: () => void | Promise<void>, timeout?: number, retries?: number): void {
     it(`Then ${description}`, function (this: Context) {
-        this.timeout(timeout || this.timeout());
+        this.timeout(Math.max(timeout || 0, this.timeout()));
         if (retries) {
             this.retries(retries)
         }
