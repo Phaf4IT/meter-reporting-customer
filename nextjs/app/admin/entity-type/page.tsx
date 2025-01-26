@@ -56,6 +56,7 @@ export default function EntityTypeManagementPage() {
                 prevEntityTypes.filter((et) => et.name !== entityType.name)
             );
         } catch (err: any) {
+            Logger.error("Something went wrong", err);
             setError('Er is een fout opgetreden bij het verwijderen van de EntityType.');
         }
     };

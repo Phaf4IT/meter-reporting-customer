@@ -45,8 +45,8 @@ export default function EntityListPage() {
         };
 
         getEntityType(entityTypeName)
-            .then(setEntityType) // Zet de entityType als de data geladen is
-            .catch((error) => console.error("Fout bij ophalen entity type", error));
+            .then(setEntityType)
+            .catch((error) => Logger.error("Fout bij ophalen entity type", error));
 
         fetchEntities()
             .then();

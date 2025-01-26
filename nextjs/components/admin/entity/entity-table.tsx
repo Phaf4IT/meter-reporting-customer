@@ -5,7 +5,7 @@ import {EntityType} from "@/components/admin/entity-type/entityType";
 
 interface EntityTableProps {
     entities: Entity[];
-    entityType: EntityType;  // We gaan entityType meegeven om de velden dynamisch te tonen
+    entityType?: EntityType;  // We gaan entityType meegeven om de velden dynamisch te tonen
     onEdit: (entity: Entity) => void;
     onDelete: (entity: Entity) => void;
 }
@@ -20,7 +20,7 @@ export const EntityTable: React.FC<EntityTableProps> = ({entities, entityType, o
 
     function getTranslationForLocale(locale: string) {
         const languageCode = locale.split('-')[0];
-        const translationKey = Object.keys(entityType?.translations).find(key => key.startsWith(languageCode));
+        const translationKey = entityType ? Object.keys(entityType?.translations).find(key => key.startsWith(languageCode)) : undefined;
         return translationKey ? entityType?.translations[translationKey] : entityType?.translations['en-US'];  // Fallback naar Engels als geen vertaling gevonden
     }
 

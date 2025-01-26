@@ -18,7 +18,7 @@ const MultiSelect = <T extends object>({
                                            getOptionIcon,
                                        }: MultiSelectProps<T>) => {
     const [isOpen, setIsOpen] = useState(false);
-    const [focused, setFocused] = useState(false);
+    // const [focused, setFocused] = useState(false);
     const selectRef = useRef<HTMLDivElement>(null);
 
     const handleToggleDropdown = () => setIsOpen(!isOpen);
@@ -52,8 +52,8 @@ const MultiSelect = <T extends object>({
                 className="w-full p-3 bg-cyan-800 text-white border border-gray-500
                 rounded py-3 px-4 leading-tight cursor-pointer min-h-[50px]"
                 onClick={handleToggleDropdown}
-                onFocus={() => setFocused(true)}
-                onBlur={() => setFocused(false)}
+                // onFocus={() => setFocused(true)}
+                // onBlur={() => setFocused(false)}
                 tabIndex={0} // zodat de focus kan worden getriggerd
             >
                 {/* Show selected tags */}
