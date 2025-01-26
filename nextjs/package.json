@@ -9,7 +9,7 @@
     "start": "next start",
     "lint": "next lint",
     "test": "NYC_ENABLED=true mocha --config=.mocharc.json",
-    "test:cicd": "NYC_ENABLED=true mocha --config=.mocharc.json --timeout 100000"
+    "test:cicd": "NYC_ENABLED=true mocha --config=.mocharc.json  --require mochawesome/register --timeout 100000 --reporter mochawesome --reporter-options reportDir=mocha-reports,reportFilename=report,quiet=true"
   },
   "nyc": {
     "extends": "@istanbuljs/nyc-config-typescript",
@@ -67,7 +67,6 @@
     "@types/react-dom": "^18",
     "@types/supertest": "^6.0.2",
     "chai": "^5.1.2",
-    "codecov": "^3.8.3",
     "detect-port": "^2.1.0",
     "esbuild-register": "^3.6.0",
     "eslint": "^8",
@@ -76,6 +75,7 @@
     "kanel": "^3.11.0",
     "kanel-kysely": "^0.6.0",
     "mocha": "^11.0.1",
+    "mochawesome": "^7.1.3",
     "nyc": "^17.1.0",
     "playwright-core": "^1.49.1",
     "postcss": "^8",
