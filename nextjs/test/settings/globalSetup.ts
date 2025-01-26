@@ -30,7 +30,8 @@ export async function mochaGlobalSetup() {
         DATABASE_URL: databaseUrl,
         AUTH_RESEND_KEY: 'abc123',
         IS_MAIL_ENABLED: true,
-        AUTH_SECRET: '123abc'
+        AUTH_SECRET: '123abc',
+        IS_TEST_SERVER: true
     });
     const serverBaseUrl = `http://localhost:${port}`;
     const request = supertest(serverBaseUrl);

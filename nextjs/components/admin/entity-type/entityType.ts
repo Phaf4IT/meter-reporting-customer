@@ -13,7 +13,7 @@ export function entityTypeFromJson(json: any): EntityType {
 }
 
 export interface Field {
-    type: string;
+    type: 'text' | 'boolean' | 'numeric' | 'date' | 'text[]';
     required: boolean;
 }
 
@@ -21,4 +21,8 @@ export function getTranslationForLocale(entityType: EntityType, locale: string) 
     const languageCode = locale.split('-')[0];
     const translationKey = Object.keys(entityType.translations).find(key => key.startsWith(languageCode));
     return translationKey ? entityType?.translations[translationKey] : entityType.translations['en-US'];  // Fallback naar Engels als geen vertaling gevonden
+}
+
+export function emptyEntityType(): EntityType {
+    return {name: '', fields: {}, translations: {}}
 }

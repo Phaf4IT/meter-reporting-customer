@@ -51,3 +51,21 @@ jobs:
     - run: ip addr show docker0 | grep -Po 'inet \K[\d.]+'
     - run: PLATFORM=linux npm run test:cicd --
       working-directory: nextjs
+    - name: Upload Mocha test report as artifact
+      uses: actions/upload-artifact@v3
+      with:
+        name: mocha-report
+        path: ${{ github.workspace }}/nextjs/mocha-reports/report.json
+
+    - name: Upload coverage report as artifact
+      uses: actions/upload-artifact@v3
+      with:
+        name: coverage-report
+        path: ${{ github.workspace }}/nextjs/coverage/lcov-report/index.html
+
+    - name: Publish Test Results (GitHub Checks)
+      if: always()
+      run: |
+        mkdir -p $GITHUB_WORKSPACE/test-results
+        cp $GITHUB_WORKSPACE/nextjs/mocha-reports/report.json $GITHUB_WORKSPACE/test-results
+        cp $GITHUB_WORKSPACE/nextjs/coverage/lcov-report/index.html $GITHUB_WORKSPACE/test-results

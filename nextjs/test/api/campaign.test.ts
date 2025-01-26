@@ -68,6 +68,7 @@ describe('Campaign API Endpoints', () => {
     describe('GET /api/campaign - Already Reported', () => {
         let reminderSent: any;
         let response: any;
+        let session: string;
 
         given('A valid campaign is created', async () => {
             const entityType = await createEntityType(request, sessionCookie);
@@ -89,9 +90,12 @@ describe('Campaign API Endpoints', () => {
                 .set('Cookie', sessionCookie);
         });
 
-        when('The already reported campaign is fetched', async () => {
+        given('A session for the customer is created', async () => {
             await createUser(reminderSent.customerEmail);
-            const session = await loginAndGetSession(reminderSent.customerEmail, wiremock, serverUrl, request);
+            session = await loginAndGetSession(reminderSent.customerEmail, wiremock, serverUrl, request);
+        }, 10_000)
+
+        when('The already reported campaign is fetched', async () => {
             response = await request.get(`/api/campaign?token=${reminderSent.token}`)
                 .set('Cookie', session);
         });
