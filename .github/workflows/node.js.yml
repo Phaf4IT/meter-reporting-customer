@@ -55,22 +55,17 @@ jobs:
       uses: actions/upload-artifact@v3
       with:
         name: mocha-report
-        path: mocha-reports/report.json
+        path: ${{ github.workspace }}/nextjs/mocha-reports/report.json
 
     - name: Upload coverage report as artifact
       uses: actions/upload-artifact@v3
       with:
         name: coverage-report
-        path: coverage/lcov-report/index.html
+        path: ${{ github.workspace }}/nextjs/coverage/lcov-report/index.html
 
     - name: Publish Test Results (GitHub Checks)
       if: always()
       run: |
         mkdir -p $GITHUB_WORKSPACE/test-results
-        cp mocha-reports/report.json $GITHUB_WORKSPACE/test-results
-        cp coverage/lcov-report/index.html $GITHUB_WORKSPACE/test-results
-        
-    - name: Upload test results to GitHub checks
-      uses: github/codeql-action/upload-sarif@v2
-      with:
-        sarif_file: $GITHUB_WORKSPACE/test-results/report.json
+        cp $GITHUB_WORKSPACE/nextjs/mocha-reports/report.json $GITHUB_WORKSPACE/test-results
+        cp $GITHUB_WORKSPACE/nextjs/coverage/lcov-report/index.html $GITHUB_WORKSPACE/test-results
