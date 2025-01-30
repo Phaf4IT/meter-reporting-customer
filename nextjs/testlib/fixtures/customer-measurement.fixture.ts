@@ -55,6 +55,7 @@ export function getNewCustomerMeasurementByParams({
 export interface CustomerMeasurementFixture {
     customerMail?: string,
     campaign?: any,
+    campaignConfiguration?: any,
     campaignName?: string,
     measurements?: { name: string, value: string }[]
 }

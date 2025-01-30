@@ -5,6 +5,7 @@ import {createCustomer} from "@/components/admin/customer/action/createCustomerA
 import {updateCustomer} from "@/components/admin/customer/action/updateCustomerAction";
 import {deleteCustomer} from "@/components/admin/customer/action/deleteCustomerAction";
 import {modifiableCustomerFromJson} from "@/components/admin/customer/modifiable-customer";
+import {findCustomersByEntityIdsAction} from "@/components/admin/customer/action/findCustomersByEntityIdsAction";
 
 export async function POST(
     request: NextRequest
@@ -46,7 +47,7 @@ export async function PUT(
     }
 }
 
-export async function GET(): Promise<Response> {
+export async function GET(request: NextRequest): Promise<Response> {
     const session = await auth()
     if (!session) {
         return new Response('Unauthorized', {
@@ -54,8 +55,14 @@ export async function GET(): Promise<Response> {
         });
     }
     try {
-        return getCustomers()
-            .then(value => NextResponse.json(value));
+        const entityIds = request.nextUrl.searchParams.getAll("entityIds");
+        if (entityIds && entityIds.length > 0) {
+            return findCustomersByEntityIdsAction(entityIds)
+                .then(value => NextResponse.json(value));
+        } else {
+            return getCustomers()
+                .then(value => NextResponse.json(value));
+        }
     } catch (err) {
         console.error("Error creating customer:", err);
         return new NextResponse("Internal Server Error", {status: 500});

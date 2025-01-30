@@ -1,7 +1,10 @@
 import React, {useEffect, useState} from 'react';
-import DatePicker from 'react-datepicker';
-import "react-datepicker/dist/react-datepicker.css";
+import DateRangePicker from '@wojtekmaj/react-daterange-picker';
 import {getUtcDateAtStartOfDay} from "@/lib/dateUTCConverter";
+import {LooseValue} from "@/node_modules/@wojtekmaj/react-daterange-picker/dist/esm/shared/types";
+import '@wojtekmaj/react-daterange-picker/dist/DateRangePicker.css';
+import 'react-calendar/dist/Calendar.css';
+import '../custom-calendar.scss'
 
 interface DateRangePickerProps {
     t: (key: string) => string;
@@ -9,80 +12,77 @@ interface DateRangePickerProps {
     endDate: Date | undefined;
     setStartDate: (date: Date) => void;
     setEndDate: (date: Date) => void;
+    minDate: Date | undefined;
 }
 
-const DateRangePicker = ({
-                             t,
-                             startDate,
-                             endDate,
-                             setStartDate,
-                             setEndDate,
-                         }: DateRangePickerProps) => {
-    const [openEndDate, setOpenEndDate] = useState(false);
+const DateRangePickerComponent = ({
+                                      t,
+                                      startDate,
+                                      endDate,
+                                      setStartDate,
+                                      setEndDate,
+                                      minDate,
+                                  }: DateRangePickerProps) => {
+    const [range, setRange] = useState<LooseValue>(startDate && endDate ? [startDate, endDate] : startDate || null);
 
-    useEffect(() => {
-        if (startDate) {
-            setOpenEndDate(true);
+    // Functie om het bereik bij te werken
+    const handleDateChange = (value: LooseValue) => {
+        // Controleer of value een bereik van twee datums is
+        if (Array.isArray(value)) {
+            const [start, end] = value;
+            // Update start- en einddatum, maar zorg ervoor dat we ze goed formatteren
+            if (start) {
+                setStartDate(getUtcDateAtStartOfDay(start as Date)); // Zorg ervoor dat de startdatum altijd op het begin van de dag staat
+            }
+            if (end) {
+                setEndDate(getUtcDateAtStartOfDay(end as Date)); // En hetzelfde voor de einddatum
+            }
+            // Zet de range state om de geselecteerde datums bij te houden
+            setRange([start as Date, end as Date]);
+        } else {
+            // Als de waarde geen bereik is, is het de eerste datum die we kiezen (startdatum)
+            if (!Array.isArray(range)) {
+                // Eerste klik is de startdatum
+                setRange([value as Date, null]);
+                setStartDate(getUtcDateAtStartOfDay(value as Date));
+            } else {
+                // Tweede klik is de einddatum
+                setRange([range[0], value as Date]);
+                setEndDate(getUtcDateAtStartOfDay(value as Date));
+            }
         }
-    }, [startDate]);
-
-    const handleStartDateChange = (date: Date | null) => {
-        if (date) {
-            setStartDate(getUtcDateAtStartOfDay(date));
-        }
-    };
-
-    const handleEndDateChange = (date: Date | null) => {
-
-
-        if (date) {
-            setEndDate(getUtcDateAtStartOfDay(date));
-            setOpenEndDate(false);
-        }
-    };
-
-    const handleEndDateFocus = () => {
-        setOpenEndDate(true);
     };
 
     const getMinEndDate = () => {
         if (startDate) {
             const start = new Date(startDate);
-            start.setDate(start.getDate() + 1); 
+            start.setDate(start.getDate());
             return start;
         }
-        return new Date();
+        return minDate;
     };
 
-    return (
-        <div className="flex space-x-4">
-            <div className="flex-1">
-                <label>{t('startDate')}</label>
-                <DatePicker
-                    selected={startDate ? new Date(startDate) : null}
-                    onChange={handleStartDateChange}
-                    dateFormat="yyyy-MM-dd"
-                    className="bg-cyan-800 w-full p-2"
-                    minDate={new Date()}
-                />
-            </div>
+    useEffect(() => {
+        // Initialiseer het bereik met de huidige start- en einddatum
+        setRange([startDate || null, endDate || null]);
+    }, [startDate, endDate]);
 
+    return (
+        <div className="flex flex-col space-y-4">
             <div className="flex-1">
-                <label>{t('endDate')}</label>
-                <DatePicker
-                    selected={endDate ? new Date(endDate) : null}
-                    onChange={handleEndDateChange}
-                    dateFormat="yyyy-MM-dd"
+                <label>{t('selectDateRange')}</label>
+                <DateRangePicker
+                    value={range} // De value moet een LooseValue zijn
+                    onChange={handleDateChange} // Update het geselecteerde bereik
+                    minDate={getMinEndDate()} // Zorg ervoor dat einddatum later is dan startdatum
                     className="bg-cyan-800 w-full p-2"
-                    open={openEndDate}
-                    onCalendarClose={() => setOpenEndDate(false)}
-                    onCalendarOpen={() => setOpenEndDate(true)}
-                    onFocus={handleEndDateFocus}
-                    minDate={getMinEndDate()}
+                    format="yyyy-MM-dd" // Kies een gewenst datumformaat
+                    clearIcon={null}
                 />
             </div>
         </div>
     );
 };
 
-export default DateRangePicker;
+export default DateRangePickerComponent;
+

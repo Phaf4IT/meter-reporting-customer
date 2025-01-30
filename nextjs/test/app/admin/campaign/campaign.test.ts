@@ -1,4 +1,4 @@
-import {Browser, chromium, ElementHandle, Page} from "playwright-core";
+import {Browser, chromium, Page} from "playwright-core";
 import {Logger} from "@/lib/logger";
 import {WireMock} from "wiremock-captain";
 import {getEnvironmentVariableProvider} from "@/testlib/environmentVariableProvider";
@@ -13,6 +13,8 @@ import {createCustomer} from "@/testlib/api_fixtures/admin/customer-api.fixture"
 import {createCampaign, getCampaignByName} from "@/testlib/api_fixtures/admin/campaign-api.fixture";
 import {createEntityType} from "@/testlib/api_fixtures/admin/entity-type-api";
 import {createEntity} from "@/testlib/api_fixtures/admin/entity-api";
+import {createCampaignConfiguration} from "@/testlib/api_fixtures/admin/campaign-configuration-api.fixture";
+import {createMeasureValues} from "@/testlib/api_fixtures/admin/measure-value-api.fixture";
 
 describe('Open admin in browser', () => {
     let browser: Browser;
@@ -37,14 +39,22 @@ describe('Open admin in browser', () => {
 
     describe('Open admin campaigns in browser', () => {
         let campaign: any;
+        let campaignConfiguration: any;
         let customer: any;
         given('The campaign is posted to the server', async () => {
             const entityType = await createEntityType(request, sessionCookie);
             const entity = await createEntity(request, sessionCookie, entityType.name);
             customer = await createCustomer(request, sessionCookie, entity.id);
+            const measureValues = await createMeasureValues(request, sessionCookie);
+            campaignConfiguration = await createCampaignConfiguration(request, sessionCookie, {
+                entities: [entity],
+                measureValues
+            });
             campaign = await createCampaign(request, sessionCookie, {
                 customerIds: [customer.id],
-                customerEmails: [customer.email]
+                customerEmails: [customer.email],
+                configurationName: campaignConfiguration.name,
+                measureValues
             });
             expect(await getCampaignByName(request, sessionCookie, campaign.name)).is.not.undefined;
         })
@@ -63,23 +73,34 @@ describe('Open admin in browser', () => {
 
         then('The response should contain the new campaign', async () => {
             Logger.info(await page.content())
-            const rowIndex = await page.$$eval('table tbody tr', (rows: any, campaignName: string) => {
-                return rows.findIndex((row: any) => row.querySelector('td:nth-child(1)').textContent.trim() === campaignName);
+
+            const h3Element = page.locator('h3', {hasText: campaignConfiguration.name});
+            const table = h3Element.locator('xpath=following-sibling::div//table');
+            const rowIndex = await table.locator('tbody tr').evaluateAll((rows, campaignName) => {
+                return rows.findIndex(row => {
+                    const cell = row.querySelector('td:nth-child(1)');
+                    return cell && cell.textContent?.trim() === campaignName;
+                }); // Return de index van de rij of -1 als niet gevonden
             }, campaign.name);
 
-            expect(rowIndex).to.not.eq(-1);
-            const row: ElementHandle<HTMLElement | SVGElement> = (await page.$(`table tbody tr:nth-child(${rowIndex + 1})`))!;
+            const rowLocator = table.locator(`tbody tr:nth-child(${rowIndex + 1})`);
 
-            const campaignName = await row.$eval('td:nth-child(1)', td => td.textContent!.trim());
-            const startDate = await row.$eval('td:nth-child(2)', td => td.textContent!.trim());
-            const endDate = await row.$eval('td:nth-child(3)', td => td.textContent!.trim());
-            const reminderDates = await row.$$eval('td:nth-child(4) ul li', reminderDates =>
-                reminderDates.map(reminder => reminder.textContent!.trim())
-            );
-            const customerEmails = await row.$$eval('td:nth-child(5) ul li', emails =>
-                emails.map(email => email.textContent!.trim())
-            );
-            const measureValues = await row.$eval('td:nth-child(6)', td => td.textContent!.trim());
+            // Haal de data uit de rijen met Locators
+            const campaignName = await rowLocator.locator('td:nth-child(1)').textContent();
+            const campaignType = await rowLocator.locator('td:nth-child(2)').textContent();
+            const startDate = await rowLocator.locator('td:nth-child(3)').textContent();
+            const endDate = await rowLocator.locator('td:nth-child(4)').textContent();
+
+            // Haal de reminder data uit de vijfde kolom
+            const reminderDates = await rowLocator.locator('td:nth-child(5) ul li')
+                .evaluateAll(reminders => reminders.map(reminder => reminder.textContent?.trim()).filter(Boolean));
+
+            const customerEmails = await rowLocator.locator('td:nth-child(6) p')
+                .evaluateAll(paragraphs => paragraphs
+                    .filter(p => p.textContent?.includes('Email:'))
+                    .map(p => p.textContent?.split('Email:')[1].trim()));
+
+            const measureValues = await rowLocator.locator('td:nth-child(7)').textContent();
 
             const dateFormat = new Intl.DateTimeFormat('nl-NL');
             const formattedStartDate = dateFormat.format(getUtcDateAtStartOfDay(new Date(campaign.startDate)));
@@ -87,6 +108,7 @@ describe('Open admin in browser', () => {
             const formattedReminderDates = campaign.reminderDates.map((date: any) => format(toZonedTime(new Date(date), "Europe/Amsterdam"), "d-M-yyyy - HH:mm:ss"));
 
             expect(campaignName).to.equal(campaign.name);
+            expect(campaignType).to.equal(campaign.type);
             expect(startDate).to.equal(formattedStartDate);
             expect(endDate).to.equal(formattedEndDate);
             expect(reminderDates).to.have.members(formattedReminderDates);

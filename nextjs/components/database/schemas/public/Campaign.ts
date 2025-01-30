@@ -13,6 +13,10 @@ export default interface Campaign {
 
   company: CampaignCompany;
 
+  campaignConfigurationName: string;
+
+  type: string;
+
   startDate: Date;
 
   endDate: Date;
@@ -20,8 +24,6 @@ export default interface Campaign {
   reminderDates: Date[];
 
   customerIds: string[];
-
-  measureValues: unknown[];
 }
 
 /** Represents the initializer for the table public.campaign */
@@ -30,6 +32,10 @@ export interface CampaignInitializer {
 
   company: CampaignCompany;
 
+  campaignConfigurationName: string;
+
+  type: string;
+
   startDate: Date;
 
   endDate: Date;
@@ -37,8 +43,6 @@ export interface CampaignInitializer {
   reminderDates: Date[];
 
   customerIds: string[];
-
-  measureValues: unknown[];
 }
 
 /** Represents the mutator for the table public.campaign */
@@ -47,6 +51,10 @@ export interface CampaignMutator {
 
   company?: CampaignCompany;
 
+  campaignConfigurationName?: string;
+
+  type?: string;
+
   startDate?: Date;
 
   endDate?: Date;
@@ -54,6 +62,4 @@ export interface CampaignMutator {
   reminderDates?: Date[];
 
   customerIds?: string[];
-
-  measureValues?: unknown[];
 }

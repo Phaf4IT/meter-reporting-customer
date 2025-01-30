@@ -1,73 +1,71 @@
 import React, {useEffect, useState} from 'react';
 import {Customer} from "@/components/admin/customer/customer";
-import {getCustomers} from "@/app/admin/customer/client";
-import {MeasureValue} from "@/components/admin/measure-value/measureValue";
+import {getCustomersByEntityIds} from "@/app/admin/customer/client";
 import DateRangePicker from "@/components/admin/campaign/date-range-picker";
-import MeasureValuesSelector from "@/components/admin/campaign/measure-values";
 import ReminderDates from "@/components/admin/campaign/reminder-dates";
 import CustomerSelection from "@/components/admin/campaign/customer-selection";
-import {Campaign} from "@/components/admin/campaign/campaign";
 import FormWizard from "@/components/admin/form-wizard";
-import {getMeasureValues} from "@/app/admin/measure-value/client";
 import CampaignNameForm from "@/components/admin/campaign/campaign-name-form";
 import {ModifiableCampaign} from "@/app/api/admin/campaign/route";
+import {CampaignConfiguration} from "@/components/admin/campaign-configuration/campaignConfiguration";
+import CampaignTypeForm from "@/components/admin/campaign/campaign-type-form";
+import {Campaign, CampaignType} from "@/components/admin/campaign/campaign";
 
 interface CampaignFormWizardProps {
     isOpen: boolean;
     onClose: () => void;
-    onSubmit: (campaign: Campaign) => Promise<void>;
+    onSubmit: (campaign: ModifiableCampaign) => Promise<void>;
     t: (key: string) => string;
     currentCampaignNames: string[];
+    currentCampaigns: Campaign[];
+    selectedCampaignConfiguration?: CampaignConfiguration;
 }
 
 const CampaignFormWizard: React.FC<CampaignFormWizardProps> = ({
                                                                    isOpen,
                                                                    onClose,
                                                                    onSubmit,
+                                                                   currentCampaigns,
                                                                    t,
-                                                                   currentCampaignNames
-                                                               }: any) => {
+                                                                   currentCampaignNames,
+                                                                   selectedCampaignConfiguration
+                                                               }: CampaignFormWizardProps) => {
     const [customers, setCustomers] = useState<Customer[]>([]);
-    const [selectedMeasures, setSelectedMeasures] = useState<MeasureValue[]>([]);
     const [selectedCustomers, setSelectedCustomers] = useState<Customer[]>([]);
     const [reminderDates, setReminderDates] = useState<Date[]>([]);
     const [startDate, setStartDate] = useState<Date | undefined>(undefined);
     const [name, setName] = useState<string>('');
     const [endDate, setEndDate] = useState<Date | undefined>(undefined);
-    const [measureValues, setMeasureValues] = useState<MeasureValue[]>([]);
+    const [campaignType, setCampaignType] = useState<CampaignType | undefined>(undefined);
 
     useEffect(() => {
-        if (isOpen) {
-            getMeasureValues()
-                .then(values => {
-                    setMeasureValues(values)
-                    setSelectedMeasures(values)
-                })
-            getCustomers()
+        if (isOpen && selectedCampaignConfiguration) {
+            getCustomersByEntityIds(selectedCampaignConfiguration.entities.map(value => value.id!))
                 .then(customers => {
                     setCustomers(customers);
                     setSelectedCustomers(customers.map((c: Customer) => c));
                 });
         }
-    }, [isOpen]);
+    }, [isOpen, selectedCampaignConfiguration, selectedCampaignConfiguration?.entities, selectedCampaignConfiguration?.measureValues]);
 
-    const handleFormSubmit = () => {
+    const handleFormSubmit = async () => {
         const campaignData: ModifiableCampaign = {
             name: name,
             startDate: startDate!,
             endDate: endDate!,
             reminderDates: reminderDates,
             customerIds: selectedCustomers.map(c => c.id),
-            measureValues: selectedMeasures
+            measureValues: selectedCampaignConfiguration!.measureValues,
+            configurationName: selectedCampaignConfiguration!.name,
+            type: campaignType!
         };
-        return onSubmit(campaignData)
-            .then(() => {
-                setName('')
-                setStartDate(undefined);
-                setEndDate(undefined);
-                setReminderDates([]);
-                setSelectedCustomers([]);
-            });
+        await onSubmit(campaignData);
+        setName('');
+        setStartDate(undefined);
+        setEndDate(undefined);
+        setReminderDates([]);
+        setSelectedCustomers([]);
+        setCampaignType(undefined);
     };
 
     const steps = [
@@ -83,31 +81,31 @@ const CampaignFormWizard: React.FC<CampaignFormWizardProps> = ({
             )
         },
         {
+
+            title: 'Type',
+            content: (<CampaignTypeForm
+                campaignType={campaignType}
+                setCampaignType={setCampaignType}
+                currentCampaigns={currentCampaigns}
+            />),
+            onValidate: () => true
+        },
+        {
             title: t('dateRangeTitle'),
             content: (
                 <DateRangePicker
                     t={t}
                     startDate={startDate}
                     endDate={endDate}
+                    minDate={campaignType !== 'BASE' ? new Date() : undefined}
                     setStartDate={(date: Date) => setStartDate(date)}
                     setEndDate={(date: Date) => setEndDate(date)}
                 />
             ),
             onValidate: () => !!(startDate && endDate),
         },
-        {
-            title: t('measureValuesTitle'),
-            content: (
-                <MeasureValuesSelector
-                    t={t}
-                    measureValues={measureValues}
-                    selectedMeasures={selectedMeasures}
-                    setSelectedMeasures={setSelectedMeasures}
-                    setMeasureValues={setMeasureValues}
-                />
-            ),
-        },
-        {
+        // Conditionally render this step based on campaignType
+        ...(campaignType !== 'BASE' ? [{
             title: t('reminderDatesTitle'),
             content: (
                 <ReminderDates
@@ -118,7 +116,8 @@ const CampaignFormWizard: React.FC<CampaignFormWizardProps> = ({
                     setReminderDates={setReminderDates}
                 />
             ),
-        },
+            onValidate: () => true
+        }] : []), // Empty array to exclude this step if BASE
         {
             title: t('customerSelectionTitle'),
             content: (
@@ -129,6 +128,7 @@ const CampaignFormWizard: React.FC<CampaignFormWizardProps> = ({
                     setSelectedCustomers={setSelectedCustomers}
                 />
             ),
+            onValidate: () => selectedCustomers && selectedCustomers.length > 0,
         },
     ];
 

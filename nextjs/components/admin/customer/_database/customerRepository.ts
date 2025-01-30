@@ -37,6 +37,18 @@ export async function findCustomersByIds(ids: string[], company: string) {
         );
 }
 
+export async function findCustomersByEntityIds(ids: string[], company: string) {
+    return getEntityManager(CustomerTable)
+        .findBy({
+            company: company,
+            entity_id: ids
+        })
+        .then(async (customers) => {
+                return await mapCustomers(customers, company);
+            }
+        );
+}
+
 export async function saveCustomer(customer: ModifiableCustomer, company: string) {
     return getEntityManager(CustomerTable)
         .create(mapDomainToTable(customer, company))

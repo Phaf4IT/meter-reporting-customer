@@ -1,0 +1,57 @@
+.react-calendar {
+  @apply bg-cyan-800 text-white rounded-lg p-4;
+}
+
+.react-calendar__navigation button {
+  @apply bg-cyan-800
+}
+
+.react-calendar__navigation button:disabled {
+  @apply bg-cyan-800
+}
+
+
+.react-calendar__navigation button:enabled:hover,
+.react-calendar__navigation button:enabled:focus {
+  @apply bg-cyan-800
+}
+
+.react-calendar__tile:disabled {
+  @apply bg-cyan-900
+}
+
+.react-calendar__tile:enabled:hover,
+.react-calendar__tile:enabled:focus {
+  @apply bg-cyan-700
+}
+
+.react-calendar__tile--now {
+  @apply bg-sky-950
+}
+
+.react-calendar--selectRange .react-calendar__tile--hover {
+  @apply bg-cyan-700
+}
+
+.react-calendar__tile--active:enabled:hover,
+.react-calendar__tile--active:enabled:focus {
+  @apply bg-cyan-700
+}
+
+.react-calendar__tile--active {
+  @apply bg-cyan-700
+}
+
+
+.react-calendar__tile--hasActive {
+  @apply bg-cyan-600
+}
+
+.react-calendar__tile--hasActive:enabled:hover,
+.react-calendar__tile--hasActive:enabled:focus {
+  @apply bg-cyan-600
+}
+
+.react-calendar__month-view__days__day--weekend {
+  @apply text-gray-400
+}

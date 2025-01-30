@@ -20,6 +20,18 @@ export async function findMeasureValues(company: string) {
 
 }
 
+export async function findMeasureValuesByNames(names: string[], company: string) {
+    return getEntityManager(MeasureValueTable)
+        .findBy({
+            company: company,
+            name: names
+        })
+        .then((measureValues) =>
+            measureValues.map((measureValueTable: MeasureValueTable) => mapTableToDomain(measureValueTable))
+        );
+
+}
+
 export async function saveMeasureValue(measureValue: MeasureValue, company: string) {
     return getEntityManager(MeasureValueTable)
         .create(mapDomainToTable(measureValue, company))

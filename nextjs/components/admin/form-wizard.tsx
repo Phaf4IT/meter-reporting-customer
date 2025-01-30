@@ -1,7 +1,7 @@
 import React, {useState} from 'react';
-import Dialog from 'rc-dialog'; // Verander de import naar rc-dialog
-import 'rc-dialog/assets/index.css'; // Zorg ervoor dat je de bijbehorende CSS importeert
-import '../dialog-styles.css'; // Vergeet niet de CSS te importeren
+import Dialog from 'rc-dialog';
+import 'rc-dialog/assets/index.css';
+import '../dialog-styles.css';
 
 interface Step {
     title: string;
@@ -30,6 +30,8 @@ const FormWizard: React.FC<FormWizardProps> = ({isOpen, onClose, onSubmit, steps
 
         if (currentStep < steps.length - 1) {
             setCurrentStep(currentStep + 1);
+        } else {
+            handleSubmit();
         }
     };
 
@@ -55,19 +57,27 @@ const FormWizard: React.FC<FormWizardProps> = ({isOpen, onClose, onSubmit, steps
         });
     };
 
+    // Keydown handler to prevent form submission on Enter key press
+    const handleKeyDown = (e: React.KeyboardEvent) => {
+        if (e.key === 'Enter') {
+            e.preventDefault(); // Prevent default behavior (form submit)
+            handleNext(); // Proceed to next step (or submit if it's the last step)
+        }
+    };
+
     return (
         <Dialog
-            visible={isOpen} // Vervang isOpen met visible
-            onClose={onClose} // Gebruik onClose om de dialoog te sluiten
+            visible={isOpen}
+            onClose={onClose}
             title={t('formWizardTitle')}
-            closable={true} // Sluitknop tonen
-            maskClosable={false} // De achtergrond mag niet worden aangeklikt om de dialoog te sluiten
-            className="bg-cyan-900 text-white p-6 rounded shadow-md max-w-lg mx-auto"
-            footer={null} // Omdat je zelf een footer maakt met knoppen
+            closable={true}
+            maskClosable={false}
+            className="bg-cyan-900 text-white p-6 rounded shadow-md max-w-[90vh] mx-auto h-[80vh]"
+            footer={null}
         >
             <h2 className="text-xl font-bold mb-4">{t('formWizardTitle')}</h2>
-            <form className="space-y-6">
-                <div className="mb-4">
+            <form className="space-y-6" onKeyDown={handleKeyDown}>
+                <div className="mb-4 h-[50vh]">
                     <h3 className="text-lg font-semibold">{steps[currentStep].title}</h3>
                     {React.cloneElement(steps[currentStep].content as React.ReactElement, {
                         handleInputChange,

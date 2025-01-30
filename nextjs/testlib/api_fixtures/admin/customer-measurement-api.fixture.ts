@@ -8,7 +8,7 @@ export async function createCustomerMeasurement(request: any, sessionCookie: str
     const customerMeasurement = getNewCustomerMeasurementByParams({
         customerMail: customerMeasurementFixture.customerMail,
         campaignName: customerMeasurementFixture.campaign.name,
-        measurements: customerMeasurementFixture.measurements ? customerMeasurementFixture.measurements : generateRandomMeasurements(customerMeasurementFixture.campaign.measureValues)
+        measurements: customerMeasurementFixture.measurements ? customerMeasurementFixture.measurements : generateRandomMeasurements(customerMeasurementFixture.campaignConfiguration.measureValues)
     });
     await request.post('/api/admin/customer-measurement')
         .send(customerMeasurement)

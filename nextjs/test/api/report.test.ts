@@ -15,6 +15,8 @@ import {createReminderSent} from "@/testlib/api_fixtures/admin/reminder-sent-api
 import {createCustomerMeasurement} from "@/testlib/api_fixtures/admin/customer-measurement-api.fixture";
 import {createEntityType} from "@/testlib/api_fixtures/admin/entity-type-api";
 import {createEntity} from "@/testlib/api_fixtures/admin/entity-api";
+import {createCampaignConfiguration} from "@/testlib/api_fixtures/admin/campaign-configuration-api.fixture";
+import {createMeasureValues} from "@/testlib/api_fixtures/admin/measure-value-api.fixture";
 
 describe('Report API Endpoints', () => {
     let request: any;
@@ -42,9 +44,16 @@ describe('Report API Endpoints', () => {
             const entityType = await createEntityType(request, sessionCookie);
             const entity = await createEntity(request, sessionCookie, entityType.name);
             customer = await createCustomer(request, sessionCookie, entity.id);
+            const measureValues = await createMeasureValues(request, sessionCookie);
+            const campaignConfiguration = await createCampaignConfiguration(request, sessionCookie, {
+                entities: [entity],
+                measureValues
+            });
             campaign = await createCampaign(request, sessionCookie, {
                 customerIds: [customer.id],
-                customerEmails: [customer.email]
+                customerEmails: [customer.email],
+                configurationName: campaignConfiguration.name,
+                measureValues
             });
             reminderSent = await createReminderSent(request, sessionCookie, {campaign, customer});
             customerMeasurement = getNewCustomerMeasurementByParams({
@@ -82,15 +91,23 @@ describe('Report API Endpoints', () => {
             const entityType = await createEntityType(request, sessionCookie);
             const entity = await createEntity(request, sessionCookie, entityType.name);
             customer = await createCustomer(request, sessionCookie, entity.id);
+            const measureValues = await createMeasureValues(request, sessionCookie);
+            const campaignConfiguration = await createCampaignConfiguration(request, sessionCookie, {
+                entities: [entity],
+                measureValues
+            });
             campaign = await createCampaign(request, sessionCookie, {
                 customerIds: [customer.id],
-                customerEmails: [customer.email]
+                customerEmails: [customer.email],
+                configurationName: campaignConfiguration.name,
+                measureValues
             });
             reminderSent = await createReminderSent(request, sessionCookie, {campaign, customer});
 
             await createCustomerMeasurement(request, sessionCookie, {
                 campaign,
-                customerMail: customer.email
+                customerMail: customer.email,
+                campaignConfiguration
             })
         });
 
@@ -143,9 +160,11 @@ describe('Report API Endpoints', () => {
             const entityType = await createEntityType(request, sessionCookie);
             const entity = await createEntity(request, sessionCookie, entityType.name);
             customer = await createCustomer(request, sessionCookie, entity.id);
+            const campaignConfiguration = await createCampaignConfiguration(request, sessionCookie, {entities: [entity]});
             campaign = await createCampaign(request, sessionCookie, {
                 customerIds: [customer.id],
-                customerEmails: [customer.email]
+                customerEmails: [customer.email],
+                configurationName: campaignConfiguration.name
             });
             reminderSent = await createReminderSent(request, sessionCookie, {campaign, customer});
             customerMeasurement = getNewCustomerMeasurementByParams({
@@ -181,15 +200,23 @@ describe('Report API Endpoints', () => {
             const entityType = await createEntityType(request, sessionCookie);
             const entity = await createEntity(request, sessionCookie, entityType.name);
             customer = await createCustomer(request, sessionCookie, entity.id);
+            const measureValues = await createMeasureValues(request, sessionCookie);
+            const campaignConfiguration = await createCampaignConfiguration(request, sessionCookie, {
+                entities: [entity],
+                measureValues
+            });
             campaign = await createCampaign(request, sessionCookie, {
                 customerIds: [customer.id],
-                customerEmails: [customer.email]
+                customerEmails: [customer.email],
+                configurationName: campaignConfiguration.name,
+                measureValues
             });
             reminderSent = await createReminderSent(request, sessionCookie, {campaign, customer});
 
             const customerMeasurement = await createCustomerMeasurement(request, sessionCookie, {
                 campaign,
-                customerMail: customer.email
+                customerMail: customer.email,
+                campaignConfiguration
             });
             reportData = {
                 measurements: customerMeasurement.measurements,
@@ -225,9 +252,16 @@ describe('Report API Endpoints', () => {
             const entityType = await createEntityType(request, sessionCookie);
             const entity = await createEntity(request, sessionCookie, entityType.name);
             customer = await createCustomer(request, sessionCookie, entity.id);
+            const measureValues = await createMeasureValues(request, sessionCookie);
+            const campaignConfiguration = await createCampaignConfiguration(request, sessionCookie, {
+                entities: [entity],
+                measureValues
+            });
             campaign = await createCampaign(request, sessionCookie, {
                 customerIds: [customer.id],
-                customerEmails: [customer.email]
+                customerEmails: [customer.email],
+                configurationName: campaignConfiguration.name,
+                measureValues
             });
             await createReminderSent(request, sessionCookie, {campaign, customer});
             invalidReportData = {

@@ -4,6 +4,38 @@ export function getAllTypeMeasureValues() {
     return [getNewMeasureValueNumber(), getNewMeasureValueBoolean(), getNewMeasureValueText()]
 }
 
+export function getMainMeasureValues() {
+    return [{
+        "name": `Gas-${randomUUID()}`,
+        "translations": [{"locale": "nl-NL", "value": "Gas"}],
+        "unit": "m3",
+        "type": "NUMBER",
+        "isEditable": true,
+        "defaultValue": null
+    }, {
+        "name": `Licht-${randomUUID()}`,
+        "translations": [{"locale": "nl-NL", "value": "Licht"}],
+        "unit": "kWh",
+        "type": "NUMBER",
+        "isEditable": true,
+        "defaultValue": null
+    }, {
+        "name": `Water-${randomUUID()}`,
+        "translations": [{"locale": "nl-NL", "value": "Water"}],
+        "unit": "m3",
+        "type": "NUMBER",
+        "isEditable": true,
+        "defaultValue": null
+    }, {
+        "name": `Random bool-${randomUUID()}`,
+        "translations": [{"locale": "nl-NL", "value": "Leuk?"}],
+        "unit": "m3",
+        "type": "BOOLEAN",
+        "isEditable": true,
+        "defaultValue": "true"
+    }]
+}
+
 export function getNewMeasureValueNumber() {
     return {
         name: `Measure-${randomUUID()}`,
