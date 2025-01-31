@@ -9,7 +9,7 @@
     "start": "next start",
     "lint": "next lint",
     "test": "NYC_ENABLED=true mocha --config=.mocharc.json",
-    "test:cicd": "NYC_ENABLED=true mocha --config=.mocharc.json  --require mochawesome/register --timeout 100000 --reporter mochawesome --reporter-options reportDir=mocha-reports,reportFilename=report,quiet=true"
+    "test:cicd": "NYC_ENABLED=true mocha --config=.mocharc.json  --require mochawesome/register --timeout 100000 --reporter mochawesome --parallel false --reporter-options reportDir=mocha-reports,reportFilename=report,quiet=true"
   },
   "nyc": {
     "extends": "@istanbuljs/nyc-config-typescript",
