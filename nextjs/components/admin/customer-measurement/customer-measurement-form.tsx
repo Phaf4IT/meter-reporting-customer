@@ -4,6 +4,11 @@ import {CustomerMeasurement, MeasureValue} from "@/components/admin/customer-mea
 import ToggleSwitch from '@/components/toggle-switch';
 import {Campaign} from "@/components/admin/campaign/campaign";
 import {MeasureValue as CampaignMeasureValue} from "@/components/admin/measure-value/measureValue";
+import 'react-date-picker/dist/DatePicker.css';
+import 'react-calendar/dist/Calendar.css';
+import DatePicker from 'react-date-picker';
+import type {Value} from "@/node_modules/react-date-picker/dist/cjs/shared/types";
+import '../custom-calendar.scss'
 
 export interface CustomerMeasurementCampaign {
     customerMeasurement: CustomerMeasurement;
@@ -28,6 +33,7 @@ export default function CustomerMeasurementForm({
 
     const [formData, setFormData] = useState<{ [key: string]: string | boolean }>({});
     const [measurements, setMeasurements] = useState<MeasureValue[]>([]);
+    const [dateTime, setDateTime] = useState<Value>();
 
     useEffect(() => {
         if (customerMeasurementCampaign?.campaign && customerMeasurementCampaign.customerMeasurement) {
@@ -41,6 +47,8 @@ export default function CustomerMeasurementForm({
                     value: existingMeasurement ? existingMeasurement.value : campaignMeasure.defaultValue || '',
                 };
             });
+
+            setDateTime(customerMeasurementCampaign.customerMeasurement.dateTime);
 
             setMeasurements(combinedMeasurements);
 
@@ -66,6 +74,7 @@ export default function CustomerMeasurementForm({
         const measurement = {
             ...customerMeasurementCampaign!.customerMeasurement,
             measurements: updatedMeasurements,
+            dateTime: new Date(dateTime!.toLocaleString())
         };
         onSave(measurement);
     };
@@ -84,6 +93,13 @@ export default function CustomerMeasurementForm({
         const translation = measure.translations.find((value) => value.locale.split(/[-_]/)[0] === locale);
         return translation ? translation.value : measure.name;
     };
+
+    const onClose = () => {
+        setFormData({});
+        setMeasurements([]);
+        setDateTime(undefined)
+        onCancel();
+    }
 
     return (
         <form onSubmit={handleSubmit} className="bg-cyan-900 p-6 rounded shadow-md">
@@ -126,6 +142,16 @@ export default function CustomerMeasurementForm({
                     )}
                 </div>
             ))}
+            <div className="mb-4">
+                <label htmlFor={'dateTime'} className="block font-medium">
+                    {t('measureDate')}
+                </label>
+                <DatePicker
+                    className="bg-cyan-800 w-full p-2"
+                    value={dateTime}
+                    onChange={value => setDateTime(value || undefined)}
+                />
+            </div>
 
             <div className="mt-4">
                 <button
@@ -134,7 +160,7 @@ export default function CustomerMeasurementForm({
                 >
                     {t('submit')}
                 </button>
-                <button type="button" onClick={onCancel}
+                <button type="button" onClick={onClose}
                         className="ml-4 bg-red-500 text-white px-4 py-2 rounded hover:bg-red-600"
                 >
                     {t('cancel')}

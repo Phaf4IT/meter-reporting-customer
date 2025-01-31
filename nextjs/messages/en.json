@@ -81,7 +81,7 @@
       "startDate": "Start Date",
       "endDate": "End Date",
       "measureValues": "Values to Measure",
-      "customerEmails": "Customer Emails (optional)",
+      "customerEmails": "Customer Emails",
       "reminderDates": "Reminder Dates",
       "generateReminders": "Generate Reminders",
       "commaSeparated": "Comma-separated values",

@@ -11,7 +11,7 @@ export async function getCampaigns(): Promise<Campaign[]> {
     return campaigns.map((campaignData: any) => campaignFromJson(campaignData))
 }
 
-export async function saveCampaign(campaign: Campaign): Promise<Campaign> {
+export async function saveCampaign(campaign: ModifiableCampaign): Promise<Campaign> {
     const response = await fetch("/api/admin/campaign", {
         method: "POST",
         body: JSON.stringify(campaign),

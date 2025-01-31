@@ -14,6 +14,7 @@ import {createCustomer} from "@/testlib/api_fixtures/admin/customer-api.fixture"
 import {createCampaign} from "@/testlib/api_fixtures/admin/campaign-api.fixture";
 import {createEntityType} from "@/testlib/api_fixtures/admin/entity-type-api";
 import {createEntity} from "@/testlib/api_fixtures/admin/entity-api";
+import {createCampaignConfiguration} from "@/testlib/api_fixtures/admin/campaign-configuration-api.fixture";
 
 describe('Complete Scenario: Customer should receive a reminder for a campaign', () => {
     let newCustomer: any;
@@ -47,11 +48,13 @@ describe('Complete Scenario: Customer should receive a reminder for a campaign',
             const entityType = await createEntityType(request, sessionCookie);
             const entity = await createEntity(request, sessionCookie, entityType.name);
             newCustomer = await createCustomer(request, sessionCookie, entity.id)
+            const campaignConfiguration = await createCampaignConfiguration(request, sessionCookie, {entities: [entity]});
             campaign = await createCampaign(request, sessionCookie, {
                 measureValues,
                 customerEmails: [newCustomer.email],
                 customerIds: [newCustomer.id],
-                reminderDates: [reminderDate]
+                reminderDates: [reminderDate],
+                configurationName: campaignConfiguration.name
             });
             customerMeasurement = getNewCustomerMeasurementByParams({
                 customerMail: newCustomer.email,

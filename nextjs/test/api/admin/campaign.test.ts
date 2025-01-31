@@ -7,6 +7,7 @@ import {createCustomer} from "@/testlib/api_fixtures/admin/customer-api.fixture"
 import {createEntityType} from "@/testlib/api_fixtures/admin/entity-type-api";
 import {createEntity} from "@/testlib/api_fixtures/admin/entity-api";
 import {Customer} from "@/components/admin/customer/customer";
+import {createCampaignConfiguration} from "@/testlib/api_fixtures/admin/campaign-configuration-api.fixture";
 
 describe('Admin Campaign API Endpoints', () => {
     let request: any;
@@ -29,9 +30,11 @@ describe('Admin Campaign API Endpoints', () => {
             // eslint-disable-next-line @typescript-eslint/no-unused-vars
             const {entityId, ...customerWithoutEntityId} = await createCustomer(request, sessionCookie, entity.id);
             customer = {...customerWithoutEntityId, entity};
+            const campaignConfiguration = await createCampaignConfiguration(request, sessionCookie, {entities: [entity]});
             newCampaign = getNewCampaignByParams({
                 customerIds: [customer.id],
-                customerEmails: [customer.email]
+                customerEmails: [customer.email],
+                configurationName: campaignConfiguration.name
             });
         });
 
@@ -57,7 +60,11 @@ describe('Admin Campaign API Endpoints', () => {
             const entityType = await createEntityType(request, sessionCookie);
             const entity = await createEntity(request, sessionCookie, entityType.name);
             const customer = await createCustomer(request, sessionCookie, entity.id);
-            newCampaign = getNewCampaignByParams({customerIds: [customer.id]});
+            const campaignConfiguration = await createCampaignConfiguration(request, sessionCookie, {entities: [entity]});
+            newCampaign = getNewCampaignByParams({
+                customerIds: [customer.id],
+                configurationName: campaignConfiguration.name
+            });
             await request.post('/api/admin/campaign').send(newCampaign)
                 .set('Cookie', sessionCookie);
         });
@@ -84,7 +91,11 @@ describe('Admin Campaign API Endpoints', () => {
             const entityType = await createEntityType(request, sessionCookie);
             const entity = await createEntity(request, sessionCookie, entityType.name);
             const customer = await createCustomer(request, sessionCookie, entity.id);
-            newCampaign = getNewCampaignByParams({customerIds: [customer.id]});
+            const campaignConfiguration = await createCampaignConfiguration(request, sessionCookie, {entities: [entity]});
+            newCampaign = getNewCampaignByParams({
+                customerIds: [customer.id],
+                configurationName: campaignConfiguration.name
+            });
             await request.post('/api/admin/campaign').send(newCampaign)
                 .set('Cookie', sessionCookie);
         });
@@ -105,7 +116,7 @@ describe('Admin Campaign API Endpoints', () => {
         let newCampaign: any;
         let response: any;
 
-        given('A campaign payload', () => {
+        given('A campaign payload', async () => {
             newCampaign = {
                 name: 'Test Campaign',
                 customerEmails: ['test@example.com'],
@@ -113,6 +124,7 @@ describe('Admin Campaign API Endpoints', () => {
                 measureValues: [],
                 reminderDates: ['2024-12-01'],
                 startDate: '2024-01-01',
+                configurationName: 'config'
             };
         });
 

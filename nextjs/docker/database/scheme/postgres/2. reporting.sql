@@ -1,6 +1,7 @@
 DROP TABLE IF EXISTS company;
 DROP TABLE IF EXISTS entity_type;
 DROP TABLE IF EXISTS entity;
+DROP TABLE IF EXISTS campaign_configuration;
 DROP TABLE IF EXISTS campaign;
 DROP TABLE IF EXISTS reminder;
 DROP TABLE IF EXISTS campaign_reminder_sent;
@@ -51,15 +52,25 @@ CREATE TABLE IF NOT EXISTS entity
     PRIMARY KEY (id)
 );
 
+CREATE TABLE IF NOT EXISTS campaign_configuration
+(
+    name                text         NOT NULL,
+    measure_value_names text[]       NOT NULL,
+    entity_ids          uuid[]       NOT NULL,
+    company             varchar(255) NOT NULL,
+    PRIMARY KEY (name, company)
+);
+
 CREATE TABLE IF NOT EXISTS campaign
 (
-    name           text          NOT NULL,
-    start_date     date          NOT NULL,
-    end_date       date          NOT NULL,
-    reminder_dates timestamptz[] NOT NULL,
-    customer_ids   uuid[]        NOT NULL,
-    measure_values json[]        NOT NULL,
-    company        varchar(255)  NOT NULL,
+    name                        text          NOT NULL,
+    campaign_configuration_name text          NOT NULL,
+    type                        text          NOT NULL, -- PERIODIC, END, START, DELETE_ENTITY
+    start_date                  date          NOT NULL,
+    end_date                    date          NOT NULL,
+    reminder_dates              timestamptz[] NOT NULL,
+    customer_ids                uuid[]        NOT NULL,
+    company                     varchar(255)  NOT NULL,
     PRIMARY KEY (name, company)
 );
 

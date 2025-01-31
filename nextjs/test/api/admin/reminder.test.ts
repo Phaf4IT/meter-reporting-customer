@@ -7,6 +7,7 @@ import {createCustomer} from "@/testlib/api_fixtures/admin/customer-api.fixture"
 import {createCampaign} from "@/testlib/api_fixtures/admin/campaign-api.fixture";
 import {createEntityType} from "@/testlib/api_fixtures/admin/entity-type-api";
 import {createEntity} from "@/testlib/api_fixtures/admin/entity-api";
+import {createCampaignConfiguration} from "@/testlib/api_fixtures/admin/campaign-configuration-api.fixture";
 
 describe('Reminder API Endpoints', () => {
     let request: any;
@@ -26,9 +27,11 @@ describe('Reminder API Endpoints', () => {
             const entityType = await createEntityType(request, sessionCookie);
             const entity = await createEntity(request, sessionCookie, entityType.name);
             const customer = await createCustomer(request, sessionCookie, entity.id);
+            const campaignConfiguration = await createCampaignConfiguration(request, sessionCookie, {entities: [entity]});
             const newCampaign = await createCampaign(request, sessionCookie, {
                 customerIds: [customer.id],
-                customerEmails: [customer.email]
+                customerEmails: [customer.email],
+                configurationName: campaignConfiguration.name
             });
             newReminder = getNewReminder({campaignName: newCampaign.name, customer});
         });
@@ -74,9 +77,11 @@ describe('Reminder API Endpoints', () => {
             const entityType = await createEntityType(request, sessionCookie);
             const entity = await createEntity(request, sessionCookie, entityType.name);
             const customer = await createCustomer(request, sessionCookie, entity.id);
+            const campaignConfiguration = await createCampaignConfiguration(request, sessionCookie, {entities: [entity]});
             const newCampaign = await createCampaign(request, sessionCookie, {
                 customerIds: [customer.id],
-                customerEmails: [customer.email]
+                customerEmails: [customer.email],
+                configurationName: campaignConfiguration.name
             });
             newReminder = getNewReminder({campaignName: newCampaign.name, customer});
             await request.post('/api/admin/reminder').send(newReminder)
@@ -104,9 +109,11 @@ describe('Reminder API Endpoints', () => {
             const entityType = await createEntityType(request, sessionCookie);
             const entity = await createEntity(request, sessionCookie, entityType.name);
             const customer = await createCustomer(request, sessionCookie, entity.id);
+            const campaignConfiguration = await createCampaignConfiguration(request, sessionCookie, {entities: [entity]});
             const newCampaign = await createCampaign(request, sessionCookie, {
                 customerIds: [customer.id],
-                customerEmails: [customer.email]
+                customerEmails: [customer.email],
+                configurationName: campaignConfiguration.name
             });
             newReminder = getNewReminder({campaignName: newCampaign.name, customer});
             await request.post('/api/admin/reminder').send(newReminder)
@@ -154,9 +161,11 @@ describe('Reminder API Endpoints', () => {
             const entityType = await createEntityType(request, sessionCookie);
             const entity = await createEntity(request, sessionCookie, entityType.name);
             const customer = await createCustomer(request, sessionCookie, entity.id);
+            const campaignConfiguration = await createCampaignConfiguration(request, sessionCookie, {entities: [entity]});
             const newCampaign = await createCampaign(request, sessionCookie, {
                 customerIds: [customer.id],
-                customerEmails: [customer.email]
+                customerEmails: [customer.email],
+                configurationName: campaignConfiguration.name
             });
             newReminder = getNewReminder({campaignName: newCampaign.name, customer});
         });

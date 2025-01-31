@@ -6,7 +6,7 @@ import {retry} from "ts-retry";
 
 export async function startServer(env: EnvironmentConfiguration) {
     const port = await detectPort();
-    const command = `${getEnv(env)} ${process.env.NYC_ENABLED ? 'nyc ' : ''}npm run dev -- -p ${port}`;
+    const command = `${getEnv(env)} ${process.env.NYC_ENABLED === 'true' ? 'nyc ' : ''}npm run dev -- -p ${port}`;
     Logger.info(`Running cmd "${command}"`)
     const server = await setup({
         command: command,

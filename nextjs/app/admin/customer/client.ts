@@ -11,6 +11,15 @@ export async function getCustomers(): Promise<Customer[]> {
     return customers.map((customerData: any) => customerFromJson(customerData))
 }
 
+export async function getCustomersByEntityIds(entityIds: string[]): Promise<Customer[]> {
+    const data = await fetch(`/api/admin/customer?${entityIds.map(id => `entityIds=${id}`).join("&")}`, {
+        method: "GET",
+        credentials: "include"
+    });
+    const customers = await data.json();
+    return customers.map((customerData: any) => customerFromJson(customerData))
+}
+
 export async function saveCustomer(customer: ModifiableCustomer, isNew: boolean): Promise<Customer> {
     const response = await fetch("/api/admin/customer", {
         method: isNew ? "POST" : "PUT",

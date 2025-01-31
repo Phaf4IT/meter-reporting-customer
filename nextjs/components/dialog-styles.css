@@ -3,6 +3,7 @@
     position: relative;
     border-radius: 8px;
     color: white;
+    width: inherit!important;
 }
 .rc-dialog-content{
     background-color: initial!important;
