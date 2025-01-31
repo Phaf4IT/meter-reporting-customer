@@ -37,7 +37,10 @@ export async function sendVerificationRequest(config: Config) {
                 },
                 body: JSON.stringify(body),
                 method: "POST",
-            })
+            }).catch(reason => {
+                Logger.error(reason)
+                return reason;
+            });
 
             if (!response.ok) {
                 const {errors} = await response.json()
