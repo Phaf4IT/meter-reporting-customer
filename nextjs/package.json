@@ -30,8 +30,6 @@
   },
   "dependencies": {
     "@auth/xata-adapter": "^1.7.4",
-    "@dnd-kit/core": "^6.3.0",
-    "@hello-pangea/dnd": "^17.0.0",
     "@types/lodash": "^4.17.14",
     "@vercel/functions": "^1.5.0",
     "@wojtekmaj/react-daterange-picker": "^6.0.0",
@@ -42,14 +40,14 @@
     "flag-icons": "^7.3.2",
     "kysely": "^0.27.4",
     "lodash": "^4.17.21",
-    "next": "^15.0.3",
+    "next": "^15.1.6",
     "next-auth": "^5.0.0-beta.25",
     "next-intl": "^3.25.3",
     "rc-dialog": "^9.6.0",
-    "react": "18.2.0",
+    "react": "^19.0.0",
     "react-date-picker": "^11.0.0",
     "react-datepicker": "^7.5.0",
-    "react-dom": "18.2.0",
+    "react-dom": "^19.0.0",
     "react-icons": "^5.3.0",
     "reflect-metadata": "^0.2.2",
     "sass": "^1.83.4",
@@ -62,8 +60,6 @@
     "@neondatabase/serverless": "^0.10.4",
     "@sadams/wait-for-expect": "^1.1.0",
     "@testcontainers/postgresql": "^10.16.0",
-    "@testing-library/dom": "^10.4.0",
-    "@testing-library/react": "^16.1.0",
     "@types/chai": "^5.0.1",
     "@types/mocha": "^10.0.10",
     "@types/node": "^20",
@@ -74,7 +70,7 @@
     "detect-port": "^2.1.0",
     "esbuild-register": "^3.6.0",
     "eslint": "^8",
-    "eslint-config-next": "15.0.3",
+    "eslint-config-next": "^15.1.6",
     "jest-dev-server": "^11.0.0",
     "kanel": "^3.11.0",
     "kanel-kysely": "^0.6.0",
@@ -90,5 +86,10 @@
     "ts-node": "^10.9.2",
     "typescript": "^5.7.2",
     "wiremock-captain": "^3.5.0"
+  },
+  "overrides": {
+    "next-intl": {
+      "react": "$react"
+    }
   }
 }
