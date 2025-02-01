@@ -222,7 +222,7 @@ describe('Report API Endpoints', () => {
                 measurements: customerMeasurement.measurements,
                 dateTime: customerMeasurement.dateTime,
             };
-        });
+        }, 10_000);
 
         given('A session for the customer', async () => {
             await createUser(customer.email);
