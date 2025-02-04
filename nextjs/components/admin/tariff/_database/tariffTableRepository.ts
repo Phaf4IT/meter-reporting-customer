@@ -1,8 +1,8 @@
 // tariffRepository.ts
 import {getEntityManager} from "@/lib/jpa/entity-fetcher";
 import {TariffTable} from "@/components/admin/tariff/_database/tariffTable";
-import {Tariff} from "@/components/admin/tariff/tariff";
-import { Logger } from "@/lib/logger";
+import {getUnit, Tariff} from "@/components/admin/tariff/tariff";
+import {Logger} from "@/lib/logger";
 
 export async function findTariffsByCompany(company: string) {
     return getEntityManager(TariffTable)
@@ -44,7 +44,7 @@ function mapTableToDomain(tariffTable: TariffTable): Tariff {
         measureValueName: tariffTable.measureValueName || undefined,
         rate: Number.parseFloat(tariffTable.rate),
         currency: tariffTable.currency,
-        unit: tariffTable.unit,
+        unit: getUnit(tariffTable.unit),
         rangeFrom: tariffTable.rangeFrom ? Number.parseFloat(tariffTable.rangeFrom) : undefined,
         rangeTo: tariffTable.rangeTo ? Number.parseFloat(tariffTable.rangeTo) : undefined,
         validFrom: tariffTable.validFrom,

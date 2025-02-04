@@ -287,6 +287,9 @@
       "loading": "Laden...",
       "cancel": "Annuleren",
       "confirmDeleteTariff": "Bevestig verwijderen",
+      "customers": "Klanten",
+      "selectAll": "Selecteer alles",
+      "deselectAll": "Deselecteer alles",
       "currencies": {
         "USD": "US Dollar",
         "EUR": "Euro",

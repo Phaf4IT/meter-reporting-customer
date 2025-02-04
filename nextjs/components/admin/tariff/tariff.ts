@@ -6,11 +6,19 @@ export interface Tariff {
     measureValueName?: string; // optioneel
     rate: number;
     currency: string;
-    unit: 'usage_based' | 'annual' | 'daily' | 'monthly';
+    unit: Unit;
     rangeFrom?: number; // optioneel
     rangeTo?: number; // optioneel
     validFrom: Date;
     validTo?: Date;
+}
+
+export enum Unit {
+    usage_based = 'usage_based', annual = 'annual', daily = 'daily', monthly = 'monthly'
+}
+
+export function getUnit(type: string): Unit {
+    return Unit[type as keyof typeof Unit];
 }
 
 export function tariffFromJson(json: any): Tariff {
