@@ -231,6 +231,19 @@
       "enterMeasurement": "Enter Measurement",
       "createMeasurements": "Add measurements for ",
       "overruleMeasurements": "Override measurements for "
+    },
+    "tariff": {
+      "tariffManagement": "Tariff management",
+      "addTariff": "Add Tariff",
+      "editTariff": "Edit Tariff",
+      "campaignName": "Campaign Name",
+      "selectCampaign": "Select a Campaign",
+      "noCampaignsAvailable": "No campaigns available",
+      "description": "Description",
+      "rate": "Rate",
+      "currency": "Currency",
+      "unit": "Unit",
+      "saveChanges": "Save Changes"
     }
   }
 }

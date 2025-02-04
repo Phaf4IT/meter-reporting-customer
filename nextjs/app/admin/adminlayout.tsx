@@ -33,6 +33,7 @@ export default function AdminLayout({children}: { children: React.ReactNode }) {
         {name: t('measureValue.manageMeasureValues'), href: '/admin/measure-value'},
         {name: t('reminder.remindersAdminTitle'), href: '/admin/reminder'},
         {name: t('meter.pageTitle'), href: '/admin/customer-measurement'},
+        {name: 'Tarieven', href: '/admin/tariff'},
     ];
 
     return (
