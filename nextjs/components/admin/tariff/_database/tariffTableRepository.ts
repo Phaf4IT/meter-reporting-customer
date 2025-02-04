@@ -12,7 +12,7 @@ export async function findTariffsByCompany(company: string) {
 
 export async function findTariffByCampaignAndCompany(campaignName: string, company: string) {
     return getEntityManager(TariffTable)
-        .findBy({campaignName, company})
+        .findBy({campaign_name: campaignName, company})
         .then(tariffs => tariffs.find(() => true)!) // Fetch first matching tariff
         .then(mapTableToDomain);
 }
