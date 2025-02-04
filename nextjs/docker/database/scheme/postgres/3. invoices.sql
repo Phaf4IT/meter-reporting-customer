@@ -1,65 +1,126 @@
 DROP TABLE IF EXISTS tariff;
 DROP TABLE IF EXISTS discount;
-DROP TABLE IF EXISTS invoice;
 DROP TABLE IF EXISTS invoice_line_item;
+DROP TABLE IF EXISTS invoice;
 DROP TABLE IF EXISTS payment;
+DROP TABLE IF EXISTS invoice_year_state;
+
+CREATE OR REPLACE FUNCTION generate_invoice_number(company_name VARCHAR) RETURNS INT AS
+$$
+DECLARE
+    current_year        INT;
+    sequence_name       VARCHAR;
+    next_invoice_number INT;
+BEGIN
+    current_year := EXTRACT(YEAR FROM CURRENT_DATE)::INT;
+    sequence_name := 'invoice_sequence_' || current_year || '_' || company_name;
+    EXECUTE 'CREATE SEQUENCE IF NOT EXISTS ' || sequence_name || ' START 1 INCREMENT 1';
+    PERFORM 1
+    FROM invoice_year_state
+    WHERE year = current_year
+      AND invoice_year_state.company_name = generate_invoice_number.company_name;
+
+    IF NOT FOUND THEN
+        RAISE NOTICE 'Resetting sequence for company % in year %', company_name, current_year;
+        EXECUTE 'ALTER SEQUENCE ' || sequence_name || ' RESTART WITH 1';
+        INSERT INTO invoice_year_state (company_name, year) VALUES (company_name, current_year);
+    END IF;
+
+    next_invoice_number := nextval(sequence_name);
+    RETURN next_invoice_number;
+END;
+$$ LANGUAGE plpgsql;
+
 
 CREATE TABLE IF NOT EXISTS tariff
 (
-    campaign_name TEXT           NOT NULL,
-    company       VARCHAR(255)   NOT NULL,
-    tariff_type   VARCHAR(255)   NOT NULL, -- Bijvoorbeeld: 'usage_based', 'annual', 'daily', 'monthly'
-    measure_value TEXT           NULL,     -- NULL betekent dat het tarief voor de hele campagne geldt
-    rate          NUMERIC(10, 2) NOT NULL, -- Het tarief (per eenheid of per periode)
-    unit          VARCHAR(50)    NOT NULL, -- Bijvoorbeeld: 'per_unit', 'per_year', 'per_month', 'per_day'
-    range_from    NUMERIC(10, 2) NULL,     -- Ondergrens van het gebruik (NULL = geen minimum)
-    range_to      NUMERIC(10, 2) NULL,     -- Bovengrens van het gebruik (NULL = geen maximum)
-    valid_from    TIMESTAMPTZ    NOT NULL, -- Startdatum van het tarief
-    valid_to      TIMESTAMPTZ    NOT NULL, -- Einddatum van het tarief
-    PRIMARY KEY (campaign_name, company, tariff_type, measure_value, range_from, valid_from)
+    id                 uuid           NOT NULL DEFAULT uuidv7_sub_ms(),
+    campaign_name      TEXT           NOT NULL,
+    company            VARCHAR(255)   NOT NULL,
+    customer_ids       uuid[]         NOT NULL,
+    description        VARCHAR(255)   NOT NULL,
+    measure_value_name TEXT           NULL,     -- NULL betekent dat het tarief voor de hele campagne geldt
+    rate               NUMERIC(10, 2) NOT NULL, -- Het tarief (per eenheid of per periode)
+    currency           VARCHAR(50)    NOT NULL,
+    unit               VARCHAR(50)    NOT NULL, -- Bijvoorbeeld: 'usage_based', 'annual', 'daily', 'monthly'
+    range_from         NUMERIC(10, 2) NULL,     -- Ondergrens van het gebruik (NULL = geen minimum)
+    range_to           NUMERIC(10, 2) NULL,     -- Bovengrens van het gebruik (NULL = geen maximum)
+    valid_from         TIMESTAMPTZ    NOT NULL, -- Startdatum van het tarief
+    valid_to           TIMESTAMPTZ    NULL,     -- Einddatum van het tarief
+    PRIMARY KEY (id)
 );
+
+CREATE INDEX tariff_campaign_customer_idx ON tariff USING btree (campaign_name, company, description,
+                                                                 measure_value_name, range_from, valid_from);
 
 CREATE TABLE IF NOT EXISTS discount
 (
-    discount_name  TEXT           NOT NULL, -- Unieke naam voor de korting
-    campaign_name  TEXT           NOT NULL, -- De campagne waarop de korting van toepassing is
-    company        VARCHAR(255)   NOT NULL, -- Het bedrijf waarvoor de korting geldt
-    discount_type  VARCHAR(50)    NOT NULL, -- Type korting: 'general', 'tariff', 'tiered'
-    measure_value  TEXT           NULL,     -- Voor korting op specifieke meetwaarden (NULL = algemene korting)
-    range_from     NUMERIC(10, 2) NULL,     -- Ondergrens voor staffelkorting (NULL = geen drempel)
-    range_to       NUMERIC(10, 2) NULL,     -- Bovengrens voor staffelkorting (NULL = geen maximum)
-    discount_value NUMERIC(10, 2) NOT NULL, -- Waarde van de korting (percentage of vast bedrag)
-    discount_unit  VARCHAR(50)    NOT NULL, -- 'percentage' of 'fixed' (voor vast bedrag)
-    valid_from     TIMESTAMPTZ    NOT NULL, -- Startdatum van de korting
-    valid_to       TIMESTAMPTZ    NOT NULL, -- Einddatum van de korting
-    PRIMARY KEY (discount_name, campaign_name, company, discount_type, measure_value, range_from, valid_from)
+    id                 uuid           NOT NULL DEFAULT uuidv7_sub_ms(),
+    discount_name      TEXT           NOT NULL, -- Unieke naam voor de korting
+    campaign_name      TEXT           NOT NULL, -- De campagne waarop de korting van toepassing is
+    company            VARCHAR(255)   NOT NULL, -- Het bedrijf waarvoor de korting geldt
+    customer_ids       uuid[]         NOT NULL,
+    discount_type      VARCHAR(50)    NOT NULL, -- Type korting: 'general', 'tariff', 'tiered'
+    measure_value_name TEXT           NULL,     -- Voor korting op specifieke meetwaarden (NULL = algemene korting)
+    range_from         NUMERIC(10, 2) NULL,     -- Ondergrens voor staffelkorting (NULL = geen drempel)
+    range_to           NUMERIC(10, 2) NULL,     -- Bovengrens voor staffelkorting (NULL = geen maximum)
+    discount_value     NUMERIC(10, 2) NOT NULL, -- Waarde van de korting (percentage of vast bedrag)
+    discount_unit      VARCHAR(50)    NOT NULL, -- 'percentage' of 'fixed' (voor vast bedrag)
+    currency           VARCHAR(50)    NULL,
+    valid_from         TIMESTAMPTZ    NOT NULL, -- Startdatum van de korting
+    valid_to           TIMESTAMPTZ    NULL,     -- Einddatum van de korting
+    PRIMARY KEY (id)
 );
 
+CREATE INDEX discount_campaign_customer_idx ON discount USING btree (discount_name, campaign_name, company,
+                                                                     discount_type, measure_value_name, range_from,
+                                                                     valid_from);
 
+CREATE TABLE IF NOT EXISTS invoice_year_state
+(
+    company_name VARCHAR(255),
+    year         INT,
+    PRIMARY KEY (company_name, year)
+);
 
 CREATE TABLE IF NOT EXISTS invoice
 (
-    customer_email TEXT           NOT NULL,
-    company        VARCHAR(255)   NOT NULL,
-    invoice_date   TIMESTAMPTZ    NOT NULL DEFAULT now(),
-    total_amount   NUMERIC(10, 2) NOT NULL,
-    currency       VARCHAR(10)    NOT NULL,
-    status         VARCHAR(50)    NOT NULL DEFAULT 'pending', -- Bijvoorbeeld: 'pending', 'paid', 'cancelled'
-    PRIMARY KEY (customer_email, company, invoice_date)
+    id                  uuid           NOT NULL DEFAULT uuidv7_sub_ms(),
+    sequence_number     VARCHAR(50)    NOT NULL,
+    year                INT            NOT NULL,
+    customer_id         TEXT           NOT NULL,
+    company             VARCHAR(255)   NOT NULL,
+    campaign_name       TEXT           NOT NULL,
+    invoice_date        TIMESTAMPTZ    NOT NULL DEFAULT now(),
+    total_amount        NUMERIC(10, 2) NOT NULL,
+    currency            VARCHAR(10)    NOT NULL,
+    status              VARCHAR(20)    NOT NULL CHECK (status IN ('PENDING', 'PAID', 'CANCELLED')),
+    type                VARCHAR(10)    NOT NULL CHECK (type IN ('REGULAR', 'CREDITNOTA')),
+    original_invoice_id uuid REFERENCES invoice (id), -- only creditnota's
+    PRIMARY KEY (id)
 );
+
+CREATE UNIQUE INDEX if not exists invoice_sequence_number ON invoice USING btree (sequence_number, year, company);
+
+CREATE INDEX if not exists invoice_idx ON invoice USING btree (customer_id, company, campaign_name);
+CREATE INDEX if not exists invoice_date_idx ON invoice USING btree (invoice_date);
+CREATE INDEX if not exists invoice_sequence_idx ON invoice USING btree (sequence_number, year);
 
 CREATE TABLE IF NOT EXISTS invoice_line_item
 (
-    customer_email TEXT           NOT NULL,
-    company        VARCHAR(255)   NOT NULL,
-    invoice_date   TIMESTAMPTZ    NOT NULL,
-    campaign_name  TEXT           NOT NULL,
-    tariff_type    VARCHAR(255)   NOT NULL,
-    description    TEXT           NOT NULL,
-    quantity       NUMERIC(10, 2) NOT NULL, -- Bijv. eenheden gebruikt
-    unit_price     NUMERIC(10, 2) NOT NULL,
-    line_total     NUMERIC(10, 2) NOT NULL, -- quantity * unit_price
-    PRIMARY KEY (customer_email, company, invoice_date, campaign_name, tariff_type)
+    id            uuid           NOT NULL DEFAULT uuidv7_sub_ms(),
+    invoice_id    uuid REFERENCES invoice (id),
+    customer_id   TEXT           NOT NULL,
+    company       VARCHAR(255)   NOT NULL,
+    invoice_date  TIMESTAMPTZ    NOT NULL,
+    campaign_name TEXT           NOT NULL,
+    tariff_type   VARCHAR(255)   NOT NULL,
+    description   TEXT           NOT NULL,
+    quantity      NUMERIC(10, 2) NOT NULL, -- Bijv. eenheden gebruikt
+    unit_price    NUMERIC(10, 2) NOT NULL,
+    line_total    NUMERIC(10, 2) NOT NULL, -- quantity * unit_price
+    currency      VARCHAR(50)    NOT NULL,
+    PRIMARY KEY (id)
 );
 
 CREATE TABLE IF NOT EXISTS payment

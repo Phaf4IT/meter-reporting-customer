@@ -36,11 +36,6 @@ CREATE TABLE IF NOT EXISTS entity_type
     company      varchar(255) NOT NULL,
     translations json         NOT NULL,
     PRIMARY KEY (name)
---     street_lines      text[]       NOT NULL,
---     postal_code       varchar(255) NOT NULL,
---     city              varchar(255) NOT NULL,
---     country           varchar(255) NOT NULL,
---     state_or_province varchar(255) NOT NULL,
 );
 
 CREATE TABLE IF NOT EXISTS entity

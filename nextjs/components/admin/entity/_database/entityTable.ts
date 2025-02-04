@@ -2,7 +2,7 @@ import {PrimaryKey} from "@/lib/jpa/decorator/primary-key.decorator";
 import {Field} from "@/lib/jpa/decorator/field.decorator";
 import {EntityClass} from "@/lib/jpa/decorator/entity-class.decorator";
 import {Entity as E} from "@/lib/jpa/entity";
-import Entity from "@/components/database/schemas/public/Entity"; // UUID library
+import Entity from "@/components/database/schemas/public/Entity"; // The actual table Entity scheme
 
 @EntityClass("entity")
 export class EntityTable extends E implements Entity {
