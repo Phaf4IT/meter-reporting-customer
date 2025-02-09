@@ -7,21 +7,21 @@ export function getNewCampaignConfiguration() {
             "name": "Gas",
             "translations": [{"locale": "nl-NL", "value": "Gas"}],
             "unit": "m3",
-            "type": "NUMBER",
+            "type": "NUMBER_RANGE",
             "isEditable": true,
             "defaultValue": null
         }, {
             "name": "Licht",
             "translations": [{"locale": "nl-NL", "value": "Licht"}],
             "unit": "kWh",
-            "type": "NUMBER",
+            "type": "NUMBER_RANGE",
             "isEditable": true,
             "defaultValue": null
         }, {
             "name": "Water",
             "translations": [{"locale": "nl-NL", "value": "Water"}],
             "unit": "m3",
-            "type": "NUMBER",
+            "type": "NUMBER_RANGE",
             "isEditable": true,
             "defaultValue": null
         }, {

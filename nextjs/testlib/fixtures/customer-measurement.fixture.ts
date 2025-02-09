@@ -31,6 +31,9 @@ export function getValue(measurement: any) {
     if (measurement.type === 'NUMBER') {
         return '89';
     }
+    if (measurement.type === 'NUMBER_RANGE') {
+        return '89';
+    }
     if (measurement.type === 'BOOLEAN') {
         return 'true';
     }
@@ -39,6 +42,7 @@ export function getValue(measurement: any) {
 export function getNewCustomerMeasurementByParams({
                                                       customerMail,
                                                       campaignName,
+                                                      customerId,
                                                       measurements
                                                   }: CustomerMeasurementFixture) {
     // Als er geen 'measurements' worden meegegeven, gebruiken we de standaard metingen van 'getNewCustomerMeasurement'
@@ -47,6 +51,7 @@ export function getNewCustomerMeasurementByParams({
     return {
         ...defaultMeasurement,
         ...(campaignName && {campaignName}),
+        ...(customerId && {customerId}),
         ...(customerMail && {customerMail}),
         ...(measurements && {measurements})
     };
@@ -55,6 +60,7 @@ export function getNewCustomerMeasurementByParams({
 export interface CustomerMeasurementFixture {
     customerMail?: string,
     campaign?: any,
+    customerId?: string,
     campaignConfiguration?: any,
     campaignName?: string,
     measurements?: { name: string, value: string }[]

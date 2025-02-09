@@ -108,18 +108,18 @@ CREATE INDEX if not exists invoice_sequence_idx ON invoice USING btree (sequence
 
 CREATE TABLE IF NOT EXISTS invoice_line_item
 (
-    id            uuid           NOT NULL DEFAULT uuidv7_sub_ms(),
-    invoice_id    uuid REFERENCES invoice (id),
-    customer_id   TEXT           NOT NULL,
-    company       VARCHAR(255)   NOT NULL,
-    invoice_date  TIMESTAMPTZ    NOT NULL,
-    campaign_name TEXT           NOT NULL,
-    tariff_type   VARCHAR(255)   NOT NULL,
-    description   TEXT           NOT NULL,
-    quantity      NUMERIC(10, 2) NOT NULL, -- Bijv. eenheden gebruikt
-    unit_price    NUMERIC(10, 2) NOT NULL,
-    line_total    NUMERIC(10, 2) NOT NULL, -- quantity * unit_price
-    currency      VARCHAR(50)    NOT NULL,
+    id            uuid                         NOT NULL DEFAULT uuidv7_sub_ms(),
+    invoice_id    uuid REFERENCES invoice (id) NOT NULL,
+    customer_id   TEXT                         NOT NULL,
+    company       VARCHAR(255)                 NOT NULL,
+    invoice_date  TIMESTAMPTZ                  NOT NULL,
+    campaign_name TEXT                         NOT NULL,
+    tariff_id     uuid                         NOT NULL,
+    description   TEXT                         NOT NULL,
+    quantity      NUMERIC(10, 2)               NOT NULL, -- Bijv. eenheden gebruikt
+    unit_price    NUMERIC(10, 2)               NOT NULL,
+    line_total    NUMERIC(10, 2)               NOT NULL, -- quantity * unit_price
+    currency      VARCHAR(50)                  NOT NULL,
     PRIMARY KEY (id)
 );
 

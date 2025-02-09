@@ -9,21 +9,21 @@ export function getMainMeasureValues() {
         "name": `Gas-${randomUUID()}`,
         "translations": [{"locale": "nl-NL", "value": "Gas"}],
         "unit": "m3",
-        "type": "NUMBER",
+        "type": "NUMBER_RANGE",
         "isEditable": true,
         "defaultValue": null
     }, {
         "name": `Licht-${randomUUID()}`,
         "translations": [{"locale": "nl-NL", "value": "Licht"}],
         "unit": "kWh",
-        "type": "NUMBER",
+        "type": "NUMBER_RANGE",
         "isEditable": true,
         "defaultValue": null
     }, {
         "name": `Water-${randomUUID()}`,
         "translations": [{"locale": "nl-NL", "value": "Water"}],
         "unit": "m3",
-        "type": "NUMBER",
+        "type": "NUMBER_RANGE",
         "isEditable": true,
         "defaultValue": null
     }, {

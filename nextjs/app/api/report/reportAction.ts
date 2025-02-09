@@ -44,6 +44,12 @@ function validateCustomerMeasurement(campaign: Campaign, customerMeasurement: Cu
 
         // Validatie per type MeasureValue
         switch (measureValue.type) {
+            case 'NUMBER_RANGE':
+                if (isNaN(Number(value))) {
+                    Logger.error(`Error during validation of reporting: Value for ${measureValue.name} has to be numeric`);
+                    return false;
+                }
+                break;
             case 'NUMBER':
                 if (isNaN(Number(value))) {
                     Logger.error(`Error during validation of reporting: Value for ${measureValue.name} has to be numeric`);

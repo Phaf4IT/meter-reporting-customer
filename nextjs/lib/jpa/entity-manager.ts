@@ -3,6 +3,8 @@ import {Entity} from "@/lib/jpa/entity";
 export abstract class EntityManager<T extends Entity> {
     abstract create(entity: T): Promise<T>;
 
+    abstract createAll(entities: T[]): Promise<T[]>;
+
     abstract findOne(
         primaryKeyValues: Record<string, any>
     ): Promise<T | undefined>;

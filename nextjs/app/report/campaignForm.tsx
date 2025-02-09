@@ -97,9 +97,10 @@ export default function CampaignForm() {
                                     }}
                                     disabled={!measure.isEditable} // Disable if not editable
                                 />
-                            ) : (
+                            ) : (<></>)}
+                            {measure.type === 'NUMBER' ? (
                                 <input
-                                    type={measure.type === 'NUMBER' ? 'number' : 'text'}
+                                    type={'number'}
                                     id={measure.name}
                                     name={measure.name}
                                     value={formData[measure.name] || ''}
@@ -108,7 +109,31 @@ export default function CampaignForm() {
                                     disabled={!measure.isEditable}
                                     className="border rounded w-full p-2 text-gray-900"
                                 />
-                            )}
+                            ) : (<></>)}
+                            {measure.type === 'NUMBER_RANGE' ? (
+                                <input
+                                    type={'number'}
+                                    id={measure.name}
+                                    name={measure.name}
+                                    value={formData[measure.name] || ''}
+                                    onChange={handleChange}
+                                    required={measure.isEditable}
+                                    disabled={!measure.isEditable}
+                                    className="border rounded w-full p-2 text-gray-900"
+                                />
+                            ) : (<></>)}
+                            {measure.type === 'TEXT' ? (
+                                <input
+                                    type={'text'}
+                                    id={measure.name}
+                                    name={measure.name}
+                                    value={formData[measure.name] || ''}
+                                    onChange={handleChange}
+                                    required={measure.isEditable}
+                                    disabled={!measure.isEditable}
+                                    className="border rounded w-full p-2 text-gray-900"
+                                />
+                            ) : (<></>)}
                         </div>
                     ))}
                     <button

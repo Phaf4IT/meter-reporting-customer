@@ -23,7 +23,7 @@ export function emptyMeasureValue(): MeasureValue {
         name: '',
         translations: [],
         unit: '',
-        type: MeasureValueType.NUMBER,
+        type: MeasureValueType.NUMBER_RANGE,
         isEditable: true,
         defaultValue: '',
     }
@@ -52,7 +52,7 @@ export function getTranslations(translations: Record<string, string>): MeasureVa
 }
 
 export enum MeasureValueType {
-    NUMBER = 'NUMBER', TEXT = 'TEXT', BOOLEAN = 'BOOLEAN'
+    NUMBER = 'NUMBER', NUMBER_RANGE = 'NUMBER_RANGE', TEXT = 'TEXT', BOOLEAN = 'BOOLEAN'
 }
 
 export function getMeasureValueType(type: string): MeasureValueType {

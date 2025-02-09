@@ -36,6 +36,29 @@ export abstract class KyselyEntityManager<T extends Entity> extends EntityManage
         return Object.assign(entity, result);
     }
 
+    async createAll(entities: T[]): Promise<T[]> {
+        const tableName = this.entityClass.getTableName();
+
+        const allFields = entities.map(entity => entity.getFieldAndValues());
+
+        let results: any[] = [];
+
+        await retry(
+            async () => {
+                results = await this.db
+                    .insertInto(tableName)
+                    .values(allFields)
+                    .returningAll()
+                    .execute();
+            },
+            {delay: 100, maxTry: 3}
+        );
+
+        return results.map((result, index) => {
+            return Object.assign(entities[index], result);
+        });
+    }
+
 
     async findOne(
         primaryKeyValues: Record<string, any>

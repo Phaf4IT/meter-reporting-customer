@@ -124,9 +124,10 @@ export default function CustomerMeasurementForm({
                             }}
                             disabled={!measure.isEditable}
                         />
-                    ) : (
+                    ) : (<></>)}
+                    {measure.type === 'NUMBER_RANGE' ? (
                         <input
-                            type={measure.type === 'NUMBER' ? 'number' : 'text'}
+                            type={'number'}
                             id={measure.name}
                             name={measure.name}
                             value={`${formData[measure.name]}` || ''}
@@ -135,7 +136,31 @@ export default function CustomerMeasurementForm({
                             disabled={!measure.isEditable}
                             className="border rounded w-full p-2 text-gray-900"
                         />
-                    )}
+                    ) : (<></>)}
+                    {measure.type === 'NUMBER' ? (
+                        <input
+                            type={'number'}
+                            id={measure.name}
+                            name={measure.name}
+                            value={`${formData[measure.name]}` || ''}
+                            onChange={handleChange}
+                            required={measure.isEditable}
+                            disabled={!measure.isEditable}
+                            className="border rounded w-full p-2 text-gray-900"
+                        />
+                    ) : (<></>)}
+                    {measure.type === 'TEXT' ? (
+                        <input
+                            type={'text'}
+                            id={measure.name}
+                            name={measure.name}
+                            value={`${formData[measure.name]}` || ''}
+                            onChange={handleChange}
+                            required={measure.isEditable}
+                            disabled={!measure.isEditable}
+                            className="border rounded w-full p-2 text-gray-900"
+                        />
+                    ) : (<></>)}
 
                     {measure.unit && (
                         <span className="text-sm text-gray-400"> ({measure.unit})</span>
