@@ -27,6 +27,7 @@ if (process.env.NEXT_RUNTIME !== "edge") {
         providers.push(getEmailProvider());
     }
 }
+const maxAgeInSeconds = 4 * 60 * 60;
 
 export const {handlers, auth, signIn, signOut} = NextAuth({
     adapter: getAdapter(),
@@ -36,7 +37,7 @@ export const {handlers, auth, signIn, signOut} = NextAuth({
     providers,
     session:
         {
-            maxAge: 4 * 60 * 60 // 4 hours
+            maxAge: maxAgeInSeconds
         }
 });
 
