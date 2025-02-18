@@ -27,7 +27,8 @@ export default function CustomerForm({
         ...customer,
         title: customer.title || "",
         entityId: customer.entity?.id || "",
-        phoneNumber: customer.phoneNumber,
+        phoneNumber: customer.phoneNumber || "",
+        additionalFields: customer.additionalFields || {},
     });
 
     const additionalFieldCustomers = additionalFields();
@@ -73,10 +74,14 @@ export default function CustomerForm({
         return translationKey ? additionalFieldCustomers.translations[translationKey] : additionalFieldCustomers.translations['en-US'];
     }
 
-    // Handelt de wijziging van inputvelden af
-    const handleInputChange = (field: string, value: any) => {
-        setFormData((prev) => ({...prev, [field]: value}));
+    const handleInputChangeAdditionalField = (field: string, value: any) => {
+        setFormData((prev) => {
+            const newAdditionalFields = prev.additionalFields || {};
+            newAdditionalFields[field] = value;
+            return {...prev, additionalFields: newAdditionalFields};
+        });
     };
+
 
     return (
         <form onSubmit={handleSubmit}
@@ -225,7 +230,6 @@ export default function CustomerForm({
                         value={formData.phoneNumber}
                         onChange={(e) => setFormData({...formData, phoneNumber: e.target.value})}
                         className="appearance-none block w-full bg-cyan-800 text-white border border-gray-500 rounded py-3 px-4 leading-tight focus:outline-none focus:border-cyan-400"
-                        required
                     />
                 </div>
             </div>
@@ -241,12 +245,13 @@ export default function CustomerForm({
                     case 'text':
                         return (
                             <div key={fieldKey}>
-                                <label className="block uppercase tracking-wide text-gray-200 text-s font-bold mb-2">{fieldLabel}</label>
+                                <label
+                                    className="block uppercase tracking-wide text-gray-200 text-s font-bold mb-2">{fieldLabel}</label>
                                 <input
                                     type="text"
                                     required={isRequired}
-                                    value={formData.additionalFields ? formData.additionalFields[fieldKey] : ''}
-                                    onChange={(e) => handleInputChange(fieldKey, e.target.value)}
+                                    value={formData.additionalFields && formData.additionalFields[fieldKey] ? formData.additionalFields[fieldKey] : ''}
+                                    onChange={(e) => handleInputChangeAdditionalField(fieldKey, e.target.value)}
                                     className="appearance-none block w-full bg-cyan-800 text-white border border-gray-500 rounded py-3 px-4 leading-tight focus:outline-none focus:border-cyan-400"
                                 />
                             </div>
@@ -255,11 +260,12 @@ export default function CustomerForm({
                     case 'text[]':
                         return (
                             <div key={fieldKey}>
-                                <label className="block uppercase tracking-wide text-gray-200 text-s font-bold mb-2">{fieldLabel}</label>
+                                <label
+                                    className="block uppercase tracking-wide text-gray-200 text-s font-bold mb-2">{fieldLabel}</label>
                                 <textarea
-                                    value={(formData.additionalFields ? formData.additionalFields[fieldKey] : []).join('\n')}
+                                    value={(formData.additionalFields && formData.additionalFields[fieldKey] ? formData.additionalFields[fieldKey] : []).join('\n')}
                                     required={isRequired}
-                                    onChange={(e) => handleInputChange(fieldKey, e.target.value.split('\n'))}
+                                    onChange={(e) => handleInputChangeAdditionalField(fieldKey, e.target.value.split('\n'))}
                                     className="appearance-none block w-full bg-cyan-800 text-white border border-gray-500 rounded py-3 px-4 leading-tight focus:outline-none focus:border-cyan-400"
                                 />
                             </div>
@@ -268,12 +274,13 @@ export default function CustomerForm({
                     case 'numeric':
                         return (
                             <div key={fieldKey}>
-                                <label className="block uppercase tracking-wide text-gray-200 text-s font-bold mb-2">{fieldLabel}</label>
+                                <label
+                                    className="block uppercase tracking-wide text-gray-200 text-s font-bold mb-2">{fieldLabel}</label>
                                 <input
                                     type="number"
                                     required={isRequired}
-                                    value={formData.additionalFields ? formData.additionalFields[fieldKey] : ''}
-                                    onChange={(e) => handleInputChange(fieldKey, parseFloat(e.target.value))}
+                                    value={formData.additionalFields && formData.additionalFields[fieldKey] ? formData.additionalFields[fieldKey] : ''}
+                                    onChange={(e) => handleInputChangeAdditionalField(fieldKey, parseFloat(e.target.value))}
                                     className="appearance-none block w-full bg-cyan-800 text-white border border-gray-500 rounded py-3 px-4 leading-tight focus:outline-none focus:border-cyan-400"
                                 />
                             </div>
@@ -287,8 +294,8 @@ export default function CustomerForm({
                                 <input
                                     type="checkbox"
                                     required={isRequired}
-                                    checked={formData.additionalFields ? formData.additionalFields[fieldKey] : false}
-                                    onChange={(e) => handleInputChange(fieldKey, e.target.checked)}
+                                    checked={formData.additionalFields && formData.additionalFields[fieldKey] ? formData.additionalFields[fieldKey] : false}
+                                    onChange={(e) => handleInputChangeAdditionalField(fieldKey, e.target.checked)}
                                     className="appearance-none block w-full bg-cyan-800 text-white border border-gray-500 rounded py-3 px-4 leading-tight focus:outline-none focus:border-cyan-400"
                                 />
                             </div>
@@ -302,8 +309,8 @@ export default function CustomerForm({
                                 <input
                                     type="date"
                                     required={isRequired}
-                                    value={formData.additionalFields ? formData.additionalFields[fieldKey] : ''}
-                                    onChange={(e) => handleInputChange(fieldKey, e.target.value)}
+                                    value={formData.additionalFields && formData.additionalFields[fieldKey] ? formData.additionalFields[fieldKey] : ''}
+                                    onChange={(e) => handleInputChangeAdditionalField(fieldKey, e.target.value)}
                                     className="appearance-none block w-full bg-cyan-800 text-white border border-gray-500 rounded py-3 px-4 leading-tight focus:outline-none focus:border-cyan-400"
                                 />
                             </div>

@@ -22,10 +22,12 @@ export class NonActiveCustomerTable extends Entity implements NonActiveCustomer 
     @Field("entity_id")
     entityId: string;
     @Field("phone_number")
-    phoneNumber: string;
+    phoneNumber: string | null;
     @PrimaryKey
     @Field("company")
     company: string;
+    @Field("additional_fields")
+    additionalFields: any | null;
     @Field("archive_date")
     archiveDate: Date;
 
@@ -37,9 +39,10 @@ export class NonActiveCustomerTable extends Entity implements NonActiveCustomer 
         middleName: string | undefined,
         lastName: string,
         entityId: string,
-        phoneNumber: string,
+        phoneNumber: string | undefined,
         company: string,
-        archiveDate: Date,
+        additionalFields: any,
+        archiveDate: Date
     ) {
         super();
         this.id = id;
@@ -49,8 +52,9 @@ export class NonActiveCustomerTable extends Entity implements NonActiveCustomer 
         this.middleName = middleName || null;
         this.lastName = lastName;
         this.entityId = entityId;
-        this.phoneNumber = phoneNumber;
+        this.phoneNumber = phoneNumber || null;
         this.company = company;
+        this.additionalFields = additionalFields;
         this.archiveDate = archiveDate;
     }
 
@@ -64,10 +68,21 @@ export class NonActiveCustomerTable extends Entity implements NonActiveCustomer 
                   entityId,
                   phoneNumber,
                   company,
-                  archiveDate
+                  archiveDate,
+                  additionalFields
               }: NonActiveCustomer): NonActiveCustomerTable {
         return new NonActiveCustomerTable(
-            id, email, title || undefined, firstName, middleName || undefined, lastName, entityId, phoneNumber, company, archiveDate
+            id,
+            email,
+            title || undefined,
+            firstName,
+            middleName || undefined,
+            lastName,
+            entityId,
+            phoneNumber || undefined,
+            company,
+            additionalFields,
+            archiveDate
         )
     }
 }

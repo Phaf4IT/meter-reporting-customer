@@ -11,6 +11,15 @@ export async function getCustomers(): Promise<Customer[]> {
     return customers.map((customerData: any) => customerFromJson(customerData))
 }
 
+export async function getNonActiveCustomers(): Promise<Customer[]> {
+    const data = await fetch("/api/admin/non-active-customer", {
+        method: "GET",
+        credentials: "include"
+    });
+    const customers = await data.json();
+    return customers.map((customerData: any) => customerFromJson(customerData))
+}
+
 export async function getCustomersByEntityIds(entityIds: string[]): Promise<Customer[]> {
     const data = await fetch(`/api/admin/customer?${entityIds.map(id => `entityIds=${id}`).join("&")}`, {
         method: "GET",

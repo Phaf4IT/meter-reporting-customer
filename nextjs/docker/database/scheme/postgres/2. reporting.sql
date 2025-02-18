@@ -118,9 +118,10 @@ CREATE TABLE IF NOT EXISTS non_active_customer
     first_name   varchar(255) NOT NULL,
     middle_name  varchar(255) NULL,
     last_name    varchar(255) NOT NULL,
-    phone_number varchar(255) NOT NULL,
+    phone_number      varchar(255) NULL,
     company      varchar(255) NOT NULL,
     entity_id    uuid         NOT NULL,
+    additional_fields jsonb        NULL,
     archive_date timestamptz  NOT NULL default now()
 );
 

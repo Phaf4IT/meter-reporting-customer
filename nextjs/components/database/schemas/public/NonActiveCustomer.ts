@@ -15,11 +15,13 @@ export default interface NonActiveCustomer {
 
   lastName: string;
 
-  phoneNumber: string;
+  phoneNumber: string | null;
 
   company: string;
 
   entityId: string;
+
+  additionalFields: unknown | null;
 
   archiveDate: Date;
 }
@@ -38,11 +40,13 @@ export interface NonActiveCustomerInitializer {
 
   lastName: string;
 
-  phoneNumber: string;
+  phoneNumber?: string | null;
 
   company: string;
 
   entityId: string;
+
+  additionalFields?: unknown | null;
 
   /** Default value: now() */
   archiveDate?: Date;
@@ -62,11 +66,13 @@ export interface NonActiveCustomerMutator {
 
   lastName?: string;
 
-  phoneNumber?: string;
+  phoneNumber?: string | null;
 
   company?: string;
 
   entityId?: string;
+
+  additionalFields?: unknown | null;
 
   archiveDate?: Date;
 }

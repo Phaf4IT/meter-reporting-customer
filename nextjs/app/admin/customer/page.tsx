@@ -2,13 +2,27 @@
 import React, {useEffect, useState} from 'react';
 import AdminLayout from "@/app/admin/adminlayout";
 import {useLocale, useTranslations} from "next-intl";
-import {additionalFields, Customer, emptyCustomer} from "@/components/admin/customer/customer";
+import {additionalFields, Customer as C, emptyCustomer} from "@/components/admin/customer/customer";
 import CustomerForm from "@/components/admin/customer/customer-form";
 import ConfirmationDialog from "@/components/admin/confirmation-dialog"; // Import confirmation dialog
 import "@/components/dialog-styles.css";
-import {deleteCustomer, getCustomers, saveCustomer} from "@/app/admin/customer/client";
+import {deleteCustomer, getCustomers, getNonActiveCustomers, saveCustomer} from "@/app/admin/customer/client";
 import {ModifiableCustomer} from "@/components/admin/customer/modifiable-customer";
 import {getTranslationForLocale} from "@/components/admin/entity-type/entityType";
+import {Entity} from "@/components/admin/entity/entity";
+
+export interface Customer extends C {
+    id: string;
+    email: string;
+    title?: string;
+    firstName: string;
+    middleName?: string;
+    lastName: string;
+    entity?: Entity;
+    phoneNumber?: string;
+    additionalFields?: any;
+    isNonActive: boolean
+}
 
 export default function CustomersPage() {
     const t = useTranslations('admin.customer');
@@ -22,16 +36,17 @@ export default function CustomersPage() {
     const fieldKeys = Object.keys(additionalFieldCustomers.fields || []);
 
     useEffect(() => {
-        getCustomers()
-            .then(customers => {
-                setCustomers(customers);
-            })
+        Promise.all([getCustomers(), getNonActiveCustomers()])
+            .then(value => setCustomers([
+                ...value[0].map(value1 => ({...value1, isNonActive: false})),
+                ...value[1].map(value1 => ({...value1, isNonActive: true}))
+            ]));
     }, []);
 
-    const handleSave = async (customer: ModifiableCustomer & Customer, isNew: boolean) => {
+    const handleSave = async (customer: ModifiableCustomer & C, isNew: boolean) => {
         saveCustomer(customer, isNew)
             .then(customerToAdd => {
-                const customerWithEntity = {...customerToAdd, entity: customer.entity};
+                const customerWithEntity = {...customerToAdd, entity: customer.entity, isNonActive: false};
                 setCustomers((prev) => {
                         const c = prev.find(c => c.id === customerWithEntity.id)
                         return c ? prev.map((c) => (c.id === customerWithEntity.id ? customerWithEntity : c)) : [...prev, customerWithEntity];
@@ -90,7 +105,7 @@ export default function CustomersPage() {
                     <>
                         <button
                             onClick={() =>
-                                openEditor(emptyCustomer(), true)
+                                openEditor({...emptyCustomer(), isNonActive: false}, true)
                             }
                             className="bg-blue-500 text-white px-4 py-2 mb-4 rounded hover:bg-blue-600"
                         >
@@ -118,7 +133,10 @@ export default function CustomersPage() {
                             </thead>
                             <tbody>
                             {customers.map((customer) => (
-                                <tr key={customer.id} className="border-b border-cyan-700">
+                                <tr
+                                    key={customer.id}
+                                    className={`border-b border-cyan-700 ${customer.isNonActive ? 'bg-gray-500' : 'bg-cyan-900'}`}
+                                >
                                     <td className="py-2 px-4">{customer.title ? t(customer.title) : ''}</td>
                                     <td className="py-2 px-4">{customer.email}</td>
                                     <td className="py-2 px-4">
@@ -129,9 +147,10 @@ export default function CustomersPage() {
                                     <td className="py-2 px-4">
                                         {Object.keys(customer.entity?.entityType?.fields || []).map((fieldKey) => {
                                             const fieldLabel = getTranslationForLocale(customer.entity!.entityType!, locale)[fieldKey] || fieldKey;
+                                            const fieldValue = getTranslationForLocale(customer.entity!.entityType!, locale)[customer.entity!.fieldValues[fieldKey] || 'N/A'] || customer.entity!.fieldValues[fieldKey] || 'N/A';
                                             return (
                                                 <p key={fieldKey}>
-                                                    {fieldLabel}: {customer.entity!.fieldValues[fieldKey] || 'N/A'}
+                                                    {fieldLabel}: {fieldValue}
                                                 </p>
                                             )
                                         })}
@@ -143,18 +162,26 @@ export default function CustomersPage() {
                                         </td>
                                     ))}
                                     <td className="py-2 px-4 space-x-2">
-                                        <button
-                                            onClick={() => openEditor(customer, false)}
-                                            className="bg-yellow-500 text-white px-2 py-1 rounded hover:bg-yellow-600"
-                                        >
-                                            {t('edit')}
-                                        </button>
-                                        <button
-                                            onClick={() => openDialog(customer)}
-                                            className="bg-red-500 text-white px-2 py-1 rounded hover:bg-red-600"
-                                        >
-                                            {t('delete')}
-                                        </button>
+                                        {
+                                            customer.isNonActive && (<>Inactief</>)}
+                                        {
+                                            !customer.isNonActive && (
+                                                <>
+                                                    <button
+                                                        onClick={() => openEditor(customer, false)}
+                                                        className="bg-yellow-500 text-white px-2 py-1 rounded hover:bg-yellow-600"
+                                                    >
+                                                        {t('edit')}
+                                                    </button>
+                                                    <button
+                                                        onClick={() => openDialog(customer)}
+                                                        className="bg-red-500 text-white px-2 py-1 rounded hover:bg-red-600"
+                                                    >
+                                                        {t('delete')}
+                                                    </button>
+                                                </>
+                                            )
+                                        }
                                     </td>
                                 </tr>
                             ))}

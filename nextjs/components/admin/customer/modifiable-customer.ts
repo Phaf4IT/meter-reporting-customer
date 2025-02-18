@@ -6,7 +6,7 @@ export interface ModifiableCustomer {
     middleName?: string;
     lastName: string;
     entityId?: string;
-    phoneNumber: string;
+    phoneNumber?: string;
     additionalFields?: any
 }
 

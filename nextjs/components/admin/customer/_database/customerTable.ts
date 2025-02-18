@@ -22,10 +22,12 @@ export class CustomerTable extends Entity implements Customer {
     @Field("entity_id")
     entityId: string;
     @Field("phone_number")
-    phoneNumber: string;
+    phoneNumber: string | null;
     @PrimaryKey
     @Field("company")
     company: string;
+    @Field("additional_fields")
+    additionalFields: any | null;
 
     constructor(
         id: string,
@@ -35,8 +37,9 @@ export class CustomerTable extends Entity implements Customer {
         middleName: string | undefined,
         lastName: string,
         entityId: string,
-        phoneNumber: string,
-        company: string
+        phoneNumber: string | undefined,
+        company: string,
+        additionalFields: any
     ) {
         super();
         this.id = id;
@@ -46,11 +49,33 @@ export class CustomerTable extends Entity implements Customer {
         this.middleName = middleName || null;
         this.lastName = lastName;
         this.entityId = entityId;
-        this.phoneNumber = phoneNumber;
+        this.phoneNumber = phoneNumber || null;
         this.company = company;
+        this.additionalFields = additionalFields;
     }
 
-    static of({id, email, title, firstName, middleName, lastName, entityId, phoneNumber, company}: Customer) {
-        return new CustomerTable(id, email, title || undefined, firstName, middleName || undefined, lastName, entityId, phoneNumber, company);
+    static of({
+                  id,
+                  email,
+                  title,
+                  firstName,
+                  middleName,
+                  lastName,
+                  entityId,
+                  phoneNumber,
+                  company,
+                  additionalFields
+              }: Customer) {
+        return new CustomerTable(
+            id,
+            email,
+            title || undefined,
+            firstName,
+            middleName || undefined,
+            lastName,
+            entityId,
+            phoneNumber || undefined,
+            company,
+            additionalFields);
     }
 }

@@ -9,7 +9,7 @@ export interface Customer {
     middleName?: string;
     lastName: string;
     entity?: Entity;
-    phoneNumber: string;
+    phoneNumber?: string;
     additionalFields?: any;
 }
 
