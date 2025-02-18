@@ -2,13 +2,13 @@
 import React, {useEffect, useState} from 'react';
 import AdminLayout from "@/app/admin/adminlayout";
 import {useLocale, useTranslations} from "next-intl";
-import {Customer, emptyCustomer} from "@/components/admin/customer/customer";
+import {additionalFields, Customer, emptyCustomer} from "@/components/admin/customer/customer";
 import CustomerForm from "@/components/admin/customer/customer-form";
 import ConfirmationDialog from "@/components/admin/confirmation-dialog"; // Import confirmation dialog
 import "@/components/dialog-styles.css";
 import {deleteCustomer, getCustomers, saveCustomer} from "@/app/admin/customer/client";
-import {getTranslationForLocale} from "@/components/admin/entity-type/entityType";
 import {ModifiableCustomer} from "@/components/admin/customer/modifiable-customer";
+import {getTranslationForLocale} from "@/components/admin/entity-type/entityType";
 
 export default function CustomersPage() {
     const t = useTranslations('admin.customer');
@@ -18,6 +18,8 @@ export default function CustomersPage() {
     const [editingCustomer, setEditingCustomer] = useState<Customer | null>(null);
     const [customerToDelete, setCustomerToDelete] = useState<Customer | null>(null);
     const locale = useLocale();
+    const additionalFieldCustomers = additionalFields();
+    const fieldKeys = Object.keys(additionalFieldCustomers.fields || []);
 
     useEffect(() => {
         getCustomers()
@@ -66,6 +68,12 @@ export default function CustomersPage() {
         setIsNew(isNew);
     }
 
+    function getTranslationForLocaleFields(locale: string) {
+        const languageCode = locale.split('-')[0];
+        const translationKey = additionalFieldCustomers ? Object.keys(additionalFieldCustomers?.translations).find(key => key.startsWith(languageCode)) : undefined;
+        return translationKey ? additionalFieldCustomers?.translations[translationKey] : additionalFieldCustomers?.translations['en-US'];  // Fallback naar Engels als geen vertaling gevonden
+    }
+
     return (
         <AdminLayout>
             <div className="min-h-screen p-8 bg-cyan-950 text-white">
@@ -96,6 +104,15 @@ export default function CustomersPage() {
                                 <th className="py-2 px-4 text-left">{t('name')}</th>
                                 <th className="py-2 px-4 text-left">{t('entity')}</th>
                                 <th className="py-2 px-4 text-left">{t('phoneNumber')}</th>
+                                {fieldKeys.map((fieldKey) => {
+                                    const translationForLocale = getTranslationForLocaleFields(locale);
+                                    const fieldLabel = translationForLocale ? translationForLocale[fieldKey] : fieldKey;
+                                    return (
+                                        <th key={fieldKey} className="px-4 py-2 text-left">
+                                            {fieldLabel}
+                                        </th>
+                                    );
+                                })}
                                 <th className="py-2 px-4 text-left">{t('actions')}</th>
                             </tr>
                             </thead>
@@ -120,6 +137,11 @@ export default function CustomersPage() {
                                         })}
                                     </td>
                                     <td className="py-2 px-4">{customer.phoneNumber}</td>
+                                    {fieldKeys.map((fieldKey) => (
+                                        <td key={`${customer.id}-${fieldKey}`} className="px-4 py-2">
+                                            {customer.additionalFields ? customer.additionalFields[fieldKey] : 'N/A'}
+                                        </td>
+                                    ))}
                                     <td className="py-2 px-4 space-x-2">
                                         <button
                                             onClick={() => openEditor(customer, false)}

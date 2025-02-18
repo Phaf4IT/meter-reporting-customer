@@ -4,6 +4,8 @@ import {emptyEntityType, EntityType, Field} from "@/components/admin/entity-type
 import {Logger} from "@/lib/logger";
 import "flag-icons/css/flag-icons.min.css";
 import MultiSelect from "@/components/admin/multi-select";
+import EntityFields from "@/components/admin/entity-type/form/entity-fields";
+import {useToaster} from "@/components/admin/toast-context";
 
 interface EntityTypeFormProps {
     isNew: boolean;
@@ -35,7 +37,7 @@ export const EntityTypeForm: React.FC<EntityTypeFormProps> = ({entityType, onClo
     const t = useTranslations('admin.entity-type');
     const [isSaving, setIsSaving] = useState(false);
     const [newFieldValue, setFieldValue] = useState<string>('');
-
+    const toaster = useToaster();
     // State om te controleren of het formulier gewijzigd is
     const [isDirty, setIsDirty] = useState<boolean>(false);
 
@@ -188,11 +190,11 @@ export const EntityTypeForm: React.FC<EntityTypeFormProps> = ({entityType, onClo
 
         try {
             await onSubmit(formData!, isNew);
-            alert(t('entityTypeSaved'));
+            toaster.showToaster(t('entityTypeSaved'), 'success');
             cancel(); // Sluit formulier
         } catch (err: any) {
             Logger.error("Not saved,", err);
-            alert(t('errorSavingEntityType')); // Foutmelding
+            toaster.showToaster(t('errorSavingEntityType'), 'error');
         } finally {
             setIsSaving(false);
         }
@@ -210,6 +212,40 @@ export const EntityTypeForm: React.FC<EntityTypeFormProps> = ({entityType, onClo
         setIsDirty(false);  // Reset dirty state
         onClose();
     }
+
+    const handleAddOption = (fieldKey: string) => {
+        const newOption = prompt(t('enterNewOption'));
+        if (newOption) {
+            setFormData((prev) => {
+                // Maak een diepe kopie van de velden om referentieproblemen te voorkomen
+                const updatedFields = structuredClone(prev!.fields) || {}; // of JSON.parse(JSON.stringify(prev!.fields))
+                const field = updatedFields[fieldKey];
+
+                if (field.type === 'select' && !field.options?.includes(newOption)) {
+                    // Voeg de optie toe als deze nog niet bestaat
+                    field.options = [...(field.options || []), newOption];
+                }
+
+                return {...prev!, fields: updatedFields};
+            });
+            setIsDirty(true); // Formulier is veranderd
+        }
+    };
+
+
+    const handleRemoveOption = (fieldKey: string, option: string) => {
+        setFormData((prev) => {
+            const updatedFields = {...prev!.fields};
+            const field = updatedFields[fieldKey];
+
+            if (field.type === 'select') {
+                field.options = field.options?.filter(opt => opt !== option) || [];
+            }
+
+            return {...prev!, fields: updatedFields};
+        });
+        setIsDirty(true); // Formulier is veranderd
+    };
 
     return (
         <form onSubmit={handleSubmit} className="space-y-6">
@@ -271,68 +307,16 @@ export const EntityTypeForm: React.FC<EntityTypeFormProps> = ({entityType, onClo
                 </div>
                 {validationErrors.newField && <p className="text-red-500 mt-4">{validationErrors.newField}</p>}
 
-                <div className="grid grid-cols-1 sm:grid-cols-2 gap-6">
-                    {Object.keys(formData?.fields || {}).map((fieldKey) => {
-                        const field = formData!.fields[fieldKey];
-                        return (
-                            <div key={fieldKey} className="space-y-4">
-                                <div className="space-y-2">
-                                    <label className="block font-bold text-xl">{t('field')}: {fieldKey}</label>
-                                    <label className="block">{t('fieldType')}</label>
-                                    <select
-                                        value={field.type}
-                                        onChange={(e) => handleFieldChange(fieldKey, {
-                                            ...field,
-                                            type: e.target.value as Field['type'],
-                                        })}
-                                        className="appearance-none block w-full bg-cyan-800 text-white border border-gray-500 rounded py-3 px-4 leading-tight focus:outline-none focus:border-cyan-400"
-                                    >
-                                        <option value="text">{t('text')}</option>
-                                        <option value="numeric">{t('numeric')}</option>
-                                        <option value="boolean">{t('boolean')}</option>
-                                        <option value="date">{t('date')}</option>
-                                        <option value="text[]">{t('textArray')}</option>
-                                    </select>
-                                </div>
-
-                                <div className="space-y-2">
-                                    <label className="block">{t('required')}</label>
-                                    <input
-                                        type="checkbox"
-                                        checked={field.required}
-                                        onChange={(e) => handleFieldChange(fieldKey, {
-                                            ...field,
-                                            required: e.target.checked,
-                                        })}
-                                        className="w-4 h-4 text-cyan-600 focus:ring-cyan-500"
-                                    />
-                                </div>
-
-                                {/* Dynamisch vertalingen toevoegen voor dit veld */}
-                                {Object.keys(formData!.translations).map((locale) => (
-                                    <div key={locale} className="space-y-2">
-                                        <label className="block">{locale}</label>
-                                        <input
-                                            type="text"
-                                            value={formData?.translations[locale]?.[fieldKey] || ''}
-                                            onChange={(e) => handleTranslationChange(fieldKey, locale, e.target.value)}
-                                            className="appearance-none block w-full bg-cyan-800 text-white border border-gray-500 rounded py-3 px-4 leading-tight focus:outline-none focus:border-cyan-400"
-                                            required
-                                        />
-                                    </div>
-                                ))}
-
-                                <button
-                                    type="button"
-                                    onClick={() => handleRemoveField(fieldKey)}
-                                    className="text-red-500 hover:text-red-700 focus:outline-none col-span-2"
-                                >
-                                    {t('removeField')}
-                                </button>
-                            </div>
-                        );
-                    })}
-                </div>
+                <EntityFields
+                    fields={formData?.fields || {}}
+                    validationErrors={validationErrors}
+                    handleFieldChange={handleFieldChange}
+                    handleRemoveField={handleRemoveField}
+                    handleAddOption={handleAddOption}
+                    handleRemoveOption={handleRemoveOption}
+                    handleTranslationChange={handleTranslationChange}
+                    translations={formData?.translations || {}}
+                />
 
             </div>
 

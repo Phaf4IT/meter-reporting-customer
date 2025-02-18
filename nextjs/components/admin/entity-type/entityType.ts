@@ -13,8 +13,9 @@ export function entityTypeFromJson(json: any): EntityType {
 }
 
 export interface Field {
-    type: 'text' | 'boolean' | 'numeric' | 'date' | 'text[]';
+    type: 'text' | 'boolean' | 'numeric' | 'date' | 'text[]' | 'select';
     required: boolean;
+    options?: string[]
 }
 
 export function getTranslationForLocale(entityType: EntityType, locale: string) {

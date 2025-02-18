@@ -7,7 +7,7 @@ import {Entity} from "@/components/admin/entity/entity"; // Zorg ervoor dat je d
 import Dialog from "rc-dialog";
 import 'rc-dialog/assets/index.css';
 import '@/components/dialog-styles.css';
-import {Customer} from "@/components/admin/customer/customer";
+import {additionalFields, Customer} from "@/components/admin/customer/customer";
 import {FaPlus} from "react-icons/fa";
 
 export default function CustomerForm({
@@ -29,6 +29,8 @@ export default function CustomerForm({
         entityId: customer.entity?.id || "",
         phoneNumber: customer.phoneNumber,
     });
+
+    const additionalFieldCustomers = additionalFields();
 
     const [entityDialogOpen, setEntityDialogOpen] = useState(false);  // State voor dialoog openen
     const [entities, setEntities] = useState<Entity[]>([]);  // Hier komen de entiteiten die we ophalen van de server
@@ -63,6 +65,17 @@ export default function CustomerForm({
 
         // Als er geen fout is, sla het formulier op
         onSave({...formData, entity: selectedEntity}, isNew);
+    };
+
+    function getTranslationForLocaleField(locale: string) {
+        const languageCode = locale.split('-')[0];
+        const translationKey = Object.keys(additionalFieldCustomers.translations || []).find(key => key.startsWith(languageCode));
+        return translationKey ? additionalFieldCustomers.translations[translationKey] : additionalFieldCustomers.translations['en-US'];
+    }
+
+    // Handelt de wijziging van inputvelden af
+    const handleInputChange = (field: string, value: any) => {
+        setFormData((prev) => ({...prev, [field]: value}));
     };
 
     return (
@@ -216,6 +229,90 @@ export default function CustomerForm({
                     />
                 </div>
             </div>
+
+
+            {Object.entries(additionalFieldCustomers.fields).map(([fieldKey, field]) => {
+                const fieldType = field.type;
+                const isRequired = field.required;
+                const translationForLocale = getTranslationForLocaleField(locale);
+                const fieldLabel = translationForLocale ? translationForLocale[fieldKey] : fieldKey;
+
+                switch (fieldType) {
+                    case 'text':
+                        return (
+                            <div key={fieldKey}>
+                                <label className="block uppercase tracking-wide text-gray-200 text-s font-bold mb-2">{fieldLabel}</label>
+                                <input
+                                    type="text"
+                                    required={isRequired}
+                                    value={formData.additionalFields ? formData.additionalFields[fieldKey] : ''}
+                                    onChange={(e) => handleInputChange(fieldKey, e.target.value)}
+                                    className="appearance-none block w-full bg-cyan-800 text-white border border-gray-500 rounded py-3 px-4 leading-tight focus:outline-none focus:border-cyan-400"
+                                />
+                            </div>
+                        );
+
+                    case 'text[]':
+                        return (
+                            <div key={fieldKey}>
+                                <label className="block uppercase tracking-wide text-gray-200 text-s font-bold mb-2">{fieldLabel}</label>
+                                <textarea
+                                    value={(formData.additionalFields ? formData.additionalFields[fieldKey] : []).join('\n')}
+                                    required={isRequired}
+                                    onChange={(e) => handleInputChange(fieldKey, e.target.value.split('\n'))}
+                                    className="appearance-none block w-full bg-cyan-800 text-white border border-gray-500 rounded py-3 px-4 leading-tight focus:outline-none focus:border-cyan-400"
+                                />
+                            </div>
+                        );
+
+                    case 'numeric':
+                        return (
+                            <div key={fieldKey}>
+                                <label className="block uppercase tracking-wide text-gray-200 text-s font-bold mb-2">{fieldLabel}</label>
+                                <input
+                                    type="number"
+                                    required={isRequired}
+                                    value={formData.additionalFields ? formData.additionalFields[fieldKey] : ''}
+                                    onChange={(e) => handleInputChange(fieldKey, parseFloat(e.target.value))}
+                                    className="appearance-none block w-full bg-cyan-800 text-white border border-gray-500 rounded py-3 px-4 leading-tight focus:outline-none focus:border-cyan-400"
+                                />
+                            </div>
+                        );
+
+                    case 'boolean':
+                        return (
+                            <div key={fieldKey}>
+                                <label
+                                    className="block uppercase tracking-wide text-gray-200 text-s font-bold mb-2">{fieldLabel}</label>
+                                <input
+                                    type="checkbox"
+                                    required={isRequired}
+                                    checked={formData.additionalFields ? formData.additionalFields[fieldKey] : false}
+                                    onChange={(e) => handleInputChange(fieldKey, e.target.checked)}
+                                    className="appearance-none block w-full bg-cyan-800 text-white border border-gray-500 rounded py-3 px-4 leading-tight focus:outline-none focus:border-cyan-400"
+                                />
+                            </div>
+                        );
+
+                    case 'date':
+                        return (
+                            <div key={fieldKey}>
+                                <label
+                                    className="block uppercase tracking-wide text-gray-200 text-s font-bold mb-2">{fieldLabel}</label>
+                                <input
+                                    type="date"
+                                    required={isRequired}
+                                    value={formData.additionalFields ? formData.additionalFields[fieldKey] : ''}
+                                    onChange={(e) => handleInputChange(fieldKey, e.target.value)}
+                                    className="appearance-none block w-full bg-cyan-800 text-white border border-gray-500 rounded py-3 px-4 leading-tight focus:outline-none focus:border-cyan-400"
+                                />
+                            </div>
+                        );
+
+                    default:
+                        return null;
+                }
+            })}
 
             <div className="flex space-x-4">
                 <button type="submit" className="bg-green-500 text-white px-6 py-3 rounded hover:bg-green-600">

@@ -7,6 +7,7 @@ export interface ModifiableCustomer {
     lastName: string;
     entityId?: string;
     phoneNumber: string;
+    additionalFields?: any
 }
 
 export function modifiableCustomerFromJson(json: any): ModifiableCustomer {
@@ -18,7 +19,8 @@ export function modifiableCustomerFromJson(json: any): ModifiableCustomer {
         middleName: json.middleName,
         lastName: json.lastName,
         entityId: json.entityId,
-        phoneNumber: json.phoneNumber
+        phoneNumber: json.phoneNumber,
+        additionalFields: json.additionalFields
     };
 }
 
