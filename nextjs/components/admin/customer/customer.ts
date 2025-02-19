@@ -1,5 +1,6 @@
 import {Entity} from "@/components/admin/entity/entity";
 import {Field} from "@/components/admin/entity-type/entityType";
+import {ModifiableCustomer} from "@/components/admin/customer/modifiable-customer";
 
 export interface Customer {
     id: string;
@@ -27,7 +28,7 @@ export function customerFromJson(json: any): Customer {
     };
 }
 
-export function emptyCustomer(): Customer {
+export function emptyCustomer(): Customer & ModifiableCustomer {
     return {
         id: '',
         email: '',
@@ -35,7 +36,8 @@ export function emptyCustomer(): Customer {
         firstName: '',
         middleName: '',
         lastName: '',
-        phoneNumber: ''
+        phoneNumber: '',
+        entityId: ''
     }
 }
 
