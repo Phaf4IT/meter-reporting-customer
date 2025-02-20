@@ -11,6 +11,7 @@ import {getTranslationForLocale} from "@/components/admin/entity-type/entityType
 import {Entity} from "@/components/admin/entity/entity";
 import {getAllEntities} from "@/app/admin/entity/client";
 import EditableCustomerRow from "@/components/admin/customer/editable-customer-row";
+import {FaArrowDown, FaArrowUp} from 'react-icons/fa';
 
 export interface Customer extends C {
     id: string;
@@ -37,6 +38,10 @@ export default function CustomersPage() {
     const additionalFieldCustomers = additionalFields();
     const fieldKeys = Object.keys(additionalFieldCustomers.fields || []);
 
+    // New state for sorting
+    const [sortColumn, setSortColumn] = useState<string>(''); // Default sort by last name
+    const [sortDirection, setSortDirection] = useState<'asc' | 'desc'>('asc');
+
     useEffect(() => {
         Promise.all([getCustomers(), getNonActiveCustomers()])
             .then(value => setCustomers([
@@ -49,6 +54,28 @@ export default function CustomersPage() {
         getAllEntities()
             .then(entities => setEntities(entities));
     }, []);
+
+    const handleSort = (column: string) => {
+        const direction = sortColumn === column && sortDirection === 'asc' ? 'desc' : 'asc';
+        setSortColumn(column);
+        setSortDirection(direction);
+
+        setCustomers((prevCustomers) => {
+            return [...prevCustomers].sort((a, b) => {
+                const getValue = (obj: any, path: string) => {
+                    return path.split('.').reduce((acc, part) => acc && acc[part], obj);
+                };
+
+                const valueA = getValue(a, column) ?? '';
+                const valueB = getValue(b, column) ?? '';
+
+                if (valueA < valueB) return direction === 'asc' ? -1 : 1;
+                if (valueA > valueB) return direction === 'asc' ? 1 : -1;
+                return 0;
+            });
+        });
+    };
+
 
     const handleSave = async (customer: ModifiableCustomer & C, isNew: boolean) => {
         saveCustomer(customer, isNew)
@@ -127,17 +154,70 @@ export default function CustomersPage() {
                 <table className="table-auto w-full border-collapse bg-cyan-900 text-white rounded shadow-lg">
                     <thead>
                     <tr className="border-b border-cyan-700">
-                        <th className="py-2 px-4 text-left">{t('title')}</th>
-                        <th className="py-2 px-4 text-left">{t('email')}</th>
-                        <th className="py-2 px-4 text-left">{t('name')}</th>
-                        <th className="py-2 px-4 text-left">{t('entity')}</th>
-                        <th className="py-2 px-4 text-left">{t('phoneNumber')}</th>
+                        <th
+                            className="py-2 px-4 text-left cursor-pointer select-none"
+                            onClick={() => handleSort('title')}
+                        >
+                            {t('title')}
+                            {sortColumn === 'title' && (
+                                sortDirection === 'asc' ? <FaArrowUp className="inline ml-2"/> :
+                                    <FaArrowDown className="inline ml-2"/>
+                            )}
+                        </th>
+                        <th
+                            className="py-2 px-4 text-left cursor-pointer select-none"
+                            onClick={() => handleSort('email')}
+                        >
+                            {t('email')}
+                            {sortColumn === 'email' && (
+                                sortDirection === 'asc' ? <FaArrowUp className="inline ml-2"/> :
+                                    <FaArrowDown className="inline ml-2"/>
+                            )}
+                        </th>
+                        <th
+                            className="py-2 px-4 text-left cursor-pointer select-none"
+                            onClick={() => handleSort('lastName')}
+                        >
+                            {t('name')}
+                            {sortColumn === 'lastName' && (
+                                sortDirection === 'asc' ? <FaArrowUp className="inline ml-2"/> :
+                                    <FaArrowDown className="inline ml-2"/>
+                            )}
+                        </th>
+                        <th
+                            className="py-2 px-4 text-left cursor-pointer select-none"
+                            onClick={() => handleSort('entity')}
+                        >
+                            {t('entity')}
+                            {sortColumn === 'entity' && (
+                                sortDirection === 'asc' ? <FaArrowUp className="inline ml-2"/> :
+                                    <FaArrowDown className="inline ml-2"/>
+                            )}
+                        </th>
+                        <th
+                            className="py-2 px-4 text-left cursor-pointer select-none"
+                            onClick={() => handleSort('phoneNumber')}
+                        >
+                            {t('phoneNumber')}
+                            {sortColumn === 'phoneNumber' && (
+                                sortDirection === 'asc' ? <FaArrowUp className="inline ml-2"/> :
+                                    <FaArrowDown className="inline ml-2"/>
+                            )}
+                        </th>
                         {fieldKeys.map((fieldKey) => {
                             const translationForLocale = getTranslationForLocaleFields(locale);
                             const fieldLabel = translationForLocale ? translationForLocale[fieldKey] : fieldKey;
                             return (
-                                <th key={fieldKey} className="px-4 py-2 text-left">
+                                <th
+                                    key={fieldKey}
+                                    className="px-4 py-2 text-left cursor-pointer select-none"
+                                    onClick={() => handleSort(`additionalFields.${fieldKey}`)}
+                                >
                                     {fieldLabel}
+                                    {sortColumn === `additionalFields.${fieldKey}` && (
+                                        sortDirection === 'asc' ? <FaArrowUp className="inline ml-2"/> :
+                                            <FaArrowDown className="inline ml-2"/>
+                                    )}
                                 </th>
                             );
                         })}
