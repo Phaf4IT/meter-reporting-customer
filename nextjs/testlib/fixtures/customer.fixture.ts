@@ -6,6 +6,13 @@ export function getNewCustomer(entityId?: string) {
         firstName: 'John',
         lastName: 'Doe',
         phoneNumber: '123-456-7890',
-        entityId
+        entityId,
+        additionalFields: {
+            streetLines: "blabla",
+            postalCode: "3333XA",
+            city: "Bla",
+            country: "Nederland",
+            stateOrProvinceCode: "Bla",
+        }
     };
 }
