@@ -69,7 +69,7 @@ export async function deleteCustomer(customer: ModifiableCustomer, company: stri
 }
 
 async function mapCustomers(customers: CustomerTable[], company: string) {
-    const entities = await findEntitiesByCompanyAndIds(customers.map(c => c.entityId), company);
+    const entities = customers && customers.length > 0 ? await findEntitiesByCompanyAndIds(customers.map(c => c.entityId), company) : [];
     return customers.map((customerTable: CustomerTable) => {
         const entity = entities.find(entity => customerTable.entityId === entity.id)!;
         return mapTableToDomain(customerTable, entity);
@@ -85,7 +85,8 @@ function mapDomainToTable(customer: ModifiableCustomer, company: string) {
         middleName: customer.middleName || null,
         lastName: customer.lastName,
         entityId: customer.entityId!,
-        phoneNumber: customer.phoneNumber,
+        phoneNumber: customer.phoneNumber || null,
+        additionalFields: customer.additionalFields,
         company
     });
 }
@@ -99,7 +100,8 @@ function mapTableToDomainModifiable(customerTable: CustomerTable): ModifiableCus
         firstName: customerTable.firstName,
         middleName: customerTable.middleName || undefined,
         lastName: customerTable.lastName,
-        phoneNumber: customerTable.phoneNumber
+        additionalFields: customerTable.additionalFields,
+        phoneNumber: customerTable.phoneNumber || undefined
     };
 }
 
@@ -112,6 +114,7 @@ function mapTableToDomain(customerTable: CustomerTable, entity: Entity): Custome
         firstName: customerTable.firstName,
         middleName: customerTable.middleName || undefined,
         lastName: customerTable.lastName,
-        phoneNumber: customerTable.phoneNumber
+        phoneNumber: customerTable.phoneNumber || undefined,
+        additionalFields: customerTable.additionalFields,
     };
 }

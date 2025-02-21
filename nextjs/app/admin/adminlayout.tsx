@@ -10,6 +10,8 @@ import LanguageSwitcher from "@/app/languageswitcher";
 import {EntityType} from "@/components/admin/entity-type/entityType";
 import {getEntityTypes} from "@/app/admin/entity-type/client";
 import {Logger} from '@/lib/logger';
+import ToastProvider from '@/components/admin/toast-context';
+import Toaster from "@/components/admin/toaster";
 
 export default function AdminLayout({children}: { children: React.ReactNode }) {
     const pathname = usePathname();
@@ -95,7 +97,12 @@ export default function AdminLayout({children}: { children: React.ReactNode }) {
             </nav>
 
             {/* Main Content */}
-            <main className="flex-1 p-8">{children}</main>
+            <main className="flex-1 p-8">
+                <ToastProvider>
+                    <Toaster/>
+                    {children}
+                </ToastProvider>
+            </main>
         </div>
     );
 }

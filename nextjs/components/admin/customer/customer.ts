@@ -1,4 +1,6 @@
 import {Entity} from "@/components/admin/entity/entity";
+import {Field} from "@/components/admin/entity-type/entityType";
+import {ModifiableCustomer} from "@/components/admin/customer/modifiable-customer";
 
 export interface Customer {
     id: string;
@@ -8,7 +10,8 @@ export interface Customer {
     middleName?: string;
     lastName: string;
     entity?: Entity;
-    phoneNumber: string;
+    phoneNumber?: string;
+    additionalFields?: any;
 }
 
 export function customerFromJson(json: any): Customer {
@@ -20,11 +23,12 @@ export function customerFromJson(json: any): Customer {
         middleName: json.middleName,
         entity: json.entity,
         lastName: json.lastName,
-        phoneNumber: json.phoneNumber
+        phoneNumber: json.phoneNumber,
+        additionalFields: json.additionalFields
     };
 }
 
-export function emptyCustomer(): Customer {
+export function emptyCustomer(): Customer & ModifiableCustomer {
     return {
         id: '',
         email: '',
@@ -32,6 +36,77 @@ export function emptyCustomer(): Customer {
         firstName: '',
         middleName: '',
         lastName: '',
-        phoneNumber: ''
+        phoneNumber: '',
+        entityId: ''
+    }
+}
+
+interface AdditionalFields {
+    fields: Record<string, Field>;
+    translations: Record<string, any>;
+}
+
+// TODO should become configurable
+export function additionalFields(): AdditionalFields {
+    return {
+        fields: {
+            "streetLines":
+                {
+                    "type":
+                        "text[]",
+                    "required":
+                        true
+                }
+            ,
+            "postalCode":
+                {
+                    "type":
+                        "text",
+                    "required":
+                        true
+                }
+            ,
+            "city":
+                {
+                    "type":
+                        "text",
+                    "required":
+                        true
+                }
+            ,
+            "country":
+                {
+                    "type":
+                        "text",
+                    "required":
+                        true
+                }
+            ,
+            "stateOrProvinceCode":
+                {
+                    "type":
+                        "text",
+                    "required":
+                        true
+                }
+        },
+        translations: {
+            "nl-NL": {
+                "location": "Locatie",
+                "streetLines": "Adresregels",
+                "postalCode": "Postcode",
+                "city": "Stad",
+                "country": "Land",
+                "stateOrProvinceCode": "Provincie"
+            },
+            "en-US": {
+                "location": "Location",
+                "streetLines": "Streetlines",
+                "postalCode": "Postal code",
+                "city": "City",
+                "country": "Country",
+                "stateOrProvinceCode": "Province"
+            }
+        }
     }
 }

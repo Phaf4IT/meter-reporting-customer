@@ -12,6 +12,7 @@ interface EntityTableProps {
 
 export const EntityTable: React.FC<EntityTableProps> = ({entities, entityType, onEdit, onDelete}) => {
     const locale = useLocale();
+    const translations = getTranslationForLocale(locale);
     if (entities.length === 0) {
         return <div>{'Er zijn geen entiteiten beschikbaar.'}</div>;
     }
@@ -29,8 +30,7 @@ export const EntityTable: React.FC<EntityTableProps> = ({entities, entityType, o
             <thead>
             <tr>
                 {fieldKeys.map((fieldKey) => {
-                    const translationForLocale = getTranslationForLocale(locale);
-                    const fieldLabel = translationForLocale ? translationForLocale[fieldKey] : fieldKey;
+                    const fieldLabel = translations ? translations[fieldKey] : fieldKey;
                     return (
                         <th key={fieldKey} className="px-4 py-2 text-left">
                             {fieldLabel}
@@ -46,11 +46,14 @@ export const EntityTable: React.FC<EntityTableProps> = ({entities, entityType, o
                     className="border-b border-cyan-800 hover:bg-cyan-700"
                 >
 
-                    {fieldKeys.map((fieldKey) => (
-                        <td key={`${entity.id}-${fieldKey}`} className="px-4 py-2">
-                            {entity.fieldValues[fieldKey] || 'N/A'}
-                        </td>
-                    ))}
+                    {fieldKeys.map((fieldKey) => {
+                        const fieldValue = entity.fieldValues[fieldKey] || 'N/A';
+                        return (
+                            <td key={`${entity.id}-${fieldKey}`} className="px-4 py-2">
+                                {translations && translations[fieldValue] ? translations[fieldValue] : fieldValue}
+                            </td>
+                        );
+                    })}
 
                     <td className="px-4 py-2">
                         <button

@@ -2,6 +2,8 @@ import React, {useEffect, useState} from 'react';
 import {useLocale, useTranslations} from 'next-intl';
 import {Entity} from './entity'; // Zorg ervoor dat deze de juiste interface heeft
 import {EntityType} from "@/components/admin/entity-type/entityType";
+import {useToaster} from "@/components/admin/toast-context";
+import {Logger} from "@/lib/logger";
 
 interface EntityFormProps {
     entity?: Entity | null;  // Kan null zijn voor nieuwe entiteit
@@ -15,6 +17,7 @@ export const EntityForm: React.FC<EntityFormProps> = ({entityType, entity, onClo
     const [isSaving, setIsSaving] = useState(false);
     const t = useTranslations('admin.entity');
     const locale = useLocale();
+    const toaster = useToaster();
 
     // Haal het EntityType op, indien het nog niet geladen is
     useEffect(() => {
@@ -48,11 +51,11 @@ export const EntityForm: React.FC<EntityFormProps> = ({entityType, entity, onClo
 
         try {
             await onSubmit(newEntity);
-            alert(t('entitySaved')); // Succesmelding na opslaan
+            toaster.showToaster(t('entitySaved'), 'success'); // Succesmelding na opslaan
             onClose(); // Sluit het formulier na opslaan
         } catch (err) {
-            console.error('Fout bij opslaan', err);
-            alert(t('errorSavingEntity')); // Foutmelding bij falen
+            Logger.error('Fout bij opslaan', err instanceof Error ? err : undefined);
+            toaster.showToaster(t('errorSavingEntity'), 'error'); // Foutmelding bij falen
         } finally {
             setIsSaving(false);
         }

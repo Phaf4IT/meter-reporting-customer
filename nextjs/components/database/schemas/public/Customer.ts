@@ -23,9 +23,11 @@ export default interface Customer {
 
   lastName: string;
 
-  phoneNumber: string;
+  phoneNumber: string | null;
 
   entityId: string;
+
+  additionalFields: unknown | null;
 }
 
 /** Represents the initializer for the table public.customer */
@@ -45,9 +47,11 @@ export interface CustomerInitializer {
 
   lastName: string;
 
-  phoneNumber: string;
+  phoneNumber?: string | null;
 
   entityId: string;
+
+  additionalFields?: unknown | null;
 }
 
 /** Represents the mutator for the table public.customer */
@@ -66,7 +70,9 @@ export interface CustomerMutator {
 
   lastName?: string;
 
-  phoneNumber?: string;
+  phoneNumber?: string | null;
 
   entityId?: string;
+
+  additionalFields?: unknown | null;
 }

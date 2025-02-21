@@ -13,7 +13,7 @@ import AdminLayout from '../adminlayout';
 import {EntityType} from "@/components/admin/entity-type/entityType";
 
 export default function EntityTypeManagementPage() {
-    const [entityTypes, setEntityTypes] = useState<any[]>([]);
+    const [entityTypes, setEntityTypes] = useState<EntityType[]>([]);
     const [selectedEntityType, setSelectedEntityType] = useState<EntityType>();
     const [isNew, setIsNew] = useState<boolean>(true);
     const [isFormOpen, setIsFormOpen] = useState<boolean>(false);
@@ -63,10 +63,13 @@ export default function EntityTypeManagementPage() {
 
     const handleSaveEntityType = async (entityType: EntityType, isNew: boolean) => {
         await saveEntityType(entityType, isNew);
-        setEntityTypes(prevState => ([
-            ...prevState,
-            entityType
-        ]))
+
+        setEntityTypes(prevState => {
+            const newState = prevState.find(value => value.name === entityType.name)
+                ? prevState.filter(value => value.name !== entityType.name)
+                : prevState;
+            return [...newState, entityType];
+        })
     }
 
     const handleCloseForm = () => {
