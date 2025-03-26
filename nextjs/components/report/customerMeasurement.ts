@@ -5,5 +5,5 @@ export interface CustomerMeasurement {
 
 export interface MeasureValue {
     readonly name: string;
-    readonly value: string;
+    readonly value?: string;
 }

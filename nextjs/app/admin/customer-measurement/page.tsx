@@ -17,6 +17,7 @@ import {ReminderSent} from "@/components/admin/reminder-sent/reminder-sent";
 import Dialog from "rc-dialog";
 import 'rc-dialog/assets/index.css';
 import '@/components/dialog-styles.css';
+import Image from "next/image";
 
 export default function CustomerMeasurementsPage() {
     const t = useTranslations("admin.customerMeasurement");
@@ -125,7 +126,16 @@ export default function CustomerMeasurementsPage() {
                                                 <>
                                                     {measurement.measurements.map((m) => (
                                                         <div key={m.name}>
-                                                            <strong>{m.name}:</strong> {m.value}
+                                                            <strong>{m.name}:</strong> {
+                                                            campaign.measureValues.find(value => value.name === m.name)?.type === 'PHOTO_UPLOAD' ?
+                                                                (<Image src={m.value}
+                                                                        alt={m.name}
+                                                                        width="0"
+                                                                        height="0"
+                                                                        sizes="100vw"
+                                                                        className="w-32 h-auto transform transition-transform duration-300 ease-in-out hover:scale-150 hover:z-10"
+                                                                />) : m.value
+                                                        }
                                                         </div>
                                                     ))}
                                                 </>

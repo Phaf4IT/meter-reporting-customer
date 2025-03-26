@@ -189,6 +189,7 @@
       "confirmDeleteButton": "Confirm Delete",
       "cancelButton": "Cancel",
       "measureValueType": {
+        "PHOTO_UPLOAD": "Photo Upload",
         "BOOLEAN": "Yes/No",
         "TEXT": "Text",
         "NUMBER": "Number",

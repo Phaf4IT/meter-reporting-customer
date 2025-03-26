@@ -220,6 +220,7 @@
       "confirmDeleteButton": "Bevestig Verwijderen",
       "cancelButton": "Annuleren",
       "measureValueType": {
+        "PHOTO_UPLOAD": "Foto Upload",
         "BOOLEAN": "Ja/Nee",
         "TEXT": "Tekst",
         "NUMBER": "Nummer",

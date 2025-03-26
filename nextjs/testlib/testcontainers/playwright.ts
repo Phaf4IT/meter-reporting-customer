@@ -13,6 +13,7 @@ export class PlaywrightContainer {
                     "WS_PATH": 'playwright',
                     "LANGUAGE": 'nl'
                 })
+                .withPlatform("linux/x86_64")
                 .withExposedPorts(9222)
                 .withWaitStrategy(Wait.forListeningPorts());
         if (process.env.PLATFORM === 'linux') {
