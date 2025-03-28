@@ -127,7 +127,7 @@ export default function CustomerMeasurementsPage() {
                                                     {measurement.measurements.map((m) => (
                                                         <div key={m.name}>
                                                             <strong>{m.name}:</strong> {
-                                                            campaign.measureValues.find(value => value.name === m.name)?.type === 'PHOTO_UPLOAD' ?
+                                                            campaign.measureValues.find(value => value.name === m.name)?.type === 'PHOTO_UPLOAD' && m.value ?
                                                                 (<Image src={m.value}
                                                                         alt={m.name}
                                                                         width="0"
