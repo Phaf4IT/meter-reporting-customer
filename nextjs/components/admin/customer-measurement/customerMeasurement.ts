@@ -18,5 +18,5 @@ export function customerMeasurementFromJson(json: any): CustomerMeasurement {
 
 export interface MeasureValue {
     readonly name: string;
-    readonly value: string;
+    readonly value?: string;
 }

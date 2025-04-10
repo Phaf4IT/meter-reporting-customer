@@ -36,7 +36,7 @@ function mapReport(customerMeasurement: CustomerMeasurement, campaign: Campaign)
         const measurement = customerMeasurement.measurements.find(value => value.name === measureValue.name)!;
         measurements.push({
             name: measurement.name,
-            value: measurement.value,
+            value: measurement.value!,
             type: measureValue.type,
             isEditable: measureValue.isEditable,
             defaultValue: measureValue.defaultValue,

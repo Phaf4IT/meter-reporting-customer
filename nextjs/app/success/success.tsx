@@ -5,6 +5,7 @@ import {Report} from "@/app/api/report/report";
 import {getReport} from "@/app/report/client";
 import {signOutAction} from "@/app/success/signOutAction";
 import {MeasureValueTranslation} from "@/components/admin/measure-value/measureValue";
+import Image from "next/image";
 
 export default function Success() {
     const t = useTranslations('success');
@@ -13,7 +14,7 @@ export default function Success() {
     const locale = useLocale();
 
     useEffect(() => {
-        const token = searchParams.get('token');
+        const token = searchParams?.get('token');
         if (token) {
             getReport(token)
                 .then((report) => {
@@ -35,6 +36,22 @@ export default function Success() {
         return translation ? translation.value : measureName;
     };
 
+    const renderMeasurementValue = (measurement: any) => {
+        if (measurement.type === 'PHOTO_UPLOAD') {
+            return (
+                <Image
+                    src={measurement.value}
+                    alt={measurement.name}
+                    width="0"
+                    height="0"
+                    sizes="100vw"
+                    className="w-full h-auto"
+                />
+            );
+        }
+        return measurement.value;
+    };
+
     return (
         <div className="min-h-screen flex flex-col items-center justify-center bg-cyan-950">
             <h1 className="text-2xl font-bold mb-4">{t('title')}</h1>
@@ -47,8 +64,14 @@ export default function Success() {
                                 <div key={measurement.name} className="mb-4">
                                     <p>
                                         <strong>{getTranslation(measurement.name, measurement.translations)}:</strong>
-                                        {measurement.type === 'BOOLEAN' ? (<>{t(`${measurement.value}`)} </>) : (<>{measurement.value} </>)}
-                                        {measurement.unit}
+                                        {measurement.type === 'BOOLEAN' ? (
+                                            <>{t(`${measurement.value}`)} </>
+                                        ) : (
+                                            <>
+                                                {renderMeasurementValue(measurement)}
+                                                {measurement.unit}
+                                            </>
+                                        )}
                                     </p>
                                 </div>
                             ))

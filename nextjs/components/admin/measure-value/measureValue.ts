@@ -52,7 +52,7 @@ export function getTranslations(translations: Record<string, string>): MeasureVa
 }
 
 export enum MeasureValueType {
-    NUMBER = 'NUMBER', TEXT = 'TEXT', BOOLEAN = 'BOOLEAN'
+    NUMBER = 'NUMBER', TEXT = 'TEXT', BOOLEAN = 'BOOLEAN', PHOTO_UPLOAD = 'PHOTO_UPLOAD',
 }
 
 export function getMeasureValueType(type: string): MeasureValueType {

@@ -35,12 +35,12 @@ function validateCustomerMeasurement(campaign: Campaign, customerMeasurement: Cu
             measurement => measurement.name === measureValue.name
         );
 
-        if (!correspondingMeasurement || correspondingMeasurement.value.trim() === '') {
+        if (!correspondingMeasurement || correspondingMeasurement.value?.trim() === '') {
             Logger.error(`Error during validation of reporting: No value given for ${measureValue.name}`);
             return false;
         }
 
-        const value = correspondingMeasurement.value.trim();
+        const value = correspondingMeasurement.value?.trim();
 
         // Validatie per type MeasureValue
         switch (measureValue.type) {
@@ -56,8 +56,14 @@ function validateCustomerMeasurement(campaign: Campaign, customerMeasurement: Cu
                     return false;
                 }
                 break;
+            case 'PHOTO_UPLOAD':
+                if (!value || value.length < 1) {
+                    Logger.error(`Error during validation of reporting: Value for ${measureValue.name} has to be a valid file`);
+                    return false;
+                }
+                break;
             case 'TEXT':
-                if (value.length < 1) {
+                if (!value || value.length < 1) {
                     Logger.error(`Error during validation of reporting: Value for ${measureValue.name} has to be valid text`);
                     return false;
                 }
