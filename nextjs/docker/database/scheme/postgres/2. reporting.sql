@@ -11,16 +11,16 @@ DROP TABLE IF EXISTS measure_value;
 DROP TABLE IF EXISTS customer_measurement;
 DROP TABLE IF EXISTS overruled_customer_measurement;
 
-CREATE OR REPLACE FUNCTION uuidv7_sub_ms() RETURNS uuid
-AS
-$$
-select encode(
-               substring(int8send(floor(t_ms)::int8) from 3) ||
-               int2send((7 << 12)::int2 | ((t_ms - floor(t_ms)) * 4096)::int2) ||
-               substring(uuid_send(gen_random_uuid()) from 9 for 8)
-           , 'hex')::uuid
-from (select extract(epoch from clock_timestamp()) * 1000 as t_ms) s
-$$ LANGUAGE sql volatile;
+-- CREATE OR REPLACE FUNCTION gen_random_uuid() RETURNS uuid
+-- AS
+-- $$
+-- select encode(
+--                substring(int8send(floor(t_ms)::int8) from 3) ||
+--                int2send((7 << 12)::int2 | ((t_ms - floor(t_ms)) * 4096)::int2) ||
+--                substring(uuid_send(gen_random_uuid()) from 9 for 8)
+--            , 'hex')::uuid
+-- from (select extract(epoch from clock_timestamp()) * 1000 as t_ms) s
+-- $$ LANGUAGE sql volatile;
 
 CREATE TABLE IF NOT EXISTS company
 (
@@ -40,7 +40,7 @@ CREATE TABLE IF NOT EXISTS entity_type
 
 CREATE TABLE IF NOT EXISTS entity
 (
-    id           uuid         NOT NULL DEFAULT uuidv7_sub_ms(),
+    id           uuid         NOT NULL DEFAULT gen_random_uuid(),
     entity_type  varchar(255) NOT NULL,
     field_values jsonb        NOT NULL,
     company      varchar(255) NOT NULL,
@@ -95,7 +95,7 @@ CREATE INDEX if not exists campaign_reminder_sent_idx ON campaign_reminder_sent 
 
 CREATE TABLE IF NOT EXISTS customer
 (
-    id                uuid         NOT NULL DEFAULT uuidv7_sub_ms(),
+    id                uuid         NOT NULL DEFAULT gen_random_uuid(),
     email             text         NOT NULL,
     title             varchar(255) NULL,
     first_name        varchar(255) NOT NULL,
