@@ -1,6 +1,5 @@
 "use client"
 import React, {useEffect, useState} from 'react';
-import AdminLayout from "@/app/admin/adminlayout";
 import {useTranslations} from "next-intl";
 import ConfirmationDialog from "@/components/admin/confirmation-dialog";
 import {emptyMeasureValue, MeasureValue} from "@/components/admin/measure-value/measureValue";
@@ -60,82 +59,80 @@ export default function MeasureValuesPage() {
     };
 
     return (
-        <AdminLayout>
-            <div className="min-h-screen p-8 bg-cyan-950 text-white">
-                <h1 className="text-2xl font-bold mb-6">{t('manageMeasureValues')}</h1>
-                {editingMeasureValue ? (
-                    <MeasureValueForm
-                        measureValue={editingMeasureValue}
-                        isNew={isNew}
-                        onSave={handleSave}
-                        onCancel={() => setEditingMeasureValue(null)}
-                    />
-                ) : (
-                    <>
-                        <button
-                            onClick={() => openEditor(emptyMeasureValue(), true)}
-                            className="bg-blue-500 text-white px-4 py-2 mb-4 rounded hover:bg-blue-600"
-                        >
-                            {t('newMeasureValue')}
-                        </button>
-                        <table className="table-auto w-full border-collapse bg-cyan-900 text-white rounded shadow-lg">
-                            <thead>
-                            <tr className="border-b border-cyan-700">
-                                <th className="py-2 px-4 text-left">{t('name')}</th>
-                                <th className="py-2 px-4 text-left">{t('unit')}</th>
-                                <th className="py-2 px-4 text-left">{t('translations')}</th>
-                                <th className="py-2 px-4 text-left">{t('type')}</th>
-                                <th className="py-2 px-4 text-left">{t('defaultValue')}</th>
-                                <th className="py-2 px-4 text-left">{t('actions')}</th>
-                            </tr>
-                            </thead>
-                            <tbody>
-                            {measureValues.map((measureValue) => (
-                                <tr key={measureValue.name} className="border-b border-cyan-700">
-                                    <td className="py-2 px-4">{measureValue.name}</td>
-                                    <td className="py-2 px-4">{measureValue.unit ? measureValue.unit : t(`undefined`)}</td>
-                                    <td className="py-2 px-4">
-                                        {measureValue.translations
-                                            .map(value => (
-                                                <p key={value.locale}>
-                                                    {languageSuggestions
-                                                        .filter(value1 => value1.value == value.locale)
-                                                        .map(value => value.label)}: {value.value}
-                                                </p>
-                                            ))}
-                                    </td>
-                                    <td className="py-2 px-4">{t(`measureValueType.${measureValue.type}`)}</td>
-                                    <td className="py-2 px-4">{measureValue.defaultValue}</td>
-                                    <td className="py-2 px-4 space-x-2">
-                                        <button
-                                            onClick={() => openEditor(measureValue, false)}
-                                            className="bg-yellow-500 text-white px-2 py-1 rounded hover:bg-yellow-600"
-                                        >
-                                            {t('edit')}
-                                        </button>
-                                        <button
-                                            onClick={() => openDialog(measureValue)}
-                                            className="bg-red-500 text-white px-2 py-1 rounded hover:bg-red-600"
-                                        >
-                                            {t('delete')}
-                                        </button>
-                                    </td>
-                                </tr>
-                            ))}
-                            </tbody>
-                        </table>
-                    </>
-                )}
-                <ConfirmationDialog
-                    isOpen={isDialogOpen}
-                    onClose={closeDialog}
-                    onConfirm={handleDelete}
-                    title={t('deleteConfirmationTitle')}
-                    message={t('deleteConfirmationMessage')}
-                    confirmText={t('confirmDeleteButton')}
-                    cancelText={t('cancelButton')}
+        <div className="min-h-screen p-8 bg-cyan-950 text-white">
+            <h1 className="text-2xl font-bold mb-6">{t('manageMeasureValues')}</h1>
+            {editingMeasureValue ? (
+                <MeasureValueForm
+                    measureValue={editingMeasureValue}
+                    isNew={isNew}
+                    onSave={handleSave}
+                    onCancel={() => setEditingMeasureValue(null)}
                 />
-            </div>
-        </AdminLayout>
+            ) : (
+                <>
+                    <button
+                        onClick={() => openEditor(emptyMeasureValue(), true)}
+                        className="bg-blue-500 text-white px-4 py-2 mb-4 rounded hover:bg-blue-600"
+                    >
+                        {t('newMeasureValue')}
+                    </button>
+                    <table className="table-auto w-full border-collapse bg-cyan-900 text-white rounded shadow-lg">
+                        <thead>
+                        <tr className="border-b border-cyan-700">
+                            <th className="py-2 px-4 text-left">{t('name')}</th>
+                            <th className="py-2 px-4 text-left">{t('unit')}</th>
+                            <th className="py-2 px-4 text-left">{t('translations')}</th>
+                            <th className="py-2 px-4 text-left">{t('type')}</th>
+                            <th className="py-2 px-4 text-left">{t('defaultValue')}</th>
+                            <th className="py-2 px-4 text-left">{t('actions')}</th>
+                        </tr>
+                        </thead>
+                        <tbody>
+                        {measureValues.map((measureValue) => (
+                            <tr key={measureValue.name} className="border-b border-cyan-700">
+                                <td className="py-2 px-4">{measureValue.name}</td>
+                                <td className="py-2 px-4">{measureValue.unit ? measureValue.unit : t(`undefined`)}</td>
+                                <td className="py-2 px-4">
+                                    {measureValue.translations
+                                        .map(value => (
+                                            <p key={value.locale}>
+                                                {languageSuggestions
+                                                    .filter(value1 => value1.value == value.locale)
+                                                    .map(value => value.label)}: {value.value}
+                                            </p>
+                                        ))}
+                                </td>
+                                <td className="py-2 px-4">{t(`measureValueType.${measureValue.type}`)}</td>
+                                <td className="py-2 px-4">{measureValue.defaultValue}</td>
+                                <td className="py-2 px-4 space-x-2">
+                                    <button
+                                        onClick={() => openEditor(measureValue, false)}
+                                        className="bg-yellow-500 text-white px-2 py-1 rounded hover:bg-yellow-600"
+                                    >
+                                        {t('edit')}
+                                    </button>
+                                    <button
+                                        onClick={() => openDialog(measureValue)}
+                                        className="bg-red-500 text-white px-2 py-1 rounded hover:bg-red-600"
+                                    >
+                                        {t('delete')}
+                                    </button>
+                                </td>
+                            </tr>
+                        ))}
+                        </tbody>
+                    </table>
+                </>
+            )}
+            <ConfirmationDialog
+                isOpen={isDialogOpen}
+                onClose={closeDialog}
+                onConfirm={handleDelete}
+                title={t('deleteConfirmationTitle')}
+                message={t('deleteConfirmationMessage')}
+                confirmText={t('confirmDeleteButton')}
+                cancelText={t('cancelButton')}
+            />
+        </div>
     );
 }

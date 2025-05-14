@@ -14,6 +14,7 @@ export function getTariff(): Tariff {
         rate: 1,
         unit: Unit.annual,
         validFrom: new Date(),
-        validTo: undefined
+        validTo: undefined,
+        isDeposit: false
     }
 }

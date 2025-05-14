@@ -1,5 +1,6 @@
 import {DefaultSession, User as DefaultUser} from "next-auth"
 import {JWT as DefaultJWT} from "next-auth/jwt"
+import {Role} from "@/components/authjs/rbac";
 
 declare module "next-auth" {
     /**
@@ -8,15 +9,15 @@ declare module "next-auth" {
     interface Session {
         user: {
             /** The user's role. */
-            role: string
+            role: Role
             company: string
         } & DefaultSession["user"]
     }
 
     interface User {
-        role: string
+        role: Role
         company: string
-        & DefaultUser
+            & DefaultUser
     }
 }
 
@@ -24,7 +25,7 @@ declare module "next-auth/jwt" {
     /** Returned by the `jwt` callback and `getToken`, when using JWT sessions */
     interface JWT {
         /** The user's role */
-        role: string
+        role: Role
         company: string
             & DefaultJWT
     }

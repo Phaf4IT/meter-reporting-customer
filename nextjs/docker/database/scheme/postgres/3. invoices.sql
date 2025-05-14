@@ -5,36 +5,36 @@ DROP TABLE IF EXISTS invoice;
 DROP TABLE IF EXISTS payment;
 DROP TABLE IF EXISTS invoice_year_state;
 
-CREATE OR REPLACE FUNCTION generate_invoice_number(company_name VARCHAR) RETURNS INT AS
-$$
-DECLARE
-    current_year        INT;
-    sequence_name       VARCHAR;
-    next_invoice_number INT;
-BEGIN
-    current_year := EXTRACT(YEAR FROM CURRENT_DATE)::INT;
-    sequence_name := 'invoice_sequence_' || current_year || '_' || company_name;
-    EXECUTE 'CREATE SEQUENCE IF NOT EXISTS ' || sequence_name || ' START 1 INCREMENT 1';
-    PERFORM 1
-    FROM invoice_year_state
-    WHERE year = current_year
-      AND invoice_year_state.company_name = generate_invoice_number.company_name;
-
-    IF NOT FOUND THEN
-        RAISE NOTICE 'Resetting sequence for company % in year %', company_name, current_year;
-        EXECUTE 'ALTER SEQUENCE ' || sequence_name || ' RESTART WITH 1';
-        INSERT INTO invoice_year_state (company_name, year) VALUES (company_name, current_year);
-    END IF;
-
-    next_invoice_number := nextval(sequence_name);
-    RETURN next_invoice_number;
-END;
-$$ LANGUAGE plpgsql;
+-- CREATE OR REPLACE FUNCTION generate_invoice_number(company_name VARCHAR) RETURNS INT AS
+-- $$
+-- DECLARE
+--     current_year        INT;
+--     sequence_name       VARCHAR;
+--     next_invoice_number INT;
+-- BEGIN
+--     current_year := EXTRACT(YEAR FROM CURRENT_DATE)::INT;
+--     sequence_name := 'invoice_sequence_' || current_year || '_' || company_name;
+--     EXECUTE 'CREATE SEQUENCE IF NOT EXISTS ' || sequence_name || ' START 1 INCREMENT 1';
+--     PERFORM 1
+--     FROM invoice_year_state
+--     WHERE year = current_year
+--       AND invoice_year_state.company_name = generate_invoice_number.company_name;
+-- 
+--     IF NOT FOUND THEN
+--         RAISE NOTICE 'Resetting sequence for company % in year %', company_name, current_year;
+--         EXECUTE 'ALTER SEQUENCE ' || sequence_name || ' RESTART WITH 1';
+--         INSERT INTO invoice_year_state (company_name, year) VALUES (company_name, current_year);
+--     END IF;
+-- 
+--     next_invoice_number := nextval(sequence_name);
+--     RETURN next_invoice_number;
+-- END;
+-- $$ LANGUAGE plpgsql;
 
 
 CREATE TABLE IF NOT EXISTS tariff
 (
-    id                 uuid           NOT NULL DEFAULT uuidv7_sub_ms(),
+    id                 uuid           NOT NULL DEFAULT gen_random_uuid(),
     campaign_name      TEXT           NOT NULL,
     company            VARCHAR(255)   NOT NULL,
     customer_ids       uuid[]         NOT NULL,
@@ -47,6 +47,7 @@ CREATE TABLE IF NOT EXISTS tariff
     range_to           NUMERIC(10, 2) NULL,     -- Bovengrens van het gebruik (NULL = geen maximum)
     valid_from         TIMESTAMPTZ    NOT NULL, -- Startdatum van het tarief
     valid_to           TIMESTAMPTZ    NULL,     -- Einddatum van het tarief
+    is_deposit         BOOLEAN        NOT NULL,
     PRIMARY KEY (id)
 );
 
@@ -55,7 +56,7 @@ CREATE INDEX tariff_campaign_customer_idx ON tariff USING btree (campaign_name, 
 
 CREATE TABLE IF NOT EXISTS discount
 (
-    id                 uuid           NOT NULL DEFAULT uuidv7_sub_ms(),
+    id                 uuid           NOT NULL DEFAULT gen_random_uuid(),
     discount_name      TEXT           NOT NULL, -- Unieke naam voor de korting
     campaign_name      TEXT           NOT NULL, -- De campagne waarop de korting van toepassing is
     company            VARCHAR(255)   NOT NULL, -- Het bedrijf waarvoor de korting geldt
@@ -85,7 +86,7 @@ CREATE TABLE IF NOT EXISTS invoice_year_state
 
 CREATE TABLE IF NOT EXISTS invoice
 (
-    id                  uuid           NOT NULL DEFAULT uuidv7_sub_ms(),
+    id                  uuid           NOT NULL DEFAULT gen_random_uuid(),
     sequence_number     VARCHAR(50)    NOT NULL,
     year                INT            NOT NULL,
     customer_id         TEXT           NOT NULL,
@@ -108,7 +109,7 @@ CREATE INDEX if not exists invoice_sequence_idx ON invoice USING btree (sequence
 
 CREATE TABLE IF NOT EXISTS invoice_line_item
 (
-    id            uuid           NOT NULL DEFAULT uuidv7_sub_ms(),
+    id            uuid           NOT NULL DEFAULT gen_random_uuid(),
     invoice_id    uuid REFERENCES invoice (id),
     customer_id   TEXT           NOT NULL,
     company       VARCHAR(255)   NOT NULL,

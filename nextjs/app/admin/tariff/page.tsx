@@ -10,7 +10,6 @@ import Dialog from 'rc-dialog';
 import 'rc-dialog/assets/index.css';
 import '@/components/dialog-styles.css';
 import {Logger} from "@/lib/logger";
-import AdminLayout from '../adminlayout';
 import {Tariff} from "@/components/admin/tariff/tariff";
 import {getCampaigns} from '../campaign/client';
 import {Campaign} from "@/components/admin/campaign/campaign";
@@ -83,49 +82,47 @@ export default function TariffManagementPage() {
     if (error) return <div className="text-red-500">{error}</div>;
 
     return (
-        <AdminLayout>
-            <div className="min-h-screen p-8 bg-cyan-950 text-white">
-                <h1 className="text-2xl font-bold">{t('tariffManagement')}</h1>
+        <div className="min-h-screen p-8 bg-cyan-950 text-white">
+            <h1 className="text-2xl font-bold">{t('tariffManagement')}</h1>
 
-                <div className="my-4">
-                    <button
-                        onClick={() => {
-                            setIsNew(true);
-                            setSelectedTariff(undefined);
-                            setIsFormOpen(true);
-                        }}
-                        className="bg-blue-500 text-white px-4 py-2 rounded-md"
-                    >
-                        {t('addTariff')}
-                    </button>
-                </div>
-
-                <TariffTable
-                    tariffs={tariffs}
-                    onEdit={handleEditTariff}
-                    onDelete={handleDeleteTariff}
-                />
-
-                <Dialog
-                    visible={isFormOpen}
-                    onClose={handleCloseForm}
-                    title={selectedTariff ? t('editTariff') : t('addTariff')}
-                    closable={true}
-                    maskClosable={false}
-                    className="bg-cyan-900 text-white p-6 rounded shadow-md mx-auto w-auto max-w-5xl"
-                    footer={null}
+            <div className="my-4">
+                <button
+                    onClick={() => {
+                        setIsNew(true);
+                        setSelectedTariff(undefined);
+                        setIsFormOpen(true);
+                    }}
+                    className="bg-blue-500 text-white px-4 py-2 rounded-md"
                 >
-                    {isFormOpen && (
-                        <TariffForm
-                            tariff={selectedTariff}
-                            onSubmit={handleSaveTariff}
-                            onClose={handleCloseForm}
-                            isNew={isNew}
-                            campaigns={campaigns}
-                        />
-                    )}
-                </Dialog>
+                    {t('addTariff')}
+                </button>
             </div>
-        </AdminLayout>
+
+            <TariffTable
+                tariffs={tariffs}
+                onEdit={handleEditTariff}
+                onDelete={handleDeleteTariff}
+            />
+
+            <Dialog
+                visible={isFormOpen}
+                onClose={handleCloseForm}
+                title={selectedTariff ? t('editTariff') : t('addTariff')}
+                closable={true}
+                maskClosable={false}
+                className="bg-cyan-900 text-white p-6 rounded shadow-md mx-auto w-auto max-w-5xl"
+                footer={null}
+            >
+                {isFormOpen && (
+                    <TariffForm
+                        tariff={selectedTariff}
+                        onSubmit={handleSaveTariff}
+                        onClose={handleCloseForm}
+                        isNew={isNew}
+                        campaigns={campaigns}
+                    />
+                )}
+            </Dialog>
+        </div>
     );
 }

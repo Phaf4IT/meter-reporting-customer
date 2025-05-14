@@ -28,21 +28,29 @@ const CampaignConfigurationFormWizard: React.FC<CampaignFormWizardProps> = ({
     const [selectedEntities, setSelectedEntities] = useState<Entity[]>([]);
     const [name, setName] = useState<string>('');
     const [measureValues, setMeasureValues] = useState<MeasureValue[]>([]);
+    const [isMeasureValueSet, setIsMeasureValueSet] = useState<boolean>(false);
+    const [isEntitiesSet, setEntitiesSet] = useState<boolean>(false);
     const [selectedMeasures, setSelectedMeasures] = useState<MeasureValue[]>([]);
 
     useEffect(() => {
         if (isOpen) {
-            if (!measureValues || measureValues.length === 0) {
+            if (!isMeasureValueSet) {
                 getMeasureValues()
                     .then(values => {
                         setMeasureValues(values)
                         setSelectedMeasures(values)
+                        setIsMeasureValueSet(true);
                     });
             }
-            getAllEntities()
-                .then(entities => setEntities(entities));
+            if (!isEntitiesSet) {
+                getAllEntities()
+                    .then(entities => {
+                        setEntitiesSet(true);
+                        setEntities(entities)
+                    });
+            }
         }
-    }, [isOpen, measureValues]);
+    }, [isOpen, measureValues, entities]);
 
     const handleFormSubmit = async () => {
         const campaignData: CampaignConfiguration = {
