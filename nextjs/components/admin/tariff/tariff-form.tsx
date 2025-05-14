@@ -3,12 +3,14 @@ import {getUnit, Tariff} from './tariff';
 import {useLocale, useTranslations} from 'next-intl';
 import {Campaign} from "@/components/admin/campaign/campaign";
 import {currencies} from "@/components/admin/tariff/currencies";
-import {MeasureValue} from "@/components/admin/measure-value/measureValue";
+import {MeasureValue, MeasureValueType} from "@/components/admin/measure-value/measureValue";
 import DatePicker from 'react-date-picker';
 import type {Value} from "@/node_modules/react-date-picker/dist/cjs/shared/types";
 import 'react-date-picker/dist/DatePicker.css';
 import 'react-calendar/dist/Calendar.css';
 import '../custom-calendar.scss'
+import {getTranslationForLocale} from "@/components/admin/entity-type/entityType";
+import ToggleSwitch from "@/components/toggle-switch";
 
 interface TariffFormProps {
     isNew: boolean;
@@ -40,6 +42,7 @@ export const TariffForm: React.FC<TariffFormProps> = ({
         rangeTo: undefined,
         validFrom: new Date(),
         validTo: undefined,
+        isDeposit: false
     });
     const [selectedCampaign, setSelectedCampaign] = useState<Campaign | undefined>(undefined);
     const [measureValues, setMeasureValues] = useState<MeasureValue[]>([]);
@@ -62,6 +65,7 @@ export const TariffForm: React.FC<TariffFormProps> = ({
                 rangeTo: undefined,
                 validFrom: new Date(),
                 validTo: undefined,
+                isDeposit: false
             }); // Reset voor een nieuw tarief
         }
     }, [campaigns, tariff]);
@@ -79,6 +83,10 @@ export const TariffForm: React.FC<TariffFormProps> = ({
 
     const handleChange = (e: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement | HTMLSelectElement>) => {
         setFormData(prevState => ({...prevState, [e.target.name]: e.target.value}));
+    };
+
+    const handleToggleChange = (name: string, value: boolean) => {
+        setFormData(prevState => ({...prevState, [name]: value}));
     };
 
     const handleUnitChange = (e: React.ChangeEvent<HTMLSelectElement>) => {
@@ -248,17 +256,27 @@ export const TariffForm: React.FC<TariffFormProps> = ({
                         className="appearance-none block w-full bg-cyan-800 text-white border border-gray-500 rounded py-3 px-4 leading-tight focus:outline-none focus:border-cyan-400"
                     >
                         <option value="">{t('selectMeasureValue')}</option>
-                        {measureValues.length > 0 && measureValues.map((measureValue) => (
-                            <option key={measureValue.name} value={measureValue.name}>
-                                {
-                                    measureValue.translations
-                                        .filter(translation => translation.locale.startsWith(locale))
-                                        .map(translation => translation ? translation.value : measureValue.name)
-                                        .find(() => true) || measureValue.name
-                                }
-                            </option>
-                        ))}
+                        {measureValues.length > 0 && measureValues.filter(value => value.type !== MeasureValueType.PHOTO_UPLOAD)
+                            .map((measureValue) => (
+                                <option key={measureValue.name} value={measureValue.name}>
+                                    {
+                                        measureValue.translations
+                                            .filter(translation => translation.locale.startsWith(locale))
+                                            .map(translation => translation ? translation.value : measureValue.name)
+                                            .find(() => true) || measureValue.name
+                                    }
+                                </option>
+                            ))}
                     </select>
+                </div>
+
+                <div className="space-y-4">
+                    <label
+                        className="block uppercase tracking-wide text-gray-200 text-sm font-bold mb-2">{t('isDeposit')}</label>
+                    <ToggleSwitch
+                        isEnabled={formData.isDeposit}
+                        onToggle={() => handleToggleChange('isDeposit', !formData.isDeposit)}
+                    />
                 </div>
 
                 {/* Date Pickers for Range */}
@@ -324,7 +342,16 @@ export const TariffForm: React.FC<TariffFormProps> = ({
                                 className="bg-cyan-900 text-white border-gray-500 rounded"
                             />
                             <label htmlFor={`customer-${customer.id}`}
-                                   className="text-sm">{customer.firstName} {customer.lastName}</label>
+                                   className="text-sm">{customer.firstName} {customer.lastName} {Object.keys(customer.entity?.entityType?.fields || []).map((fieldKey) => {
+                                const fieldLabel = getTranslationForLocale(customer.entity!.entityType!, locale)[fieldKey] || fieldKey;
+                                const fieldValue = getTranslationForLocale(customer.entity!.entityType!, locale)[customer.entity!.fieldValues[fieldKey] || 'N/A'] || customer.entity!.fieldValues[fieldKey] || 'N/A';
+                                return (
+                                    <span key={fieldKey}>
+                                        {fieldLabel}: {fieldValue}
+                                    </span>
+                                )
+                            })}
+                            </label>
                         </div>
                     ))}
                 </div>

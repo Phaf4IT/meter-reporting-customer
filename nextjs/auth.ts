@@ -8,6 +8,10 @@ export const {handlers, auth, signIn, signOut} = NextAuth({
     adapter: getAdapter(),
     callbacks: {
         authorized: async ({auth, request}) => getAuthorization(auth, request),
+        session({ session, user }) {
+            session.user.role = user.role
+            return session
+        }
     },
     providers: [getEmailProvider()],
     session:

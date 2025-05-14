@@ -1,7 +1,6 @@
 'use client';
 
 import React, {useEffect, useState} from 'react';
-import AdminLayout from '../adminlayout';
 import {useTranslations} from 'next-intl';
 import CampaignList from "@/components/admin/campaign/campaign-list";
 import {Campaign} from "@/components/admin/campaign/campaign";
@@ -63,38 +62,36 @@ export default function CampaignsPage() {
     }
 
     return (
-        <AdminLayout>
-            <div className="min-h-screen p-8 bg-cyan-950 text-white">
-                <h1 className="text-2xl font-bold mb-6">{t('pageTitle')}</h1>
-                <CampaignList campaigns={campaigns} t={t} onDelete={handleDeleteCampaign}
-                              campaignConfigurations={campaignConfigurations} openNewCampaign={openNewCampaign}/>
+        <div className="min-h-screen p-8 bg-cyan-950 text-white">
+            <h1 className="text-2xl font-bold mb-6">{t('pageTitle')}</h1>
+            <CampaignList campaigns={campaigns} t={t} onDelete={handleDeleteCampaign}
+                          campaignConfigurations={campaignConfigurations} openNewCampaign={openNewCampaign}/>
 
-                <button
-                    onClick={openNewCampaignConfiguration}
-                    className="bg-blue-500 text-white px-4 py-2 rounded mt-6"
-                >
-                    {t('addCampaignConfiguration')}
-                </button>
+            <button
+                onClick={openNewCampaignConfiguration}
+                className="bg-blue-500 text-white px-4 py-2 rounded mt-6"
+            >
+                {t('addCampaignConfiguration')}
+            </button>
 
-                <CampaignFormWizard
-                    isOpen={isCampaignDialogOpen}
-                    onClose={() => setIsCampaignDialogOpen(false)}
-                    onSubmit={handleAddCampaign}
-                    currentCampaignNames={campaigns.map(value => value.name)}
-                    currentCampaigns={campaigns.filter(value => value.configurationName === selectedCampaignConfiguration?.name)}
-                    selectedCampaignConfiguration={selectedCampaignConfiguration}
-                    t={t}
-                />
+            <CampaignFormWizard
+                isOpen={isCampaignDialogOpen}
+                onClose={() => setIsCampaignDialogOpen(false)}
+                onSubmit={handleAddCampaign}
+                currentCampaignNames={campaigns.map(value => value.name)}
+                currentCampaigns={campaigns.filter(value => value.configurationName === selectedCampaignConfiguration?.name)}
+                selectedCampaignConfiguration={selectedCampaignConfiguration}
+                t={t}
+            />
 
-                <CampaignConfigurationFormWizard
-                    isOpen={isCampaignConfigurationDialogOpen}
-                    onClose={() => setIsCampaignConfigurationDialogOpen(false)}
-                    onSubmit={handleAddCampaignConfiguration}
-                    t={t}
-                    currentCampaignConfigurationNames={campaignConfigurations.map(value => value.name)}/>
+            <CampaignConfigurationFormWizard
+                isOpen={isCampaignConfigurationDialogOpen}
+                onClose={() => setIsCampaignConfigurationDialogOpen(false)}
+                onSubmit={handleAddCampaignConfiguration}
+                t={t}
+                currentCampaignConfigurationNames={campaignConfigurations.map(value => value.name)}/>
 
 
-            </div>
-        </AdminLayout>
+        </div>
     );
 }

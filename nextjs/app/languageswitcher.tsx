@@ -1,3 +1,4 @@
+'use client'
 import {setUserLocale} from "@/lib/locale";
 import {useLocale} from "next-intl";
 

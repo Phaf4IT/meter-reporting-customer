@@ -1,107 +1,96 @@
-'use client';
-
+'use server';
 import Link from 'next/link';
-import {usePathname} from 'next/navigation';
-import {useEffect, useState} from 'react';
-import {FiChevronDown} from 'react-icons/fi'; // Import iconen
-import "./../globals.css";
-import {useLocale, useTranslations} from "next-intl";
-import LanguageSwitcher from "@/app/languageswitcher";
+import './../globals.css';
+import {checkPermission, Permission} from '@/components/authjs/rbac';
 import {EntityType} from "@/components/admin/entity-type/entityType";
-import {getEntityTypes} from "@/app/admin/entity-type/client";
-import {Logger} from '@/lib/logger';
-import ToastProvider from '@/components/admin/toast-context';
-import Toaster from "@/components/admin/toaster";
+import {getLocale, getTranslations} from "next-intl/server";
+import Dropdown from "@/app/admin/dropdown";
+import {auth} from "@/auth";
+import {getEntityTypes} from "@/components/admin/entity-type/action/getEntityTypesAction";
+import {headers} from "next/headers";
+import {ToastingProvider} from "@/app/admin/toaster";
+import LanguageSwitcher from "@/app/languageswitcher";
+import {SignOut} from "@/app/admin/signout";
 
-export default function AdminLayout({children}: { children: React.ReactNode }) {
-    const pathname = usePathname();
-    const t = useTranslations('admin');
-    const [entityTypes, setEntityTypes] = useState<EntityType[]>([]);
-    const locale = useLocale();
-    const languageCode = locale.split('-')[0];
+export default async function AdminLayout({
+                                              children,
+                                          }: {
+    children: React.ReactNode;
+}) {
+    const session = await auth() // Haal de sessie op
+    const entityTypes: EntityType[] = await getEntityTypes(session!.user!.company!);
 
-    useEffect(() => {
-        getEntityTypes()
-            .then(setEntityTypes)
-            .catch((error) => Logger.error("Fout bij ophalen entity types", error));
+    const locale = await getLocale(); // Of kies een fallback taal
+    const languageCode = locale.split('-')[0]; // Gebruik alleen de taalcode
+    const heads = await headers()
+    const pathname = heads.get('next-url')
 
-    }, []);
+    const t = await getTranslations('admin'); // Gebruik vertalingen
 
-    const [isDropdownOpen, setDropdownOpen] = useState(true);  // Standaard uitgeklapt
-    const navItems = [
-        {name: t('entity-type.entityTypeManagement'), href: '/admin/entity-type'},
-        {name: t('customer.manageCustomers'), href: '/admin/customer'},
-        {name: t('campaign.pageTitle'), href: '/admin/campaign'},
-        {name: t('measureValue.manageMeasureValues'), href: '/admin/measure-value'},
-        {name: t('reminder.remindersAdminTitle'), href: '/admin/reminder'},
-        {name: t('meter.pageTitle'), href: '/admin/customer-measurement'},
-        {name: 'Tarieven', href: '/admin/tariff'},
+    const navItems: { name: string, href: string, permission_level: Permission }[] = [
+        {name: t('entity-type.entityTypeManagement'), href: '/admin/entity-type', permission_level: 'managePanel'},
+        {name: t('customer.manageCustomers'), href: '/admin/customer', permission_level: 'read'},
+        {name: t('campaign.pageTitle'), href: '/admin/campaign', permission_level: 'read'},
+        {name: t('measureValue.manageMeasureValues'), href: '/admin/measure-value', permission_level: 'managePanel'},
+        {name: t('reminder.remindersAdminTitle'), href: '/admin/reminder', permission_level: 'read'},
+        {name: t('meter.pageTitle'), href: '/admin/customer-measurement', permission_level: 'read'},
+        {name: 'Tarieven', href: '/admin/tariff', permission_level: 'managePanel'},
     ];
 
     return (
-        <div className="flex min-h-screen bg-cyan-950 text-white">
-            <nav className="w-64 bg-cyan-900 p-6">
-                <h1 className="text-xl font-bold mb-6">Admin Dashboard</h1>
-                <ul className="space-y-4">
-                    <li><LanguageSwitcher/></li>
+        <div className="flex h-screen bg-cyan-950 text-white">
+            <nav className="w-64 bg-cyan-900 p-6 flex flex-col justify-between h-screen">
+                <div><h1 className="text-xl font-bold mb-6">Admin Dashboard</h1>
+                    <ul className="space-y-4">
+                        <li><LanguageSwitcher/></li>
 
-                    <li>
-                        <div
-                            className="px-4 py-2 cursor-pointer flex justify-between items-center"
-                            onClick={() => setDropdownOpen(!isDropdownOpen)} // Toggle dropdown
-                        >
-                            <span>Entiteiten</span>
-                            <span
-                                className={`transition-transform duration-300 ${isDropdownOpen ? 'rotate-180' : 'rotate-0'}`}
-                            >
-                             <FiChevronDown/>
-                            </span>
-                        </div>
+                        {entityTypes.length > 1 ? (
+                            <Dropdown entityTypes={entityTypes} languageCode={languageCode}/>
+                        ) : (
+                            entityTypes.map((item) => (
+                                <li key={item.name}>
+                                    <Link
+                                        href={`/admin/entity/${item.name}`}
+                                        className="block px-4 py-2 rounded hover:bg-cyan-800"
+                                    >
+                                        {
+                                            Object.entries(item.translations)
+                                                .filter(([key]) => key.startsWith(languageCode))
+                                                .map(([, value]) => value ? value[item.name] : item.name)
+                                                .find(() => true) || item.name
+                                        }
+                                    </Link>
+                                </li>
+                            ))
+                        )}
 
-                        <ul
-                            className={`space-y-2 pl-4 overflow-hidden transition-all duration-300 ease-in-out ${
-                                isDropdownOpen ? 'max-h-[500px]' : 'max-h-0'
-                            }`}
-                        >
-                            {entityTypes.map((item) => <li key={item.name}>
-                                <Link
-                                    href={`/admin/entity/${item.name}`}
-                                    className="block px-4 py-2 rounded hover:bg-cyan-800"
-                                >
-                                    {
-                                        Object.entries(item.translations)
-                                            .filter(([key]) => key.startsWith(languageCode))
-                                            .map(([, value]) => value ? value[item.name] : item.name)
-                                            .find(() => true) || item.name
-                                    }
-                                </Link>
-                            </li>)}
-                        </ul>
-                    </li>
-
-                    {navItems.map((item) => (
-                        <li key={item.href}>
-                            <Link
-                                href={item.href}
-                                className={`block px-4 py-2 rounded ${
-                                    pathname === item.href
-                                        ? 'bg-cyan-700'
-                                        : 'hover:bg-cyan-800'
-                                }`}
-                            >
-                                {item.name}
-                            </Link>
-                        </li>
-                    ))}
-                </ul>
+                        {navItems.filter(value => checkPermission(value.permission_level, session?.user?.role))
+                            .map((item) => (
+                                <li key={item.href}>
+                                    <Link
+                                        href={item.href}
+                                        className={`block px-4 py-2 rounded ${
+                                            pathname === item.href
+                                                ? 'bg-cyan-700'
+                                                : 'hover:bg-cyan-800'
+                                        }`}
+                                    >
+                                        {item.name}
+                                    </Link>
+                                </li>
+                            ))}
+                    </ul>
+                </div>
+                <div>
+                    <SignOut/>
+                </div>
             </nav>
 
-            {/* Main Content */}
+
             <main className="flex-1 p-8">
-                <ToastProvider>
-                    <Toaster/>
+                <ToastingProvider>
                     {children}
-                </ToastProvider>
+                </ToastingProvider>
             </main>
         </div>
     );

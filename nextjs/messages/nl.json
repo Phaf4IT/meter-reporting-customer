@@ -160,6 +160,7 @@
       "campaignNameExists": "Deze campagne naam bestaat al. Kies een andere naam alstublieft."
     },
     "customer": {
+      "chooseColumns": "Kies kolommen",
       "manageCustomers": "Klanten Beheren",
       "newCustomer": "Nieuwe Klant",
       "email": "Email",
@@ -296,6 +297,7 @@
       "customers": "Klanten",
       "selectAll": "Selecteer alles",
       "deselectAll": "Deselecteer alles",
+      "isDeposit": "Vooruitbetaling (of voorschot, termijnbedrag)",
       "currencies": {
         "USD": "US Dollar",
         "EUR": "Euro",

@@ -9,7 +9,6 @@ import Dialog from 'rc-dialog';
 import 'rc-dialog/assets/index.css';
 import '@/components/dialog-styles.css';
 import {Logger} from "@/lib/logger";
-import AdminLayout from '../adminlayout';
 import {EntityType} from "@/components/admin/entity-type/entityType";
 
 export default function EntityTypeManagementPage() {
@@ -82,50 +81,48 @@ export default function EntityTypeManagementPage() {
     if (error) return <div className="text-red-500">{error}</div>;
 
     return (
-        <AdminLayout>
-            <div className="min-h-screen p-8 bg-cyan-950 text-white">
-                <h1 className="text-2xl font-bold">{t('entityTypeManagement')}</h1>
+        <div className="min-h-screen p-8 bg-cyan-950 text-white">
+            <h1 className="text-2xl font-bold">{t('entityTypeManagement')}</h1>
 
-                <div className="my-4">
-                    <button
-                        onClick={() => {
-                            setIsNew(true);
-                            setSelectedEntityType(undefined);
-                            setIsFormOpen(true);
-                        }}
-                        className="bg-blue-500 text-white px-4 py-2 rounded-md"
-                    >
-                        {t('addEntityType')}
-                    </button>
-                </div>
-
-                <EntityTypeTable
-                    key={entityTypes.length}
-                    entityTypes={entityTypes}
-                    onEdit={handleEditEntityType}
-                    onDelete={handleDeleteEntityType}
-                />
-
-                <Dialog
-                    key={isFormOpen ? "form-open" : "form-closed"}  // Forceert her-renderen wanneer geopend of gesloten
-                    visible={isFormOpen}
-                    onClose={handleCloseForm}
-                    title={selectedEntityType ? t('editEntityType') : t('addEntityType')}
-                    closable={true}
-                    maskClosable={false}
-                    className="bg-cyan-900 text-white p-6 rounded shadow-md mx-auto w-auto max-w-5xl"
-                    footer={null}
+            <div className="my-4">
+                <button
+                    onClick={() => {
+                        setIsNew(true);
+                        setSelectedEntityType(undefined);
+                        setIsFormOpen(true);
+                    }}
+                    className="bg-blue-500 text-white px-4 py-2 rounded-md"
                 >
-                    {isFormOpen && (
-                        <EntityTypeForm
-                            entityType={selectedEntityType}
-                            onSubmit={handleSaveEntityType}
-                            onClose={handleCloseForm}
-                            isNew={isNew}
-                        />
-                    )}
-                </Dialog>
+                    {t('addEntityType')}
+                </button>
             </div>
-        </AdminLayout>
+
+            <EntityTypeTable
+                key={entityTypes.length}
+                entityTypes={entityTypes}
+                onEdit={handleEditEntityType}
+                onDelete={handleDeleteEntityType}
+            />
+
+            <Dialog
+                key={isFormOpen ? "form-open" : "form-closed"}  // Forceert her-renderen wanneer geopend of gesloten
+                visible={isFormOpen}
+                onClose={handleCloseForm}
+                title={selectedEntityType ? t('editEntityType') : t('addEntityType')}
+                closable={true}
+                maskClosable={false}
+                className="bg-cyan-900 text-white p-6 rounded shadow-md mx-auto w-auto max-w-5xl"
+                footer={null}
+            >
+                {isFormOpen && (
+                    <EntityTypeForm
+                        entityType={selectedEntityType}
+                        onSubmit={handleSaveEntityType}
+                        onClose={handleCloseForm}
+                        isNew={isNew}
+                    />
+                )}
+            </Dialog>
+        </div>
     );
 }
