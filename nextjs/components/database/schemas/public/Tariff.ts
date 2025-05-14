@@ -31,6 +31,8 @@ export default interface Tariff {
   validFrom: Date;
 
   validTo: Date | null;
+
+  isDeposit: boolean;
 }
 
 /** Represents the initializer for the table public.tariff */

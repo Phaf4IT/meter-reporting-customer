@@ -47,6 +47,9 @@ export class TariffTable extends E implements Tariff {
     @Field("valid_to")
     validTo: Date | null;
 
+    @Field("is_deposit")
+    isDeposit: boolean;
+
     constructor(
         id: string,
         campaignName: string,
@@ -60,7 +63,8 @@ export class TariffTable extends E implements Tariff {
         currency: string,
         unit: string,
         rangeTo: string | null,
-        validTo: Date | null
+        validTo: Date | null,
+        isDeposit: boolean
     ) {
         super();
         this.id = id;
@@ -76,6 +80,7 @@ export class TariffTable extends E implements Tariff {
         this.unit = unit;
         this.rangeTo = rangeTo;
         this.validTo = validTo ? new Date(validTo) : null;
+        this.isDeposit = isDeposit;
     }
 
     static of(tariff: Tariff): TariffTable {
@@ -92,7 +97,8 @@ export class TariffTable extends E implements Tariff {
             tariff.currency,
             tariff.unit,
             tariff.rangeTo,
-            tariff.validTo
+            tariff.validTo,
+            tariff.isDeposit
         );
     }
 }

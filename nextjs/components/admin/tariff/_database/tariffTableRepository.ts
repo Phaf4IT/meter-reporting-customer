@@ -49,6 +49,7 @@ function mapTableToDomain(tariffTable: TariffTable): Tariff {
         rangeTo: tariffTable.rangeTo ? Number.parseFloat(tariffTable.rangeTo) : undefined,
         validFrom: tariffTable.validFrom,
         validTo: tariffTable.validTo || undefined,
+        isDeposit: tariffTable.isDeposit
     };
 }
 
@@ -66,6 +67,7 @@ function mapDomainToTable(tariff: Tariff, company: string): TariffTable {
         rate: tariff.rate.toFixed(2),
         currency: tariff.currency,
         unit: tariff.unit,
-        company
+        company,
+        isDeposit: tariff.isDeposit
     });
 }

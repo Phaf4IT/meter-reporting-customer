@@ -8,7 +8,6 @@ import {deleteEntity, getEntities, saveEntity} from "@/app/admin/entity/client";
 import {Logger} from '@/lib/logger';
 import {EntityTable} from "@/components/admin/entity/entity-table";
 import {Params} from "next/dist/server/request/params";
-import AdminLayout from '../../adminlayout';
 import {EntityForm} from '@/components/admin/entity/entity-form';
 import Dialog from "rc-dialog";
 import 'rc-dialog/assets/index.css';
@@ -98,45 +97,43 @@ export default function EntityListPage() {
     if (error) return <div className="text-red-500">{error}</div>;
 
     return (
-        <AdminLayout>
-            <div className="min-h-screen p-8 bg-cyan-950 text-white">
-                <h1 className="text-2xl font-bold">{t('entityListTitle', {entityTypeName})}</h1>
+        <div className="min-h-screen p-8 bg-cyan-950 text-white">
+            <h1 className="text-2xl font-bold">{t('entityListTitle', {entityTypeName})}</h1>
 
-                <div className="my-4">
-                    <button
-                        onClick={handleAdd}
-                        className="bg-blue-500 text-white px-4 py-2 rounded-md"
-                    >
-                        {t('addEntity')}
-                    </button>
-                </div>
-
-                <EntityTable
-                    entities={entities}
-                    entityType={entityType}
-                    onEdit={handleEdit}
-                    onDelete={handleDelete}
-                />
-
-                <Dialog
-                    visible={isFormOpen}
-                    onClose={handleCloseForm}
-                    title={selectedEntity ? t('editEntity') : t('addEntity')}
-                    closable={true}
-                    maskClosable={false}
-                    className="bg-cyan-900 text-white p-6 rounded shadow-md max-w-lg mx-auto"
-                    footer={null}
+            <div className="my-4">
+                <button
+                    onClick={handleAdd}
+                    className="bg-blue-500 text-white px-4 py-2 rounded-md"
                 >
-                    {isFormOpen && (
-                        <EntityForm
-                            entity={selectedEntity}
-                            entityType={entityType}
-                            onClose={handleCloseForm}
-                            onSubmit={handleSubmitForm}
-                        />
-                    )}
-                </Dialog>
+                    {t('addEntity')}
+                </button>
             </div>
-        </AdminLayout>
+
+            <EntityTable
+                entities={entities}
+                entityType={entityType}
+                onEdit={handleEdit}
+                onDelete={handleDelete}
+            />
+
+            <Dialog
+                visible={isFormOpen}
+                onClose={handleCloseForm}
+                title={selectedEntity ? t('editEntity') : t('addEntity')}
+                closable={true}
+                maskClosable={false}
+                className="bg-cyan-900 text-white p-6 rounded shadow-md max-w-lg mx-auto"
+                footer={null}
+            >
+                {isFormOpen && (
+                    <EntityForm
+                        entity={selectedEntity}
+                        entityType={entityType}
+                        onClose={handleCloseForm}
+                        onSubmit={handleSubmitForm}
+                    />
+                )}
+            </Dialog>
+        </div>
     );
 }

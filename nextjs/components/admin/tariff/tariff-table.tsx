@@ -24,12 +24,12 @@ export const TariffTable: React.FC<TariffTableProps> = ({tariffs, onEdit, onDele
                     <th className="px-4 py-2 text-left">{'Campaign Name'}</th>
                     <th className="px-4 py-2 text-left">{'Rate'}</th>
                     <th className="px-4 py-2 text-left">{'Currency'}</th>
-                        <th className="px-4 py-2 text-left">{'Unit'}</th>
-                        <th className="px-4 py-2 text-left">{'Measure Value'}</th>
-                        <th className="px-4 py-2 text-left">{'Range'}</th>
-                        <th className="px-4 py-2 text-left">{'Valid From'}</th>
-                        <th className="px-4 py-2 text-left">{'Valid To'}</th>
-                        <th className="px-4 py-2 text-left">Acties</th>
+                    <th className="px-4 py-2 text-left">{'Unit'}</th>
+                    <th className="px-4 py-2 text-left">{'Measure Value'}</th>
+                    <th className="px-4 py-2 text-left">{'Range'}</th>
+                    <th className="px-4 py-2 text-left">{'Valid From'}</th>
+                    <th className="px-4 py-2 text-left">{'Valid To'}</th>
+                    <th className="px-4 py-2 text-left">Acties</th>
                 </tr>
                 </thead>
                 <tbody>
@@ -38,17 +38,17 @@ export const TariffTable: React.FC<TariffTableProps> = ({tariffs, onEdit, onDele
                         <td className="px-4 py-2">{tariff.campaignName}</td>
                         <td className="px-4 py-2">{tariff.rate}</td>
                         <td className="px-4 py-2">{tariff.currency}</td>
-                            <td className="px-4 py-2">{t(tariff.unit)}</td>
-                            <td className="px-4 py-2">{tariff.measureValueName || 'N/A'}</td>
-                            <td className="px-4 py-2">
-                                {tariff.rangeFrom !== undefined && tariff.rangeTo !== undefined
-                                    ? `${tariff.rangeFrom} - ${tariff.rangeTo}`
-                                    : tariff.rangeFrom || tariff.rangeTo || 'N/A'}
-                            </td>
-                            <td className="px-4 py-2">{tariff.validFrom.toLocaleDateString(locale)}</td>
-                            <td className="px-4 py-2">
-                                {tariff.validTo ? tariff.validTo.toLocaleDateString(locale) : 'N/A'}
-                            </td>
+                        <td className="px-4 py-2">{t(tariff.unit)}</td>
+                        <td className="px-4 py-2">{tariff.measureValueName || 'N/A'}</td>
+                        <td className="px-4 py-2">
+                            {tariff.rangeFrom !== undefined && tariff.rangeTo !== undefined
+                                ? `${tariff.rangeFrom} - ${tariff.rangeTo}`
+                                : tariff.rangeFrom || tariff.rangeTo || 'N/A'}
+                        </td>
+                        <td className="px-4 py-2">{tariff.validFrom.toLocaleDateString(locale)}</td>
+                        <td className="px-4 py-2">
+                            {tariff.validTo ? tariff.validTo.toLocaleDateString(locale) : 'N/A'}
+                        </td>
                         <td className="px-4 py-2">
                             <button
                                 onClick={() => onEdit(tariff.id)}

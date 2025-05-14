@@ -11,6 +11,7 @@ export interface Tariff {
     rangeTo?: number; // optioneel
     validFrom: Date;
     validTo?: Date;
+    isDeposit: boolean;
 }
 
 export enum Unit {
@@ -31,6 +32,7 @@ export function tariffFromJson(json: any): Tariff {
         rate: json.rate,
         currency: json.currency,
         unit: json.unit,
+        isDeposit: json.isDeposit,
         rangeFrom: json.rangeFrom,
         rangeTo: json.rangeTo,
         validFrom: new Date(json.validFrom),
