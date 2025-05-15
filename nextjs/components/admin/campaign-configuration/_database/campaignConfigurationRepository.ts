@@ -113,7 +113,9 @@ function mapTableToDomain(campaign: CampaignConfigurationTable, entities: Entity
     return {
         name: campaign.name,
         entities: campaign.entityIds.map(id => entities.find(c => c.id === id)!),
-        measureValues: campaign.measureValueNames.map(v => measureValues.find(value => value.name === v)!),
+        measureValues: campaign.measureValueNames
+            .map(name => measureValues.filter(value => value.name === name)[0])
+            .filter(Boolean),
     }
 }
 
@@ -122,7 +124,9 @@ function mapTableToSimpleDomain(campaign: CampaignConfigurationTable, measureVal
     return {
         name: campaign.name,
         entityIds: campaign.entityIds,
-        measureValues: campaign.measureValueNames.map(v => measureValues.find(value => value.name === v)!),
+        measureValues: campaign.measureValueNames
+            .map(name => measureValues.filter(value => value.name === name)[0])
+            .filter(Boolean),
     }
 }
 
