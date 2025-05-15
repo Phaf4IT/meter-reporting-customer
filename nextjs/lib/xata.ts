@@ -70,6 +70,189 @@ const tables = [
     ],
     revLinks: [{ column: "session", table: "nextauth_users_sessions" }],
   },
+  {
+    name: "company",
+    columns: [
+      { name: "name", type: "string" },
+      { name: "email", type: "text" },
+    ],
+  },
+  {
+    name: "entity_type",
+    columns: [
+      { name: "name", type: "string" },
+      { name: "fields", type: "json" },
+      { name: "company", type: "string" },
+      { name: "translations", type: "json" },
+    ],
+  },
+  {
+    name: "entity",
+    columns: [
+      { name: "entity_type", type: "string" },
+      { name: "field_values", type: "json" },
+      { name: "company", type: "string" },
+    ],
+  },
+  {
+    name: "campaign_configuration",
+    columns: [
+      { name: "name", type: "string" },
+      { name: "measure_value_names", type: "multiple" },
+      { name: "entity_ids", type: "multiple" },
+      { name: "company", type: "string" },
+    ],
+  },
+  {
+    name: "campaign",
+    columns: [
+      { name: "name", type: "string" },
+      { name: "campaign_configuration_name", type: "string" },
+      { name: "type", type: "string" },
+      { name: "start_date", type: "datetime" },
+      { name: "end_date", type: "datetime" },
+      { name: "reminder_dates", type: "multiple" },
+      { name: "customer_ids", type: "multiple" },
+      { name: "company", type: "string" },
+    ],
+  },
+  {
+    name: "reminder",
+    columns: [
+      { name: "campaign_name", type: "string" },
+      { name: "customer_ids", type: "multiple" },
+      { name: "reminder_date", type: "datetime" },
+      { name: "company", type: "string" },
+    ],
+  },
+  {
+    name: "campaign_reminder_sent",
+    columns: [
+      { name: "campaign_name", type: "string" },
+      { name: "reminder_date", type: "datetime" },
+      { name: "customer_id", type: "string" },
+      { name: "customer_email", type: "string" },
+      { name: "token", type: "string" },
+      { name: "company", type: "string" },
+    ],
+  },
+  {
+    name: "customer",
+    columns: [
+      { name: "email", type: "email" },
+      { name: "title", type: "string" },
+      { name: "first_name", type: "string" },
+      { name: "middle_name", type: "string" },
+      { name: "last_name", type: "string" },
+      { name: "phone_number", type: "string" },
+      { name: "company", type: "string" },
+      { name: "entity_id", type: "string" },
+      { name: "additional_fields", type: "json" },
+    ],
+  },
+  {
+    name: "non_active_customer",
+    columns: [
+      { name: "email", type: "email" },
+      { name: "title", type: "string" },
+      { name: "first_name", type: "string" },
+      { name: "middle_name", type: "string" },
+      { name: "last_name", type: "string" },
+      { name: "phone_number", type: "string" },
+      { name: "company", type: "string" },
+      { name: "entity_id", type: "string" },
+      { name: "additional_fields", type: "json" },
+      { name: "archive_date", type: "datetime" },
+    ],
+  },
+  {
+    name: "tariff",
+    columns: [
+      { name: "campaign_name", type: "string" },
+      { name: "company", type: "string" },
+      { name: "customer_ids", type: "multiple" },
+      { name: "description", type: "string" },
+      { name: "measure_value_name", type: "string" },
+      { name: "rate", type: "float" },
+      { name: "currency", type: "string" },
+      { name: "unit", type: "string" },
+      { name: "range_from", type: "float" },
+      { name: "range_to", type: "float" },
+      { name: "valid_from", type: "datetime" },
+      { name: "valid_to", type: "datetime" },
+      { name: "is_deposit", type: "bool" },
+    ],
+  },
+  {
+    name: "discount",
+    columns: [
+      { name: "discount_name", type: "string" },
+      { name: "campaign_name", type: "string" },
+      { name: "company", type: "string" },
+      { name: "customer_ids", type: "multiple" },
+      { name: "discount_type", type: "string" },
+      { name: "measure_value_name", type: "string" },
+      { name: "range_from", type: "float" },
+      { name: "range_to", type: "float" },
+      { name: "discount_value", type: "float" },
+      { name: "discount_unit", type: "string" },
+      { name: "currency", type: "string" },
+      { name: "valid_from", type: "datetime" },
+      { name: "valid_to", type: "datetime" },
+    ],
+  },
+  {
+    name: "invoice_year_state",
+    columns: [
+      { name: "company_name", type: "string" },
+      { name: "year", type: "int" },
+    ],
+  },
+  {
+    name: "invoice",
+    columns: [
+      { name: "sequence_number", type: "string" },
+      { name: "year", type: "int" },
+      { name: "customer_id", type: "string" },
+      { name: "company", type: "string" },
+      { name: "campaign_name", type: "string" },
+      { name: "invoice_date", type: "datetime" },
+      { name: "total_amount", type: "float" },
+      { name: "currency", type: "string" },
+      { name: "status", type: "string" },
+      { name: "type", type: "string" },
+      { name: "original_invoice_id", type: "string" },
+    ],
+  },
+  {
+    name: "invoice_line_item",
+    columns: [
+      { name: "invoice_id", type: "string" },
+      { name: "customer_id", type: "string" },
+      { name: "company", type: "string" },
+      { name: "invoice_date", type: "datetime" },
+      { name: "campaign_name", type: "string" },
+      { name: "tariff_type", type: "string" },
+      { name: "description", type: "text" },
+      { name: "quantity", type: "float" },
+      { name: "unit_price", type: "float" },
+      { name: "line_total", type: "float" },
+      { name: "currency", type: "string" },
+    ],
+  },
+  {
+    name: "payment",
+    columns: [
+      { name: "customer_email", type: "email" },
+      { name: "company", type: "string" },
+      { name: "invoice_date", type: "datetime" },
+      { name: "payment_date", type: "datetime" },
+      { name: "amount", type: "float" },
+      { name: "currency", type: "string" },
+      { name: "payment_method", type: "string" },
+      { name: "transaction_id", type: "string" },
+    ],
+  },
 ] as const;
 
 export type SchemaTables = typeof tables;
@@ -82,9 +265,9 @@ export type NextauthAccounts = InferredTypes["nextauth_accounts"];
 export type NextauthAccountsRecord = NextauthAccounts & XataRecord;
 
 export type NextauthVerificationTokens =
-  InferredTypes["nextauth_verificationTokens"];
+    InferredTypes["nextauth_verificationTokens"];
 export type NextauthVerificationTokensRecord = NextauthVerificationTokens &
-  XataRecord;
+    XataRecord;
 
 export type NextauthUsersAccounts = InferredTypes["nextauth_users_accounts"];
 export type NextauthUsersAccountsRecord = NextauthUsersAccounts & XataRecord;
@@ -95,6 +278,51 @@ export type NextauthUsersSessionsRecord = NextauthUsersSessions & XataRecord;
 export type NextauthSessions = InferredTypes["nextauth_sessions"];
 export type NextauthSessionsRecord = NextauthSessions & XataRecord;
 
+export type Company = InferredTypes["company"];
+export type CompanyRecord = Company & XataRecord;
+
+export type EntityType = InferredTypes["entity_type"];
+export type EntityTypeRecord = EntityType & XataRecord;
+
+export type Entity = InferredTypes["entity"];
+export type EntityRecord = Entity & XataRecord;
+
+export type CampaignConfiguration = InferredTypes["campaign_configuration"];
+export type CampaignConfigurationRecord = CampaignConfiguration & XataRecord;
+
+export type Campaign = InferredTypes["campaign"];
+export type CampaignRecord = Campaign & XataRecord;
+
+export type Reminder = InferredTypes["reminder"];
+export type ReminderRecord = Reminder & XataRecord;
+
+export type CampaignReminderSent = InferredTypes["campaign_reminder_sent"];
+export type CampaignReminderSentRecord = CampaignReminderSent & XataRecord;
+
+export type Customer = InferredTypes["customer"];
+export type CustomerRecord = Customer & XataRecord;
+
+export type NonActiveCustomer = InferredTypes["non_active_customer"];
+export type NonActiveCustomerRecord = NonActiveCustomer & XataRecord;
+
+export type Tariff = InferredTypes["tariff"];
+export type TariffRecord = Tariff & XataRecord;
+
+export type Discount = InferredTypes["discount"];
+export type DiscountRecord = Discount & XataRecord;
+
+export type InvoiceYearState = InferredTypes["invoice_year_state"];
+export type InvoiceYearStateRecord = InvoiceYearState & XataRecord;
+
+export type Invoice = InferredTypes["invoice"];
+export type InvoiceRecord = Invoice & XataRecord;
+
+export type InvoiceLineItem = InferredTypes["invoice_line_item"];
+export type InvoiceLineItemRecord = InvoiceLineItem & XataRecord;
+
+export type Payment = InferredTypes["payment"];
+export type PaymentRecord = Payment & XataRecord;
+
 export type DatabaseSchema = {
   nextauth_users: NextauthUsersRecord;
   nextauth_accounts: NextauthAccountsRecord;
@@ -102,6 +330,21 @@ export type DatabaseSchema = {
   nextauth_users_accounts: NextauthUsersAccountsRecord;
   nextauth_users_sessions: NextauthUsersSessionsRecord;
   nextauth_sessions: NextauthSessionsRecord;
+  company: CompanyRecord;
+  entity_type: EntityTypeRecord;
+  entity: EntityRecord;
+  campaign_configuration: CampaignConfigurationRecord;
+  campaign: CampaignRecord;
+  reminder: ReminderRecord;
+  campaign_reminder_sent: CampaignReminderSentRecord;
+  customer: CustomerRecord;
+  non_active_customer: NonActiveCustomerRecord;
+  tariff: TariffRecord;
+  discount: DiscountRecord;
+  invoice_year_state: InvoiceYearStateRecord;
+  invoice: InvoiceRecord;
+  invoice_line_item: InvoiceLineItemRecord;
+  payment: PaymentRecord;
 };
 
 const DatabaseClient = buildClient();
