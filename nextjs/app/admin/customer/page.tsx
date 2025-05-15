@@ -34,7 +34,7 @@ export default function CustomersPage() {
     const [entities, setEntities] = useState<Entity[]>([]);
     const [editingCustomer, setEditingCustomer] = useState<Customer & ModifiableCustomer | null>(null);
     const [customerToDelete, setCustomerToDelete] = useState<Customer | null>(null);
-    const [isMenuOpen, setIsMenuOpen] = useState(false);
+    const [menuOpenForId, setMenuOpenForId] = useState<string | null>(null);
     const menuRef = useRef<HTMLDivElement>(null);
     const locale = useLocale();
     const additionalFieldCustomers = additionalFields();
@@ -81,7 +81,7 @@ export default function CustomersPage() {
     useEffect(() => {
         const handleClickOutside = (event: MouseEvent) => {
             if (menuRef.current && !menuRef.current.contains(event.target as Node)) {
-                setIsMenuOpen(false);
+                setMenuOpenForId(null);
             }
         };
         document.addEventListener('mousedown', handleClickOutside);
@@ -132,7 +132,7 @@ export default function CustomersPage() {
     const openDialog = (customer: Customer) => {
         setCustomerToDelete(customer);
         setIsDialogOpen(true);
-        setIsMenuOpen(false);
+        setMenuOpenForId(null);
     };
 
     const closeDialog = () => {
@@ -141,6 +141,7 @@ export default function CustomersPage() {
     };
 
     const handleDelete = async () => {
+        console.log('deleting?')
         if (customerToDelete) {
             const success = await deleteCustomer({...customerToDelete, entityId: customerToDelete.entity?.id});
             if (success) {
@@ -160,7 +161,7 @@ export default function CustomersPage() {
         if (isNew) setCustomers(prev => [...prev, customer]);
         setEditingCustomer(customer);
         setIsNew(isNew);
-        setIsMenuOpen(false);
+        setMenuOpenForId(null);
     };
 
     const closeEditor = () => {
@@ -221,121 +222,121 @@ export default function CustomersPage() {
                     </div>
                 )}
             </div>
-                <table className="table-auto min-w-full border-collapse bg-cyan-900 text-white rounded shadow-lg">
-                    <thead>
-                    <tr className="border-b border-cyan-700">
-                        {visibleColumns['email'] && (
-                            <th className="py-2 px-4 text-left cursor-pointer" onClick={() => handleSort('email')}>
-                                {t('email')}{sortColumn === 'email' && (sortDirection === 'asc' ?
-                                <FaArrowUp className="inline ml-2"/> : <FaArrowDown className="inline ml-2"/>)}
+            <table className="table-auto min-w-full border-collapse bg-cyan-900 text-white rounded shadow-lg">
+                <thead>
+                <tr className="border-b border-cyan-700">
+                    {visibleColumns['email'] && (
+                        <th className="py-2 px-4 text-left cursor-pointer" onClick={() => handleSort('email')}>
+                            {t('email')}{sortColumn === 'email' && (sortDirection === 'asc' ?
+                            <FaArrowUp className="inline ml-2"/> : <FaArrowDown className="inline ml-2"/>)}
+                        </th>
+                    )}
+                    {visibleColumns['lastName'] && (
+                        <th className="py-2 px-4 text-left cursor-pointer" onClick={() => handleSort('lastName')}>
+                            {t('name')}{sortColumn === 'lastName' && (sortDirection === 'asc' ?
+                            <FaArrowUp className="inline ml-2"/> : <FaArrowDown className="inline ml-2"/>)}
+                        </th>
+                    )}
+                    {visibleColumns['entity'] && (
+                        <th className="py-2 px-4 text-left cursor-pointer" onClick={() => handleSort('entity')}>
+                            {t('entity')}{sortColumn === 'entity' && (sortDirection === 'asc' ?
+                            <FaArrowUp className="inline ml-2"/> : <FaArrowDown className="inline ml-2"/>)}
+                        </th>
+                    )}
+                    {visibleColumns['phoneNumber'] && (
+                        <th className="py-2 px-4 text-left cursor-pointer"
+                            onClick={() => handleSort('phoneNumber')}>
+                            {t('phoneNumber')}{sortColumn === 'phoneNumber' && (sortDirection === 'asc' ?
+                            <FaArrowUp className="inline ml-2"/> : <FaArrowDown className="inline ml-2"/>)}
+                        </th>
+                    )}
+                    {fieldKeys.map((fieldKey) => {
+                        const fullKey = `additionalFields.${fieldKey}`;
+                        if (!visibleColumns[fullKey]) return null;
+                        const label = getTranslationForLocaleFields(locale)?.[fieldKey] || fieldKey;
+                        return (
+                            <th key={fieldKey} className="px-4 py-2 text-left cursor-pointer"
+                                onClick={() => handleSort(fullKey)}>
+                                {label}
+                                {sortColumn === fullKey && (sortDirection === 'asc' ?
+                                    <FaArrowUp className="inline ml-2"/> : <FaArrowDown className="inline ml-2"/>)}
                             </th>
-                        )}
-                        {visibleColumns['lastName'] && (
-                            <th className="py-2 px-4 text-left cursor-pointer" onClick={() => handleSort('lastName')}>
-                                {t('name')}{sortColumn === 'lastName' && (sortDirection === 'asc' ?
-                                <FaArrowUp className="inline ml-2"/> : <FaArrowDown className="inline ml-2"/>)}
-                            </th>
-                        )}
-                        {visibleColumns['entity'] && (
-                            <th className="py-2 px-4 text-left cursor-pointer" onClick={() => handleSort('entity')}>
-                                {t('entity')}{sortColumn === 'entity' && (sortDirection === 'asc' ?
-                                <FaArrowUp className="inline ml-2"/> : <FaArrowDown className="inline ml-2"/>)}
-                            </th>
-                        )}
-                        {visibleColumns['phoneNumber'] && (
-                            <th className="py-2 px-4 text-left cursor-pointer"
-                                onClick={() => handleSort('phoneNumber')}>
-                                {t('phoneNumber')}{sortColumn === 'phoneNumber' && (sortDirection === 'asc' ?
-                                <FaArrowUp className="inline ml-2"/> : <FaArrowDown className="inline ml-2"/>)}
-                            </th>
-                        )}
-                        {fieldKeys.map((fieldKey) => {
-                            const fullKey = `additionalFields.${fieldKey}`;
-                            if (!visibleColumns[fullKey]) return null;
-                            const label = getTranslationForLocaleFields(locale)?.[fieldKey] || fieldKey;
-                            return (
-                                <th key={fieldKey} className="px-4 py-2 text-left cursor-pointer"
-                                    onClick={() => handleSort(fullKey)}>
-                                    {label}
-                                    {sortColumn === fullKey && (sortDirection === 'asc' ?
-                                        <FaArrowUp className="inline ml-2"/> : <FaArrowDown className="inline ml-2"/>)}
-                                </th>
-                            );
-                        })}
-                        <th className="py-2 px-4 text-left">{t('actions')}</th>
-                    </tr>
-                    </thead>
-                    <tbody>
-                    {customers.map((customer) => (
-                        <tr key={customer.id}
-                            className={`border-b border-cyan-700 ${customer.isNonActive ? 'bg-gray-500' : 'bg-cyan-900'}`}>
-                            {editingCustomer?.id === customer.id ? (
-                                <EditableCustomerRow key={customer.id} customer={editingCustomer} isNew={isNew}
-                                                     onSave={handleSave} onCancel={closeEditor} entities={entities}/>
-                            ) : (
-                                <>
-                                    {visibleColumns['email'] && <td className="py-2 px-4">{customer.email}</td>}
-                                    {visibleColumns['lastName'] && (
-                                        <td className="py-2 px-4">
-                                            {customer.title ? t(customer.title) + ' ' : ''}
-                                            {customer.firstName} {customer.middleName || ''} {customer.lastName}
-                                        </td>
-                                    )}
-                                    {visibleColumns['entity'] && (
-                                        <td className="py-2 px-4">
-                                            {Object.keys(customer.entity?.entityType?.fields || {}).map((fieldKey) => {
-                                                const label = getTranslationForLocale(customer.entity!.entityType!, locale)[fieldKey] || fieldKey;
-                                                const value = getTranslationForLocale(customer.entity!.entityType!, locale)[customer.entity!.fieldValues[fieldKey] || ''] || customer.entity!.fieldValues[fieldKey] || 'N/A';
-                                                return <p key={fieldKey}>{label}: {value}</p>;
-                                            })}
-                                        </td>
-                                    )}
-                                    {visibleColumns['phoneNumber'] &&
-                                        <td className="py-2 px-4">{customer.phoneNumber}</td>}
-                                    {fieldKeys.map((key) =>
-                                        visibleColumns[`additionalFields.${key}`] ? (
-                                            <td key={`${customer.id}-${key}`} className="px-4 py-2">
-                                                {customer.additionalFields?.[key] || 'N/A'}
-                                            </td>
-                                        ) : null
-                                    )}
-                                    <td className="py-2 px-4 space-x-2">
-                                        {customer.isNonActive && <>Inactief</>}
-                                        {!customer.isNonActive && (
-                                            <div className="relative inline-block text-left">
-                                                <button
-                                                    type="button"
-                                                    className="inline-flex items-center justify-center w-12 h-12 bg-transparent text-gray-600 rounded-full hover:bg-gray-200"
-                                                    onClick={() => setIsMenuOpen(!isMenuOpen)}
-                                                >
-                                                    <FiMoreHorizontal className="text-white"/>
-                                                </button>
-                                                {isMenuOpen && (
-                                                    <div
-                                                        className="origin-top-right absolute right-0 mt-2 w-48 rounded-md shadow-lg bg-white ring-1 ring-black ring-opacity-5"
-                                                        ref={menuRef}
-                                                    >
-                                                        <div className="py-1">
-                                                            <button onClick={() => openEditor(customer, false)}
-                                                                    className="block px-4 py-2 text-sm text-gray-700 hover:bg-yellow-100 w-full">
-                                                                {t('edit')}
-                                                            </button>
-                                                            <button onClick={() => openDialog(customer)}
-                                                                    className="block px-4 py-2 text-sm text-gray-700 hover:bg-red-100 w-full">
-                                                                {t('delete')}
-                                                            </button>
-                                                        </div>
-                                                    </div>
-                                                )}
-                                            </div>
-                                        )}
+                        );
+                    })}
+                    <th className="py-2 px-4 text-left">{t('actions')}</th>
+                </tr>
+                </thead>
+                <tbody>
+                {customers.map((customer) => (
+                    <tr key={customer.id}
+                        className={`border-b border-cyan-700 ${customer.isNonActive ? 'bg-gray-500' : 'bg-cyan-900'}`}>
+                        {editingCustomer?.id === customer.id ? (
+                            <EditableCustomerRow key={customer.id} customer={editingCustomer} isNew={isNew}
+                                                 onSave={handleSave} onCancel={closeEditor} entities={entities}/>
+                        ) : (
+                            <>
+                                {visibleColumns['email'] && <td className="py-2 px-4">{customer.email}</td>}
+                                {visibleColumns['lastName'] && (
+                                    <td className="py-2 px-4">
+                                        {customer.title ? t(customer.title) + ' ' : ''}
+                                        {customer.firstName} {customer.middleName || ''} {customer.lastName}
                                     </td>
-                                </>
-                            )}
-                        </tr>
-                    ))}
-                    </tbody>
-                </table>
+                                )}
+                                {visibleColumns['entity'] && (
+                                    <td className="py-2 px-4">
+                                        {Object.keys(customer.entity?.entityType?.fields || {}).map((fieldKey) => {
+                                            const label = getTranslationForLocale(customer.entity!.entityType!, locale)[fieldKey] || fieldKey;
+                                            const value = getTranslationForLocale(customer.entity!.entityType!, locale)[customer.entity!.fieldValues[fieldKey] || ''] || customer.entity!.fieldValues[fieldKey] || 'N/A';
+                                            return <p key={fieldKey}>{label}: {value}</p>;
+                                        })}
+                                    </td>
+                                )}
+                                {visibleColumns['phoneNumber'] &&
+                                    <td className="py-2 px-4">{customer.phoneNumber}</td>}
+                                {fieldKeys.map((key) =>
+                                    visibleColumns[`additionalFields.${key}`] ? (
+                                        <td key={`${customer.id}-${key}`} className="px-4 py-2">
+                                            {customer.additionalFields?.[key] || 'N/A'}
+                                        </td>
+                                    ) : null
+                                )}
+                                <td className="py-2 px-4 space-x-2">
+                                    {customer.isNonActive && <>Inactief</>}
+                                    {!customer.isNonActive && (
+                                        <div className="relative inline-block text-left">
+                                            <button
+                                                type="button"
+                                                className="inline-flex items-center justify-center w-12 h-12 bg-transparent text-gray-600 rounded-full hover:bg-gray-200"
+                                                onClick={() => setMenuOpenForId(prev => (prev === customer.id ? null : customer.id))}
+                                            >
+                                                <FiMoreHorizontal className="text-white"/>
+                                            </button>
+                                            {menuOpenForId === customer.id && (
+                                                <div
+                                                    className="origin-top-right absolute right-0 mt-2 w-48 rounded-md shadow-lg bg-white ring-1 ring-black ring-opacity-5"
+                                                    ref={menuRef}
+                                                >
+                                                    <div className="py-1">
+                                                        <button onClick={() => openEditor(customer, false)}
+                                                                className="block px-4 py-2 text-sm text-gray-700 hover:bg-yellow-100 w-full">
+                                                            {t('edit')}
+                                                        </button>
+                                                        <button onClick={() => openDialog(customer)}
+                                                                className="block px-4 py-2 text-sm text-gray-700 hover:bg-red-100 w-full">
+                                                            {t('delete')}
+                                                        </button>
+                                                    </div>
+                                                </div>
+                                            )}
+                                        </div>
+                                    )}
+                                </td>
+                            </>
+                        )}
+                    </tr>
+                ))}
+                </tbody>
+            </table>
 
             <ConfirmationDialog
                 isOpen={isDialogOpen}

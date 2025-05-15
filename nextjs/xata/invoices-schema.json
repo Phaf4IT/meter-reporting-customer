@@ -1,0 +1,96 @@
+[
+  {
+    "name": "tariff",
+    "columns": [
+      { "name": "campaign_name", "type": "string" },
+      { "name": "company", "type": "string" },
+      { "name": "customer_ids", "type": "multiple" },
+      { "name": "description", "type": "string" },
+      { "name": "measure_value_name", "type": "string" },
+      { "name": "rate", "type": "float" },
+      { "name": "currency", "type": "string" },
+      { "name": "unit", "type": "string" },
+      { "name": "range_from", "type": "float" },
+      { "name": "range_to", "type": "float" },
+      { "name": "valid_from", "type": "datetime" },
+      { "name": "valid_to", "type": "datetime" },
+      { "name": "is_deposit", "type": "boolean" }
+    ],
+    "primaryKey": ["id"]
+  },
+  {
+    "name": "discount",
+    "columns": [
+      { "name": "discount_name", "type": "string" },
+      { "name": "campaign_name", "type": "string" },
+      { "name": "company", "type": "string" },
+      { "name": "customer_ids", "type": "multiple" },
+      { "name": "discount_type", "type": "string" },
+      { "name": "measure_value_name", "type": "string" },
+      { "name": "range_from", "type": "float" },
+      { "name": "range_to", "type": "float" },
+      { "name": "discount_value", "type": "float" },
+      { "name": "discount_unit", "type": "string" },
+      { "name": "currency", "type": "string" },
+      { "name": "valid_from", "type": "datetime" },
+      { "name": "valid_to", "type": "datetime" }
+    ],
+    "primaryKey": ["id"]
+  },
+  {
+    "name": "invoice_year_state",
+    "columns": [
+      { "name": "company_name", "type": "string" },
+      { "name": "year", "type": "int" }
+    ],
+    "primaryKey": ["company_name", "year"]
+  },
+  {
+    "name": "invoice",
+    "columns": [
+      { "name": "sequence_number", "type": "string" },
+      { "name": "year", "type": "int" },
+      { "name": "customer_id", "type": "string" },
+      { "name": "company", "type": "string" },
+      { "name": "campaign_name", "type": "string" },
+      { "name": "invoice_date", "type": "datetime" },
+      { "name": "total_amount", "type": "float" },
+      { "name": "currency", "type": "string" },
+      { "name": "status", "type": "string" },
+      { "name": "type", "type": "string" },
+      { "name": "original_invoice_id", "type": "string" }
+    ],
+    "primaryKey": ["id"]
+  },
+  {
+    "name": "invoice_line_item",
+    "columns": [
+      { "name": "invoice_id", "type": "string" },
+      { "name": "customer_id", "type": "string" },
+      { "name": "company", "type": "string" },
+      { "name": "invoice_date", "type": "datetime" },
+      { "name": "campaign_name", "type": "string" },
+      { "name": "tariff_type", "type": "string" },
+      { "name": "description", "type": "text" },
+      { "name": "quantity", "type": "float" },
+      { "name": "unit_price", "type": "float" },
+      { "name": "line_total", "type": "float" },
+      { "name": "currency", "type": "string" }
+    ],
+    "primaryKey": ["id"]
+  },
+  {
+    "name": "payment",
+    "columns": [
+      { "name": "customer_email", "type": "email" },
+      { "name": "company", "type": "string" },
+      { "name": "invoice_date", "type": "datetime" },
+      { "name": "payment_date", "type": "datetime" },
+      { "name": "amount", "type": "float" },
+      { "name": "currency", "type": "string" },
+      { "name": "payment_method", "type": "string" },
+      { "name": "transaction_id", "type": "string" }
+    ],
+    "primaryKey": ["customer_email", "company", "invoice_date", "payment_date", "transaction_id"]
+  }
+]

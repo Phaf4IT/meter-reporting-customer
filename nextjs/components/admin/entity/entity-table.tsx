@@ -1,3 +1,4 @@
+'use client';
 import React from 'react';
 import {Entity} from './entity';
 import {useLocale} from "next-intl";
@@ -5,73 +6,73 @@ import {EntityType} from "@/components/admin/entity-type/entityType";
 
 interface EntityTableProps {
     entities: Entity[];
-    entityType?: EntityType;  // We gaan entityType meegeven om de velden dynamisch te tonen
+    entityType?: EntityType;
     onEdit: (entity: Entity) => void;
     onDelete: (entity: Entity) => void;
 }
 
 export const EntityTable: React.FC<EntityTableProps> = ({entities, entityType, onEdit, onDelete}) => {
     const locale = useLocale();
-    const translations = getTranslationForLocale(locale);
-    if (entities.length === 0) {
-        return <div>{'Er zijn geen entiteiten beschikbaar.'}</div>;
-    }
-
-    const fieldKeys = Object.keys(entityType?.fields || []);
 
     function getTranslationForLocale(locale: string) {
         const languageCode = locale.split('-')[0];
         const translationKey = entityType ? Object.keys(entityType?.translations).find(key => key.startsWith(languageCode)) : undefined;
-        return translationKey ? entityType?.translations[translationKey] : entityType?.translations['en-US'];  // Fallback naar Engels als geen vertaling gevonden
+        return translationKey ? entityType?.translations[translationKey] : entityType?.translations['en-US'];
+    }
+
+    const translations = getTranslationForLocale(locale);
+    const fieldKeys = Object.keys(entityType?.fields || []);
+
+    if (entities.length === 0) {
+        return <div className="text-white">Er zijn geen entiteiten beschikbaar.</div>;
     }
 
     return (
-        <table className="min-w-full bg-cyan-950 text-white">
-            <thead>
-            <tr>
+        <div className="flex flex-col space-y-2 w-full bg-cyan-950 text-white p-4 rounded">
+            {/* Headers */}
+            <div className="flex justify-between font-semibold border-b border-cyan-700 pb-2">
                 {fieldKeys.map((fieldKey) => {
-                    const fieldLabel = translations ? translations[fieldKey] : fieldKey;
+                    const label = translations?.[fieldKey] || fieldKey;
                     return (
-                        <th key={fieldKey} className="px-4 py-2 text-left">
-                            {fieldLabel}
-                        </th>
+                        <div key={fieldKey} className="flex-1 px-2">
+                            {label}
+                        </div>
                     );
                 })}
-                <th className="px-4 py-2 text-left">Acties</th>
-            </tr>
-            </thead>
-            <tbody>
-            {entities.map((entity, index) => (
-                <tr key={`${entity.id}-${index}`}
-                    className="border-b border-cyan-800 hover:bg-cyan-700"
-                >
+                <div className="w-[120px] text-right pr-2">Acties</div>
+            </div>
 
+            {/* Rows */}
+            {entities.map((entity) => (
+                <div
+                    key={entity.id}
+                    className="flex justify-between items-center border-b border-cyan-800 py-2 hover:bg-cyan-800 transition"
+                >
                     {fieldKeys.map((fieldKey) => {
-                        const fieldValue = entity.fieldValues[fieldKey] || 'N/A';
+                        const rawValue = entity.fieldValues[fieldKey] || 'N/A';
+                        const value = translations?.[rawValue] || rawValue;
                         return (
-                            <td key={`${entity.id}-${fieldKey}`} className="px-4 py-2">
-                                {translations && translations[fieldValue] ? translations[fieldValue] : fieldValue}
-                            </td>
+                            <div key={fieldKey} className="flex-1 px-2 break-words">
+                                {value}
+                            </div>
                         );
                     })}
-
-                    <td className="px-4 py-2">
+                    <div className="w-[120px] flex justify-end space-x-2 pr-2">
                         <button
                             onClick={() => onEdit(entity)}
-                            className="bg-yellow-500 text-white px-2 py-1 rounded mr-2"
+                            className="bg-yellow-500 text-white px-2 py-1 rounded text-sm"
                         >
                             Bewerken
                         </button>
                         <button
                             onClick={() => onDelete(entity)}
-                            className="bg-red-500 text-white px-2 py-1 rounded"
+                            className="bg-red-500 text-white px-2 py-1 rounded text-sm"
                         >
                             Verwijderen
                         </button>
-                    </td>
-                </tr>
+                    </div>
+                </div>
             ))}
-            </tbody>
-        </table>
+        </div>
     );
 };

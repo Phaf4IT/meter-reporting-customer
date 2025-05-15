@@ -97,7 +97,10 @@ const CampaignFormWizard: React.FC<CampaignFormWizardProps> = ({
                     t={t}
                     startDate={startDate}
                     endDate={endDate}
-                    minDate={campaignType !== 'BASE' ? new Date() : undefined}
+                    minDate={
+                    // campaignType !== 'BASE' ? new Date() :
+                        undefined
+                }
                     setStartDate={(date: Date) => setStartDate(date)}
                     setEndDate={(date: Date) => setEndDate(date)}
                 />
