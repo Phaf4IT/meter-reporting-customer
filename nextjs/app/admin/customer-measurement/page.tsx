@@ -102,6 +102,12 @@ export default function CustomerMeasurementsPage() {
             {campaigns.map((campaign) => (
                 <div key={campaign.name} className="mb-6">
                     <h2 className="text-xl font-semibold mb-3">{campaign.name}</h2>
+                    <a
+                        href={`/api/admin/export/measurements/?campaign=${encodeURIComponent(campaign.name)}`}
+                        className="inline-block bg-blue-600 hover:bg-blue-700 text-white font-semibold py-1 px-3 rounded my-2"
+                    >
+                        📥 Exporteer csv
+                    </a>
                     <table
                         className="table-auto w-full border-collapse bg-cyan-900 text-white rounded shadow-lg">
                         <thead>

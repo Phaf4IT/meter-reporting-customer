@@ -11,6 +11,7 @@ import {headers} from "next/headers";
 import {ToastingProvider} from "@/app/admin/toaster";
 import LanguageSwitcher from "@/app/languageswitcher";
 import {SignOut} from "@/app/admin/signout";
+import Image from "next/image";
 
 export default async function AdminLayout({
                                               children,
@@ -40,7 +41,11 @@ export default async function AdminLayout({
     return (
         <div className="flex h-screen bg-cyan-950 text-white">
             <nav className="w-64 bg-cyan-900 p-6 flex flex-col justify-between h-screen">
-                <div><h1 className="text-xl font-bold mb-6"><Link href={'/admin'}>Admin Dashboard</Link></h1>
+                <div>
+                    <Image src={'/buitenplaats.jpg'} alt={'buitenplaats'} className={'object-cover'} width={'250'} height={'50'} />
+                    <h1 className="text-xl font-bold mb-6">
+                        <Link href={'/admin'}>Admin Dashboard</Link>
+                    </h1>
                     <ul className="space-y-4">
                         <li><LanguageSwitcher/></li>
 
