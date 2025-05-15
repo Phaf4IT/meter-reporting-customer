@@ -141,7 +141,6 @@ export default function CustomersPage() {
     };
 
     const handleDelete = async () => {
-        console.log('deleting?')
         if (customerToDelete) {
             const success = await deleteCustomer({...customerToDelete, entityId: customerToDelete.entity?.id});
             if (success) {
