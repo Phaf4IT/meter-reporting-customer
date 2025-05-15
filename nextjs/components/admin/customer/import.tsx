@@ -47,7 +47,7 @@ export default function CustomerImport({ onSuccess }: Props) {
     };
 
     return (
-        <div className="w-full max-w-lg bg-cyan-900 text-white p-6 rounded shadow-md space-y-6">
+        <div className="w-full h-full max-w-lg bg-cyan-900 text-white p-6 rounded shadow-md space-y-6">
             <h2 className="text-xl font-bold">Importeer klanten (CSV)</h2>
 
             <Link href={'/customer.csv'}>Download hier een voorbeeld csv</Link>
