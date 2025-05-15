@@ -5,32 +5,6 @@ DROP TABLE IF EXISTS invoice;
 DROP TABLE IF EXISTS payment;
 DROP TABLE IF EXISTS invoice_year_state;
 
--- CREATE OR REPLACE FUNCTION generate_invoice_number(company_name VARCHAR) RETURNS INT AS
--- $$
--- DECLARE
---     current_year        INT;
---     sequence_name       VARCHAR;
---     next_invoice_number INT;
--- BEGIN
---     current_year := EXTRACT(YEAR FROM CURRENT_DATE)::INT;
---     sequence_name := 'invoice_sequence_' || current_year || '_' || company_name;
---     EXECUTE 'CREATE SEQUENCE IF NOT EXISTS ' || sequence_name || ' START 1 INCREMENT 1';
---     PERFORM 1
---     FROM invoice_year_state
---     WHERE year = current_year
---       AND invoice_year_state.company_name = generate_invoice_number.company_name;
--- 
---     IF NOT FOUND THEN
---         RAISE NOTICE 'Resetting sequence for company % in year %', company_name, current_year;
---         EXECUTE 'ALTER SEQUENCE ' || sequence_name || ' RESTART WITH 1';
---         INSERT INTO invoice_year_state (company_name, year) VALUES (company_name, current_year);
---     END IF;
--- 
---     next_invoice_number := nextval(sequence_name);
---     RETURN next_invoice_number;
--- END;
--- $$ LANGUAGE plpgsql;
-
 
 CREATE TABLE IF NOT EXISTS tariff
 (

@@ -1,0 +1,278 @@
+{
+  "tables": [
+    {
+      "name": "company",
+      "columns": [
+        {
+          "name": "name",
+          "type": "string"
+        },
+        {
+          "name": "email",
+          "type": "text"
+        }
+      ],
+      "primaryKey": [
+        "name"
+      ]
+    },
+    {
+      "name": "entity_type",
+      "columns": [
+        {
+          "name": "name",
+          "type": "string"
+        },
+        {
+          "name": "fields",
+          "type": "json"
+        },
+        {
+          "name": "company",
+          "type": "string"
+        },
+        {
+          "name": "translations",
+          "type": "json"
+        }
+      ],
+      "primaryKey": [
+        "name"
+      ]
+    },
+    {
+      "name": "entity",
+      "columns": [
+        {
+          "name": "entity_type",
+          "type": "string"
+        },
+        {
+          "name": "field_values",
+          "type": "json"
+        },
+        {
+          "name": "company",
+          "type": "string"
+        }
+      ]
+    },
+    {
+      "name": "campaign_configuration",
+      "columns": [
+        {
+          "name": "name",
+          "type": "string"
+        },
+        {
+          "name": "measure_value_names",
+          "type": "multiple"
+        },
+        {
+          "name": "entity_ids",
+          "type": "multiple"
+        },
+        {
+          "name": "company",
+          "type": "string"
+        }
+      ],
+      "primaryKey": [
+        "name",
+        "company"
+      ]
+    },
+    {
+      "name": "campaign",
+      "columns": [
+        {
+          "name": "name",
+          "type": "string"
+        },
+        {
+          "name": "campaign_configuration_name",
+          "type": "string"
+        },
+        {
+          "name": "type",
+          "type": "string"
+        },
+        {
+          "name": "start_date",
+          "type": "datetime"
+        },
+        {
+          "name": "end_date",
+          "type": "datetime"
+        },
+        {
+          "name": "reminder_dates",
+          "type": "multiple"
+        },
+        {
+          "name": "customer_ids",
+          "type": "multiple"
+        },
+        {
+          "name": "company",
+          "type": "string"
+        }
+      ],
+      "primaryKey": [
+        "name",
+        "company"
+      ]
+    },
+    {
+      "name": "reminder",
+      "columns": [
+        {
+          "name": "campaign_name",
+          "type": "string"
+        },
+        {
+          "name": "customer_ids",
+          "type": "multiple"
+        },
+        {
+          "name": "reminder_date",
+          "type": "datetime"
+        },
+        {
+          "name": "company",
+          "type": "string"
+        }
+      ],
+      "primaryKey": [
+        "campaign_name",
+        "reminder_date",
+        "company"
+      ]
+    },
+    {
+      "name": "campaign_reminder_sent",
+      "columns": [
+        {
+          "name": "campaign_name",
+          "type": "string"
+        },
+        {
+          "name": "reminder_date",
+          "type": "datetime"
+        },
+        {
+          "name": "customer_id",
+          "type": "string"
+        },
+        {
+          "name": "customer_email",
+          "type": "string"
+        },
+        {
+          "name": "token",
+          "type": "string"
+        },
+        {
+          "name": "company",
+          "type": "string"
+        }
+      ],
+      "primaryKey": [
+        "campaign_name",
+        "reminder_date",
+        "customer_email",
+        "company"
+      ]
+    },
+    {
+      "name": "customer",
+      "columns": [
+        {
+          "name": "email",
+          "type": "email"
+        },
+        {
+          "name": "title",
+          "type": "string"
+        },
+        {
+          "name": "first_name",
+          "type": "string"
+        },
+        {
+          "name": "middle_name",
+          "type": "string"
+        },
+        {
+          "name": "last_name",
+          "type": "string"
+        },
+        {
+          "name": "phone_number",
+          "type": "string"
+        },
+        {
+          "name": "company",
+          "type": "string"
+        },
+        {
+          "name": "entity_id",
+          "type": "string"
+        },
+        {
+          "name": "additional_fields",
+          "type": "json"
+        }
+      ],
+      "primaryKey": [
+        "id",
+        "company"
+      ]
+    },
+    {
+      "name": "non_active_customer",
+      "columns": [
+        {
+          "name": "email",
+          "type": "email"
+        },
+        {
+          "name": "title",
+          "type": "string"
+        },
+        {
+          "name": "first_name",
+          "type": "string"
+        },
+        {
+          "name": "middle_name",
+          "type": "string"
+        },
+        {
+          "name": "last_name",
+          "type": "string"
+        },
+        {
+          "name": "phone_number",
+          "type": "string"
+        },
+        {
+          "name": "company",
+          "type": "string"
+        },
+        {
+          "name": "entity_id",
+          "type": "string"
+        },
+        {
+          "name": "additional_fields",
+          "type": "json"
+        },
+        {
+          "name": "archive_date",
+          "type": "datetime"
+        }
+      ]
+    }
+  ]
+}

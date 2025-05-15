@@ -40,7 +40,7 @@ export default async function AdminLayout({
     return (
         <div className="flex h-screen bg-cyan-950 text-white">
             <nav className="w-64 bg-cyan-900 p-6 flex flex-col justify-between h-screen">
-                <div><h1 className="text-xl font-bold mb-6">Admin Dashboard</h1>
+                <div><h1 className="text-xl font-bold mb-6"><Link href={'/admin'}>Admin Dashboard</Link></h1>
                     <ul className="space-y-4">
                         <li><LanguageSwitcher/></li>
 
@@ -87,7 +87,7 @@ export default async function AdminLayout({
             </nav>
 
 
-            <main className="flex-1 p-8">
+            <main className="flex-1 px-8 pt-8">
                 <ToastingProvider>
                     {children}
                 </ToastingProvider>

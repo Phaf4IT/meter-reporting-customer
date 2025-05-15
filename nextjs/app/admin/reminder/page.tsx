@@ -28,7 +28,7 @@ const ReminderPage = () => {
     };
 
     return (
-        <div className="w-full max-w-lg bg-cyan-900 text-white p-6 rounded shadow-md space-y-6">
+        <div className="bg-cyan-900 text-white p-6 rounded shadow-md space-y-6">
             <h2 className="text-xl font-bold">{t('remindersAdminTitle')}</h2>
             {reminders.length === 0 ? (
                 <p>{t('noReminders')}</p>
