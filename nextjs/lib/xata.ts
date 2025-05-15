@@ -8,1534 +8,249 @@ import type {
 
 const tables = [
   {
-    name: "accounts",
-    checkConstraints: {},
-    foreignKeys: {},
-    primaryKey: ["id"],
-    uniqueConstraints: {},
+    name: "nextauth_users",
     columns: [
-      {
-        name: "access_token",
-        type: "text",
-        notNull: false,
-        unique: false,
-        defaultValue: null,
-        comment: "",
-      },
-      {
-        name: "expires_at",
-        type: "int",
-        notNull: false,
-        unique: false,
-        defaultValue: null,
-        comment: "",
-      },
-      {
-        name: "id",
-        type: "int",
-        notNull: true,
-        unique: true,
-        defaultValue:
-          "nextval('bb_nb68bombrh3u9cp7l7ecpu99qo_8jibml.accounts_id_seq'::regclass)",
-        comment: "",
-      },
-      {
-        name: "id_token",
-        type: "text",
-        notNull: false,
-        unique: false,
-        defaultValue: null,
-        comment: "",
-      },
-      {
-        name: "provider",
-        type: "string",
-        notNull: true,
-        unique: false,
-        defaultValue: null,
-        comment: "",
-      },
-      {
-        name: "providerAccountId",
-        type: "string",
-        notNull: true,
-        unique: false,
-        defaultValue: null,
-        comment: "",
-      },
-      {
-        name: "refresh_token",
-        type: "text",
-        notNull: false,
-        unique: false,
-        defaultValue: null,
-        comment: "",
-      },
-      {
-        name: "scope",
-        type: "text",
-        notNull: false,
-        unique: false,
-        defaultValue: null,
-        comment: "",
-      },
-      {
-        name: "session_state",
-        type: "text",
-        notNull: false,
-        unique: false,
-        defaultValue: null,
-        comment: "",
-      },
-      {
-        name: "token_type",
-        type: "text",
-        notNull: false,
-        unique: false,
-        defaultValue: null,
-        comment: "",
-      },
-      {
-        name: "type",
-        type: "string",
-        notNull: true,
-        unique: false,
-        defaultValue: null,
-        comment: "",
-      },
-      {
-        name: "userId",
-        type: "int",
-        notNull: true,
-        unique: false,
-        defaultValue: null,
-        comment: "",
-      },
+      { name: "email", type: "email" },
+      { name: "emailVerified", type: "datetime" },
+      { name: "name", type: "string" },
+      { name: "image", type: "string" },
+    ],
+    revLinks: [
+      { column: "user", table: "nextauth_accounts" },
+      { column: "user", table: "nextauth_users_accounts" },
+      { column: "user", table: "nextauth_users_sessions" },
+      { column: "user", table: "nextauth_sessions" },
     ],
   },
   {
-    name: "campaign",
-    checkConstraints: {},
-    foreignKeys: {},
-    primaryKey: ["name", "company"],
-    uniqueConstraints: {},
+    name: "nextauth_accounts",
     columns: [
-      {
-        name: "campaign_configuration_name",
-        type: "text",
-        notNull: true,
-        unique: false,
-        defaultValue: null,
-        comment: "",
-      },
-      {
-        name: "company",
-        type: "string",
-        notNull: true,
-        unique: false,
-        defaultValue: null,
-        comment: "",
-      },
-      {
-        name: "customer_ids",
-        type: "uuid[]",
-        notNull: true,
-        unique: false,
-        defaultValue: null,
-        comment: "",
-      },
-      {
-        name: "end_date",
-        type: "date",
-        notNull: true,
-        unique: false,
-        defaultValue: null,
-        comment: "",
-      },
-      {
-        name: "name",
-        type: "text",
-        notNull: true,
-        unique: false,
-        defaultValue: null,
-        comment: "",
-      },
-      {
-        name: "reminder_dates",
-        type: "timestamptz[]",
-        notNull: true,
-        unique: false,
-        defaultValue: null,
-        comment: "",
-      },
-      {
-        name: "start_date",
-        type: "date",
-        notNull: true,
-        unique: false,
-        defaultValue: null,
-        comment: "",
-      },
-      {
-        name: "type",
-        type: "text",
-        notNull: true,
-        unique: false,
-        defaultValue: null,
-        comment: "",
-      },
+      { name: "user", type: "link", link: { table: "nextauth_users" } },
+      { name: "type", type: "string" },
+      { name: "provider", type: "string" },
+      { name: "providerAccountId", type: "string" },
+      { name: "refresh_token", type: "string" },
+      { name: "access_token", type: "string" },
+      { name: "expires_at", type: "int" },
+      { name: "token_type", type: "string" },
+      { name: "scope", type: "string" },
+      { name: "id_token", type: "text" },
+      { name: "session_state", type: "string" },
+    ],
+    revLinks: [{ column: "account", table: "nextauth_users_accounts" }],
+  },
+  {
+    name: "nextauth_verificationTokens",
+    columns: [
+      { name: "identifier", type: "string" },
+      { name: "token", type: "string" },
+      { name: "expires", type: "datetime" },
     ],
   },
   {
-    name: "campaign_configuration",
-    checkConstraints: {},
-    foreignKeys: {},
-    primaryKey: ["name", "company"],
-    uniqueConstraints: {},
+    name: "nextauth_users_accounts",
     columns: [
-      {
-        name: "company",
-        type: "string",
-        notNull: true,
-        unique: false,
-        defaultValue: null,
-        comment: "",
-      },
-      {
-        name: "entity_ids",
-        type: "uuid[]",
-        notNull: true,
-        unique: false,
-        defaultValue: null,
-        comment: "",
-      },
-      {
-        name: "measure_value_names",
-        type: "multiple",
-        notNull: true,
-        unique: false,
-        defaultValue: null,
-        comment: "",
-      },
-      {
-        name: "name",
-        type: "text",
-        notNull: true,
-        unique: false,
-        defaultValue: null,
-        comment: "",
-      },
+      { name: "user", type: "link", link: { table: "nextauth_users" } },
+      { name: "account", type: "link", link: { table: "nextauth_accounts" } },
     ],
   },
   {
-    name: "campaign_reminder_sent",
-    checkConstraints: {},
-    foreignKeys: {},
-    primaryKey: ["campaign_name", "reminder_date", "customer_email", "company"],
-    uniqueConstraints: {},
+    name: "nextauth_users_sessions",
     columns: [
-      {
-        name: "campaign_name",
-        type: "text",
-        notNull: true,
-        unique: false,
-        defaultValue: null,
-        comment: "",
-      },
-      {
-        name: "company",
-        type: "string",
-        notNull: true,
-        unique: false,
-        defaultValue: null,
-        comment: "",
-      },
-      {
-        name: "customer_email",
-        type: "text",
-        notNull: true,
-        unique: false,
-        defaultValue: null,
-        comment: "",
-      },
-      {
-        name: "customer_id",
-        type: "text",
-        notNull: true,
-        unique: false,
-        defaultValue: null,
-        comment: "",
-      },
-      {
-        name: "reminder_date",
-        type: "datetime",
-        notNull: true,
-        unique: false,
-        defaultValue: null,
-        comment: "",
-      },
-      {
-        name: "token",
-        type: "text",
-        notNull: true,
-        unique: false,
-        defaultValue: null,
-        comment: "",
-      },
+      { name: "user", type: "link", link: { table: "nextauth_users" } },
+      { name: "session", type: "link", link: { table: "nextauth_sessions" } },
     ],
+  },
+  {
+    name: "nextauth_sessions",
+    columns: [
+      { name: "sessionToken", type: "string" },
+      { name: "expires", type: "datetime" },
+      { name: "user", type: "link", link: { table: "nextauth_users" } },
+    ],
+    revLinks: [{ column: "session", table: "nextauth_users_sessions" }],
   },
   {
     name: "company",
-    checkConstraints: {},
-    foreignKeys: {},
-    primaryKey: ["name"],
-    uniqueConstraints: {},
     columns: [
-      {
-        name: "email",
-        type: "text",
-        notNull: true,
-        unique: false,
-        defaultValue: null,
-        comment: "",
-      },
-      {
-        name: "name",
-        type: "string",
-        notNull: true,
-        unique: true,
-        defaultValue: null,
-        comment: "",
-      },
-    ],
-  },
-  {
-    name: "customer",
-    checkConstraints: {},
-    foreignKeys: {},
-    primaryKey: ["id", "company"],
-    uniqueConstraints: {},
-    columns: [
-      {
-        name: "additional_fields",
-        type: "json",
-        notNull: false,
-        unique: false,
-        defaultValue: null,
-        comment: "",
-      },
-      {
-        name: "company",
-        type: "string",
-        notNull: true,
-        unique: false,
-        defaultValue: null,
-        comment: "",
-      },
-      {
-        name: "email",
-        type: "text",
-        notNull: true,
-        unique: false,
-        defaultValue: null,
-        comment: "",
-      },
-      {
-        name: "entity_id",
-        type: "uuid",
-        notNull: true,
-        unique: false,
-        defaultValue: null,
-        comment: "",
-      },
-      {
-        name: "first_name",
-        type: "string",
-        notNull: true,
-        unique: false,
-        defaultValue: null,
-        comment: "",
-      },
-      {
-        name: "id",
-        type: "uuid",
-        notNull: true,
-        unique: false,
-        defaultValue: "gen_random_uuid()",
-        comment: "",
-      },
-      {
-        name: "last_name",
-        type: "string",
-        notNull: true,
-        unique: false,
-        defaultValue: null,
-        comment: "",
-      },
-      {
-        name: "middle_name",
-        type: "string",
-        notNull: false,
-        unique: false,
-        defaultValue: null,
-        comment: "",
-      },
-      {
-        name: "phone_number",
-        type: "string",
-        notNull: false,
-        unique: false,
-        defaultValue: null,
-        comment: "",
-      },
-      {
-        name: "title",
-        type: "string",
-        notNull: false,
-        unique: false,
-        defaultValue: null,
-        comment: "",
-      },
-    ],
-  },
-  {
-    name: "customer_measurement",
-    checkConstraints: {},
-    foreignKeys: {},
-    primaryKey: ["campaign_name", "customer_id", "company"],
-    uniqueConstraints: {},
-    columns: [
-      {
-        name: "campaign_name",
-        type: "text",
-        notNull: true,
-        unique: false,
-        defaultValue: null,
-        comment: "",
-      },
-      {
-        name: "company",
-        type: "string",
-        notNull: true,
-        unique: false,
-        defaultValue: null,
-        comment: "",
-      },
-      {
-        name: "customer_id",
-        type: "uuid",
-        notNull: true,
-        unique: false,
-        defaultValue: null,
-        comment: "",
-      },
-      {
-        name: "customer_mail",
-        type: "text",
-        notNull: true,
-        unique: false,
-        defaultValue: null,
-        comment: "",
-      },
-      {
-        name: "date_time",
-        type: "timestamp without time zone",
-        notNull: true,
-        unique: false,
-        defaultValue: null,
-        comment: "",
-      },
-      {
-        name: "measurements",
-        type: "json[]",
-        notNull: true,
-        unique: false,
-        defaultValue: null,
-        comment: "",
-      },
-    ],
-  },
-  {
-    name: "discount",
-    checkConstraints: {},
-    foreignKeys: {},
-    primaryKey: ["id"],
-    uniqueConstraints: {},
-    columns: [
-      {
-        name: "campaign_name",
-        type: "text",
-        notNull: true,
-        unique: false,
-        defaultValue: null,
-        comment: "",
-      },
-      {
-        name: "company",
-        type: "string",
-        notNull: true,
-        unique: false,
-        defaultValue: null,
-        comment: "",
-      },
-      {
-        name: "currency",
-        type: "string",
-        notNull: false,
-        unique: false,
-        defaultValue: null,
-        comment: "",
-      },
-      {
-        name: "customer_ids",
-        type: "uuid[]",
-        notNull: true,
-        unique: false,
-        defaultValue: null,
-        comment: "",
-      },
-      {
-        name: "discount_name",
-        type: "text",
-        notNull: true,
-        unique: false,
-        defaultValue: null,
-        comment: "",
-      },
-      {
-        name: "discount_type",
-        type: "string",
-        notNull: true,
-        unique: false,
-        defaultValue: null,
-        comment: "",
-      },
-      {
-        name: "discount_unit",
-        type: "string",
-        notNull: true,
-        unique: false,
-        defaultValue: null,
-        comment: "",
-      },
-      {
-        name: "discount_value",
-        type: "float",
-        notNull: true,
-        unique: false,
-        defaultValue: null,
-        comment: "",
-      },
-      {
-        name: "id",
-        type: "uuid",
-        notNull: true,
-        unique: true,
-        defaultValue: "gen_random_uuid()",
-        comment: "",
-      },
-      {
-        name: "measure_value_name",
-        type: "text",
-        notNull: false,
-        unique: false,
-        defaultValue: null,
-        comment: "",
-      },
-      {
-        name: "range_from",
-        type: "float",
-        notNull: false,
-        unique: false,
-        defaultValue: null,
-        comment: "",
-      },
-      {
-        name: "range_to",
-        type: "float",
-        notNull: false,
-        unique: false,
-        defaultValue: null,
-        comment: "",
-      },
-      {
-        name: "valid_from",
-        type: "datetime",
-        notNull: true,
-        unique: false,
-        defaultValue: null,
-        comment: "",
-      },
-      {
-        name: "valid_to",
-        type: "datetime",
-        notNull: false,
-        unique: false,
-        defaultValue: null,
-        comment: "",
-      },
-    ],
-  },
-  {
-    name: "entity",
-    checkConstraints: {},
-    foreignKeys: {},
-    primaryKey: ["id"],
-    uniqueConstraints: {},
-    columns: [
-      {
-        name: "company",
-        type: "string",
-        notNull: true,
-        unique: false,
-        defaultValue: null,
-        comment: "",
-      },
-      {
-        name: "entity_type",
-        type: "string",
-        notNull: true,
-        unique: false,
-        defaultValue: null,
-        comment: "",
-      },
-      {
-        name: "field_values",
-        type: "json",
-        notNull: true,
-        unique: false,
-        defaultValue: null,
-        comment: "",
-      },
-      {
-        name: "id",
-        type: "uuid",
-        notNull: true,
-        unique: true,
-        defaultValue: "gen_random_uuid()",
-        comment: "",
-      },
+      { name: "name", type: "string" },
+      { name: "email", type: "text" },
     ],
   },
   {
     name: "entity_type",
-    checkConstraints: {},
-    foreignKeys: {},
-    primaryKey: ["name"],
-    uniqueConstraints: {},
     columns: [
-      {
-        name: "company",
-        type: "string",
-        notNull: true,
-        unique: false,
-        defaultValue: null,
-        comment: "",
-      },
-      {
-        name: "fields",
-        type: "json",
-        notNull: true,
-        unique: false,
-        defaultValue: null,
-        comment: "",
-      },
-      {
-        name: "name",
-        type: "string",
-        notNull: true,
-        unique: true,
-        defaultValue: null,
-        comment: "",
-      },
-      {
-        name: "translations",
-        type: "json",
-        notNull: true,
-        unique: false,
-        defaultValue: null,
-        comment: "",
-      },
+      { name: "name", type: "string" },
+      { name: "fields", type: "json" },
+      { name: "company", type: "string" },
+      { name: "translations", type: "json" },
     ],
   },
   {
-    name: "invoice",
-    checkConstraints: {
-      invoice_status_check: {
-        name: "invoice_status_check",
-        columns: ["status"],
-        definition:
-          "CHECK (((status)::text = ANY ((ARRAY['PENDING'::character varying, 'PAID'::character varying, 'CANCELLED'::character varying])::text[])))",
-      },
-      invoice_type_check: {
-        name: "invoice_type_check",
-        columns: ["type"],
-        definition:
-          "CHECK (((type)::text = ANY ((ARRAY['REGULAR'::character varying, 'CREDITNOTA'::character varying])::text[])))",
-      },
-    },
-    foreignKeys: {
-      invoice_original_invoice_id_fkey: {
-        name: "invoice_original_invoice_id_fkey",
-        columns: ["original_invoice_id"],
-        referencedTable: "invoice",
-        referencedColumns: ["id"],
-        onDelete: "NO ACTION",
-      },
-    },
-    primaryKey: ["id"],
-    uniqueConstraints: {},
+    name: "entity",
     columns: [
-      {
-        name: "campaign_name",
-        type: "text",
-        notNull: true,
-        unique: false,
-        defaultValue: null,
-        comment: "",
-      },
-      {
-        name: "company",
-        type: "string",
-        notNull: true,
-        unique: false,
-        defaultValue: null,
-        comment: "",
-      },
-      {
-        name: "currency",
-        type: "string",
-        notNull: true,
-        unique: false,
-        defaultValue: null,
-        comment: "",
-      },
-      {
-        name: "customer_id",
-        type: "text",
-        notNull: true,
-        unique: false,
-        defaultValue: null,
-        comment: "",
-      },
-      {
-        name: "id",
-        type: "uuid",
-        notNull: true,
-        unique: true,
-        defaultValue: "gen_random_uuid()",
-        comment: "",
-      },
-      {
-        name: "invoice_date",
-        type: "datetime",
-        notNull: true,
-        unique: false,
-        defaultValue: "now()",
-        comment: "",
-      },
-      {
-        name: "original_invoice_id",
-        type: "link",
-        link: { table: "invoice" },
-        notNull: false,
-        unique: false,
-        defaultValue: null,
-        comment: "",
-      },
-      {
-        name: "sequence_number",
-        type: "string",
-        notNull: true,
-        unique: false,
-        defaultValue: null,
-        comment: "",
-      },
-      {
-        name: "status",
-        type: "string",
-        notNull: true,
-        unique: false,
-        defaultValue: null,
-        comment: "",
-      },
-      {
-        name: "total_amount",
-        type: "float",
-        notNull: true,
-        unique: false,
-        defaultValue: null,
-        comment: "",
-      },
-      {
-        name: "type",
-        type: "string",
-        notNull: true,
-        unique: false,
-        defaultValue: null,
-        comment: "",
-      },
-      {
-        name: "year",
-        type: "int",
-        notNull: true,
-        unique: false,
-        defaultValue: null,
-        comment: "",
-      },
+      { name: "entity_type", type: "string" },
+      { name: "field_values", type: "json" },
+      { name: "company", type: "string" },
     ],
   },
   {
-    name: "invoice_line_item",
-    checkConstraints: {},
-    foreignKeys: {
-      invoice_line_item_invoice_id_fkey: {
-        name: "invoice_line_item_invoice_id_fkey",
-        columns: ["invoice_id"],
-        referencedTable: "invoice",
-        referencedColumns: ["id"],
-        onDelete: "NO ACTION",
-      },
-    },
-    primaryKey: ["id"],
-    uniqueConstraints: {},
+    name: "campaign_configuration",
     columns: [
-      {
-        name: "campaign_name",
-        type: "text",
-        notNull: true,
-        unique: false,
-        defaultValue: null,
-        comment: "",
-      },
-      {
-        name: "company",
-        type: "string",
-        notNull: true,
-        unique: false,
-        defaultValue: null,
-        comment: "",
-      },
-      {
-        name: "currency",
-        type: "string",
-        notNull: true,
-        unique: false,
-        defaultValue: null,
-        comment: "",
-      },
-      {
-        name: "customer_id",
-        type: "text",
-        notNull: true,
-        unique: false,
-        defaultValue: null,
-        comment: "",
-      },
-      {
-        name: "description",
-        type: "text",
-        notNull: true,
-        unique: false,
-        defaultValue: null,
-        comment: "",
-      },
-      {
-        name: "id",
-        type: "uuid",
-        notNull: true,
-        unique: true,
-        defaultValue: "gen_random_uuid()",
-        comment: "",
-      },
-      {
-        name: "invoice_date",
-        type: "datetime",
-        notNull: true,
-        unique: false,
-        defaultValue: null,
-        comment: "",
-      },
-      {
-        name: "invoice_id",
-        type: "link",
-        link: { table: "invoice" },
-        notNull: false,
-        unique: false,
-        defaultValue: null,
-        comment: "",
-      },
-      {
-        name: "line_total",
-        type: "float",
-        notNull: true,
-        unique: false,
-        defaultValue: null,
-        comment: "",
-      },
-      {
-        name: "quantity",
-        type: "float",
-        notNull: true,
-        unique: false,
-        defaultValue: null,
-        comment: "",
-      },
-      {
-        name: "tariff_type",
-        type: "string",
-        notNull: true,
-        unique: false,
-        defaultValue: null,
-        comment: "",
-      },
-      {
-        name: "unit_price",
-        type: "float",
-        notNull: true,
-        unique: false,
-        defaultValue: null,
-        comment: "",
-      },
+      { name: "name", type: "string" },
+      { name: "measure_value_names", type: "multiple" },
+      { name: "entity_ids", type: "multiple" },
+      { name: "company", type: "string" },
     ],
   },
   {
-    name: "invoice_year_state",
-    checkConstraints: {},
-    foreignKeys: {},
-    primaryKey: ["company_name", "year"],
-    uniqueConstraints: {},
+    name: "campaign",
     columns: [
-      {
-        name: "company_name",
-        type: "string",
-        notNull: true,
-        unique: false,
-        defaultValue: null,
-        comment: "",
-      },
-      {
-        name: "year",
-        type: "int",
-        notNull: true,
-        unique: false,
-        defaultValue: null,
-        comment: "",
-      },
-    ],
-  },
-  {
-    name: "measure_value",
-    checkConstraints: {},
-    foreignKeys: {},
-    primaryKey: ["name", "company"],
-    uniqueConstraints: {},
-    columns: [
-      {
-        name: "company",
-        type: "string",
-        notNull: true,
-        unique: false,
-        defaultValue: null,
-        comment: "",
-      },
-      {
-        name: "default_value",
-        type: "text",
-        notNull: false,
-        unique: false,
-        defaultValue: null,
-        comment: "",
-      },
-      {
-        name: "is_editable",
-        type: "bool",
-        notNull: true,
-        unique: false,
-        defaultValue: null,
-        comment: "",
-      },
-      {
-        name: "measure_unit",
-        type: "text",
-        notNull: false,
-        unique: false,
-        defaultValue: null,
-        comment: "",
-      },
-      {
-        name: "name",
-        type: "text",
-        notNull: true,
-        unique: false,
-        defaultValue: null,
-        comment: "",
-      },
-      {
-        name: "translations",
-        type: "json",
-        notNull: true,
-        unique: false,
-        defaultValue: null,
-        comment: "",
-      },
-      {
-        name: "type",
-        type: "string",
-        notNull: true,
-        unique: false,
-        defaultValue: null,
-        comment: "",
-      },
-    ],
-  },
-  {
-    name: "non_active_customer",
-    checkConstraints: {},
-    foreignKeys: {},
-    primaryKey: [],
-    uniqueConstraints: {},
-    columns: [
-      {
-        name: "additional_fields",
-        type: "json",
-        notNull: false,
-        unique: false,
-        defaultValue: null,
-        comment: "",
-      },
-      {
-        name: "archive_date",
-        type: "datetime",
-        notNull: true,
-        unique: false,
-        defaultValue: "now()",
-        comment: "",
-      },
-      {
-        name: "company",
-        type: "string",
-        notNull: true,
-        unique: false,
-        defaultValue: null,
-        comment: "",
-      },
-      {
-        name: "email",
-        type: "text",
-        notNull: true,
-        unique: false,
-        defaultValue: null,
-        comment: "",
-      },
-      {
-        name: "entity_id",
-        type: "uuid",
-        notNull: true,
-        unique: false,
-        defaultValue: null,
-        comment: "",
-      },
-      {
-        name: "first_name",
-        type: "string",
-        notNull: true,
-        unique: false,
-        defaultValue: null,
-        comment: "",
-      },
-      {
-        name: "id",
-        type: "uuid",
-        notNull: true,
-        unique: false,
-        defaultValue: null,
-        comment: "",
-      },
-      {
-        name: "last_name",
-        type: "string",
-        notNull: true,
-        unique: false,
-        defaultValue: null,
-        comment: "",
-      },
-      {
-        name: "middle_name",
-        type: "string",
-        notNull: false,
-        unique: false,
-        defaultValue: null,
-        comment: "",
-      },
-      {
-        name: "phone_number",
-        type: "string",
-        notNull: false,
-        unique: false,
-        defaultValue: null,
-        comment: "",
-      },
-      {
-        name: "title",
-        type: "string",
-        notNull: false,
-        unique: false,
-        defaultValue: null,
-        comment: "",
-      },
-    ],
-  },
-  {
-    name: "overruled_customer_measurement",
-    checkConstraints: {},
-    foreignKeys: {},
-    primaryKey: [
-      "campaign_name",
-      "customer_id",
-      "overrule_date_time",
-      "company",
-    ],
-    uniqueConstraints: {},
-    columns: [
-      {
-        name: "campaign_name",
-        type: "text",
-        notNull: true,
-        unique: false,
-        defaultValue: null,
-        comment: "",
-      },
-      {
-        name: "company",
-        type: "string",
-        notNull: true,
-        unique: false,
-        defaultValue: null,
-        comment: "",
-      },
-      {
-        name: "customer_id",
-        type: "uuid",
-        notNull: true,
-        unique: false,
-        defaultValue: null,
-        comment: "",
-      },
-      {
-        name: "customer_mail",
-        type: "text",
-        notNull: true,
-        unique: false,
-        defaultValue: null,
-        comment: "",
-      },
-      {
-        name: "measurements",
-        type: "json[]",
-        notNull: true,
-        unique: false,
-        defaultValue: null,
-        comment: "",
-      },
-      {
-        name: "original_date_time",
-        type: "timestamp without time zone",
-        notNull: true,
-        unique: false,
-        defaultValue: null,
-        comment: "",
-      },
-      {
-        name: "overrule_date_time",
-        type: "timestamp without time zone",
-        notNull: true,
-        unique: false,
-        defaultValue: null,
-        comment: "",
-      },
-    ],
-  },
-  {
-    name: "payment",
-    checkConstraints: {},
-    foreignKeys: {},
-    primaryKey: [
-      "customer_email",
-      "company",
-      "invoice_date",
-      "payment_date",
-      "transaction_id",
-    ],
-    uniqueConstraints: {},
-    columns: [
-      {
-        name: "amount",
-        type: "float",
-        notNull: true,
-        unique: false,
-        defaultValue: null,
-        comment: "",
-      },
-      {
-        name: "company",
-        type: "string",
-        notNull: true,
-        unique: false,
-        defaultValue: null,
-        comment: "",
-      },
-      {
-        name: "currency",
-        type: "string",
-        notNull: true,
-        unique: false,
-        defaultValue: null,
-        comment: "",
-      },
-      {
-        name: "customer_email",
-        type: "text",
-        notNull: true,
-        unique: false,
-        defaultValue: null,
-        comment: "",
-      },
-      {
-        name: "invoice_date",
-        type: "datetime",
-        notNull: true,
-        unique: false,
-        defaultValue: null,
-        comment: "",
-      },
-      {
-        name: "payment_date",
-        type: "datetime",
-        notNull: true,
-        unique: false,
-        defaultValue: "now()",
-        comment: "",
-      },
-      {
-        name: "payment_method",
-        type: "string",
-        notNull: true,
-        unique: false,
-        defaultValue: null,
-        comment: "",
-      },
-      {
-        name: "transaction_id",
-        type: "text",
-        notNull: true,
-        unique: false,
-        defaultValue: null,
-        comment: "",
-      },
+      { name: "name", type: "string" },
+      { name: "campaign_configuration_name", type: "string" },
+      { name: "type", type: "string" },
+      { name: "start_date", type: "datetime" },
+      { name: "end_date", type: "datetime" },
+      { name: "reminder_dates", type: "multiple" },
+      { name: "customer_ids", type: "multiple" },
+      { name: "company", type: "string" },
     ],
   },
   {
     name: "reminder",
-    checkConstraints: {},
-    foreignKeys: {},
-    primaryKey: ["campaign_name", "reminder_date", "company"],
-    uniqueConstraints: {},
     columns: [
-      {
-        name: "campaign_name",
-        type: "text",
-        notNull: true,
-        unique: false,
-        defaultValue: null,
-        comment: "",
-      },
-      {
-        name: "company",
-        type: "string",
-        notNull: true,
-        unique: false,
-        defaultValue: null,
-        comment: "",
-      },
-      {
-        name: "customer_ids",
-        type: "uuid[]",
-        notNull: true,
-        unique: false,
-        defaultValue: null,
-        comment: "",
-      },
-      {
-        name: "reminder_date",
-        type: "datetime",
-        notNull: true,
-        unique: false,
-        defaultValue: null,
-        comment: "",
-      },
+      { name: "campaign_name", type: "string" },
+      { name: "customer_ids", type: "multiple" },
+      { name: "reminder_date", type: "datetime" },
+      { name: "company", type: "string" },
     ],
   },
   {
-    name: "sessions",
-    checkConstraints: {},
-    foreignKeys: {},
-    primaryKey: ["id"],
-    uniqueConstraints: {},
+    name: "campaign_reminder_sent",
     columns: [
-      {
-        name: "expires",
-        type: "datetime",
-        notNull: true,
-        unique: false,
-        defaultValue: null,
-        comment: "",
-      },
-      {
-        name: "id",
-        type: "int",
-        notNull: true,
-        unique: true,
-        defaultValue:
-          "nextval('bb_nb68bombrh3u9cp7l7ecpu99qo_8jibml.sessions_id_seq'::regclass)",
-        comment: "",
-      },
-      {
-        name: "sessionToken",
-        type: "string",
-        notNull: true,
-        unique: false,
-        defaultValue: null,
-        comment: "",
-      },
-      {
-        name: "userId",
-        type: "int",
-        notNull: true,
-        unique: false,
-        defaultValue: null,
-        comment: "",
-      },
+      { name: "campaign_name", type: "string" },
+      { name: "reminder_date", type: "datetime" },
+      { name: "customer_id", type: "string" },
+      { name: "customer_email", type: "string" },
+      { name: "token", type: "string" },
+      { name: "company", type: "string" },
+    ],
+  },
+  {
+    name: "customer",
+    columns: [
+      { name: "email", type: "email" },
+      { name: "title", type: "string" },
+      { name: "first_name", type: "string" },
+      { name: "middle_name", type: "string" },
+      { name: "last_name", type: "string" },
+      { name: "phone_number", type: "string" },
+      { name: "company", type: "string" },
+      { name: "entity_id", type: "string" },
+      { name: "additional_fields", type: "json" },
+    ],
+  },
+  {
+    name: "non_active_customer",
+    columns: [
+      { name: "email", type: "email" },
+      { name: "title", type: "string" },
+      { name: "first_name", type: "string" },
+      { name: "middle_name", type: "string" },
+      { name: "last_name", type: "string" },
+      { name: "phone_number", type: "string" },
+      { name: "company", type: "string" },
+      { name: "entity_id", type: "string" },
+      { name: "additional_fields", type: "json" },
+      { name: "archive_date", type: "datetime" },
     ],
   },
   {
     name: "tariff",
-    checkConstraints: {},
-    foreignKeys: {},
-    primaryKey: ["id"],
-    uniqueConstraints: {},
     columns: [
-      {
-        name: "campaign_name",
-        type: "text",
-        notNull: true,
-        unique: false,
-        defaultValue: null,
-        comment: "",
-      },
-      {
-        name: "company",
-        type: "string",
-        notNull: true,
-        unique: false,
-        defaultValue: null,
-        comment: "",
-      },
-      {
-        name: "currency",
-        type: "string",
-        notNull: true,
-        unique: false,
-        defaultValue: null,
-        comment: "",
-      },
-      {
-        name: "customer_ids",
-        type: "uuid[]",
-        notNull: true,
-        unique: false,
-        defaultValue: null,
-        comment: "",
-      },
-      {
-        name: "description",
-        type: "string",
-        notNull: true,
-        unique: false,
-        defaultValue: null,
-        comment: "",
-      },
-      {
-        name: "id",
-        type: "uuid",
-        notNull: true,
-        unique: true,
-        defaultValue: "gen_random_uuid()",
-        comment: "",
-      },
-      {
-        name: "is_deposit",
-        type: "bool",
-        notNull: true,
-        unique: false,
-        defaultValue: null,
-        comment: "",
-      },
-      {
-        name: "measure_value_name",
-        type: "text",
-        notNull: false,
-        unique: false,
-        defaultValue: null,
-        comment: "",
-      },
-      {
-        name: "range_from",
-        type: "float",
-        notNull: false,
-        unique: false,
-        defaultValue: null,
-        comment: "",
-      },
-      {
-        name: "range_to",
-        type: "float",
-        notNull: false,
-        unique: false,
-        defaultValue: null,
-        comment: "",
-      },
-      {
-        name: "rate",
-        type: "float",
-        notNull: true,
-        unique: false,
-        defaultValue: null,
-        comment: "",
-      },
-      {
-        name: "unit",
-        type: "string",
-        notNull: true,
-        unique: false,
-        defaultValue: null,
-        comment: "",
-      },
-      {
-        name: "valid_from",
-        type: "datetime",
-        notNull: true,
-        unique: false,
-        defaultValue: null,
-        comment: "",
-      },
-      {
-        name: "valid_to",
-        type: "datetime",
-        notNull: false,
-        unique: false,
-        defaultValue: null,
-        comment: "",
-      },
+      { name: "campaign_name", type: "string" },
+      { name: "company", type: "string" },
+      { name: "customer_ids", type: "multiple" },
+      { name: "description", type: "string" },
+      { name: "measure_value_name", type: "string" },
+      { name: "rate", type: "float" },
+      { name: "currency", type: "string" },
+      { name: "unit", type: "string" },
+      { name: "range_from", type: "float" },
+      { name: "range_to", type: "float" },
+      { name: "valid_from", type: "datetime" },
+      { name: "valid_to", type: "datetime" },
+      { name: "is_deposit", type: "bool" },
     ],
   },
   {
-    name: "users",
-    checkConstraints: {},
-    foreignKeys: {},
-    primaryKey: ["id"],
-    uniqueConstraints: {},
+    name: "discount",
     columns: [
-      {
-        name: "company",
-        type: "text",
-        notNull: false,
-        unique: false,
-        defaultValue: null,
-        comment: "",
-      },
-      {
-        name: "email",
-        type: "string",
-        notNull: false,
-        unique: false,
-        defaultValue: null,
-        comment: "",
-      },
-      {
-        name: "emailVerified",
-        type: "datetime",
-        notNull: false,
-        unique: false,
-        defaultValue: null,
-        comment: "",
-      },
-      {
-        name: "id",
-        type: "int",
-        notNull: true,
-        unique: true,
-        defaultValue:
-          "nextval('bb_nb68bombrh3u9cp7l7ecpu99qo_8jibml.users_id_seq'::regclass)",
-        comment: "",
-      },
-      {
-        name: "image",
-        type: "text",
-        notNull: false,
-        unique: false,
-        defaultValue: null,
-        comment: "",
-      },
-      {
-        name: "name",
-        type: "string",
-        notNull: false,
-        unique: false,
-        defaultValue: null,
-        comment: "",
-      },
-      {
-        name: "role",
-        type: "text",
-        notNull: false,
-        unique: false,
-        defaultValue: null,
-        comment: "",
-      },
+      { name: "discount_name", type: "string" },
+      { name: "campaign_name", type: "string" },
+      { name: "company", type: "string" },
+      { name: "customer_ids", type: "multiple" },
+      { name: "discount_type", type: "string" },
+      { name: "measure_value_name", type: "string" },
+      { name: "range_from", type: "float" },
+      { name: "range_to", type: "float" },
+      { name: "discount_value", type: "float" },
+      { name: "discount_unit", type: "string" },
+      { name: "currency", type: "string" },
+      { name: "valid_from", type: "datetime" },
+      { name: "valid_to", type: "datetime" },
     ],
   },
   {
-    name: "verification_token",
-    checkConstraints: {},
-    foreignKeys: {},
-    primaryKey: ["identifier", "token"],
-    uniqueConstraints: {},
+    name: "invoice_year_state",
     columns: [
-      {
-        name: "expires",
-        type: "datetime",
-        notNull: true,
-        unique: false,
-        defaultValue: null,
-        comment: "",
-      },
-      {
-        name: "identifier",
-        type: "text",
-        notNull: true,
-        unique: false,
-        defaultValue: null,
-        comment: "",
-      },
-      {
-        name: "token",
-        type: "text",
-        notNull: true,
-        unique: false,
-        defaultValue: null,
-        comment: "",
-      },
+      { name: "company_name", type: "string" },
+      { name: "year", type: "int" },
+    ],
+  },
+  {
+    name: "invoice",
+    columns: [
+      { name: "sequence_number", type: "string" },
+      { name: "year", type: "int" },
+      { name: "customer_id", type: "string" },
+      { name: "company", type: "string" },
+      { name: "campaign_name", type: "string" },
+      { name: "invoice_date", type: "datetime" },
+      { name: "total_amount", type: "float" },
+      { name: "currency", type: "string" },
+      { name: "status", type: "string" },
+      { name: "type", type: "string" },
+      { name: "original_invoice_id", type: "string" },
+    ],
+  },
+  {
+    name: "invoice_line_item",
+    columns: [
+      { name: "invoice_id", type: "string" },
+      { name: "customer_id", type: "string" },
+      { name: "company", type: "string" },
+      { name: "invoice_date", type: "datetime" },
+      { name: "campaign_name", type: "string" },
+      { name: "tariff_type", type: "string" },
+      { name: "description", type: "text" },
+      { name: "quantity", type: "float" },
+      { name: "unit_price", type: "float" },
+      { name: "line_total", type: "float" },
+      { name: "currency", type: "string" },
+    ],
+  },
+  {
+    name: "payment",
+    columns: [
+      { name: "customer_email", type: "email" },
+      { name: "company", type: "string" },
+      { name: "invoice_date", type: "datetime" },
+      { name: "payment_date", type: "datetime" },
+      { name: "amount", type: "float" },
+      { name: "currency", type: "string" },
+      { name: "payment_method", type: "string" },
+      { name: "transaction_id", type: "string" },
     ],
   },
 ] as const;
@@ -1543,35 +258,61 @@ const tables = [
 export type SchemaTables = typeof tables;
 export type InferredTypes = SchemaInference<SchemaTables>;
 
-export type Accounts = InferredTypes["accounts"];
-export type AccountsRecord = Accounts & XataRecord;
+export type NextauthUsers = InferredTypes["nextauth_users"];
+export type NextauthUsersRecord = NextauthUsers & XataRecord;
 
-export type Campaign = InferredTypes["campaign"];
-export type CampaignRecord = Campaign & XataRecord;
+export type NextauthAccounts = InferredTypes["nextauth_accounts"];
+export type NextauthAccountsRecord = NextauthAccounts & XataRecord;
 
-export type CampaignConfiguration = InferredTypes["campaign_configuration"];
-export type CampaignConfigurationRecord = CampaignConfiguration & XataRecord;
+export type NextauthVerificationTokens =
+    InferredTypes["nextauth_verificationTokens"];
+export type NextauthVerificationTokensRecord = NextauthVerificationTokens &
+    XataRecord;
 
-export type CampaignReminderSent = InferredTypes["campaign_reminder_sent"];
-export type CampaignReminderSentRecord = CampaignReminderSent & XataRecord;
+export type NextauthUsersAccounts = InferredTypes["nextauth_users_accounts"];
+export type NextauthUsersAccountsRecord = NextauthUsersAccounts & XataRecord;
+
+export type NextauthUsersSessions = InferredTypes["nextauth_users_sessions"];
+export type NextauthUsersSessionsRecord = NextauthUsersSessions & XataRecord;
+
+export type NextauthSessions = InferredTypes["nextauth_sessions"];
+export type NextauthSessionsRecord = NextauthSessions & XataRecord;
 
 export type Company = InferredTypes["company"];
 export type CompanyRecord = Company & XataRecord;
 
-export type Customer = InferredTypes["customer"];
-export type CustomerRecord = Customer & XataRecord;
-
-export type CustomerMeasurement = InferredTypes["customer_measurement"];
-export type CustomerMeasurementRecord = CustomerMeasurement & XataRecord;
-
-export type Discount = InferredTypes["discount"];
-export type DiscountRecord = Discount & XataRecord;
+export type EntityType = InferredTypes["entity_type"];
+export type EntityTypeRecord = EntityType & XataRecord;
 
 export type Entity = InferredTypes["entity"];
 export type EntityRecord = Entity & XataRecord;
 
-export type EntityType = InferredTypes["entity_type"];
-export type EntityTypeRecord = EntityType & XataRecord;
+export type CampaignConfiguration = InferredTypes["campaign_configuration"];
+export type CampaignConfigurationRecord = CampaignConfiguration & XataRecord;
+
+export type Campaign = InferredTypes["campaign"];
+export type CampaignRecord = Campaign & XataRecord;
+
+export type Reminder = InferredTypes["reminder"];
+export type ReminderRecord = Reminder & XataRecord;
+
+export type CampaignReminderSent = InferredTypes["campaign_reminder_sent"];
+export type CampaignReminderSentRecord = CampaignReminderSent & XataRecord;
+
+export type Customer = InferredTypes["customer"];
+export type CustomerRecord = Customer & XataRecord;
+
+export type NonActiveCustomer = InferredTypes["non_active_customer"];
+export type NonActiveCustomerRecord = NonActiveCustomer & XataRecord;
+
+export type Tariff = InferredTypes["tariff"];
+export type TariffRecord = Tariff & XataRecord;
+
+export type Discount = InferredTypes["discount"];
+export type DiscountRecord = Discount & XataRecord;
+
+export type InvoiceYearState = InferredTypes["invoice_year_state"];
+export type InvoiceYearStateRecord = InvoiceYearState & XataRecord;
 
 export type Invoice = InferredTypes["invoice"];
 export type InvoiceRecord = Invoice & XataRecord;
@@ -1579,68 +320,38 @@ export type InvoiceRecord = Invoice & XataRecord;
 export type InvoiceLineItem = InferredTypes["invoice_line_item"];
 export type InvoiceLineItemRecord = InvoiceLineItem & XataRecord;
 
-export type InvoiceYearState = InferredTypes["invoice_year_state"];
-export type InvoiceYearStateRecord = InvoiceYearState & XataRecord;
-
-export type MeasureValue = InferredTypes["measure_value"];
-export type MeasureValueRecord = MeasureValue & XataRecord;
-
-export type NonActiveCustomer = InferredTypes["non_active_customer"];
-export type NonActiveCustomerRecord = NonActiveCustomer & XataRecord;
-
-export type OverruledCustomerMeasurement =
-  InferredTypes["overruled_customer_measurement"];
-export type OverruledCustomerMeasurementRecord = OverruledCustomerMeasurement &
-  XataRecord;
-
 export type Payment = InferredTypes["payment"];
 export type PaymentRecord = Payment & XataRecord;
 
-export type Reminder = InferredTypes["reminder"];
-export type ReminderRecord = Reminder & XataRecord;
-
-export type Sessions = InferredTypes["sessions"];
-export type SessionsRecord = Sessions & XataRecord;
-
-export type Tariff = InferredTypes["tariff"];
-export type TariffRecord = Tariff & XataRecord;
-
-export type Users = InferredTypes["users"];
-export type UsersRecord = Users & XataRecord;
-
-export type VerificationToken = InferredTypes["verification_token"];
-export type VerificationTokenRecord = VerificationToken & XataRecord;
-
 export type DatabaseSchema = {
-  accounts: AccountsRecord;
-  campaign: CampaignRecord;
-  campaign_configuration: CampaignConfigurationRecord;
-  campaign_reminder_sent: CampaignReminderSentRecord;
+  nextauth_users: NextauthUsersRecord;
+  nextauth_accounts: NextauthAccountsRecord;
+  nextauth_verificationTokens: NextauthVerificationTokensRecord;
+  nextauth_users_accounts: NextauthUsersAccountsRecord;
+  nextauth_users_sessions: NextauthUsersSessionsRecord;
+  nextauth_sessions: NextauthSessionsRecord;
   company: CompanyRecord;
-  customer: CustomerRecord;
-  customer_measurement: CustomerMeasurementRecord;
-  discount: DiscountRecord;
-  entity: EntityRecord;
   entity_type: EntityTypeRecord;
+  entity: EntityRecord;
+  campaign_configuration: CampaignConfigurationRecord;
+  campaign: CampaignRecord;
+  reminder: ReminderRecord;
+  campaign_reminder_sent: CampaignReminderSentRecord;
+  customer: CustomerRecord;
+  non_active_customer: NonActiveCustomerRecord;
+  tariff: TariffRecord;
+  discount: DiscountRecord;
+  invoice_year_state: InvoiceYearStateRecord;
   invoice: InvoiceRecord;
   invoice_line_item: InvoiceLineItemRecord;
-  invoice_year_state: InvoiceYearStateRecord;
-  measure_value: MeasureValueRecord;
-  non_active_customer: NonActiveCustomerRecord;
-  overruled_customer_measurement: OverruledCustomerMeasurementRecord;
   payment: PaymentRecord;
-  reminder: ReminderRecord;
-  sessions: SessionsRecord;
-  tariff: TariffRecord;
-  users: UsersRecord;
-  verification_token: VerificationTokenRecord;
 };
 
 const DatabaseClient = buildClient();
 
 const defaultOptions = {
   databaseURL:
-    "https://RDBreed-s-workspace-8jibml.eu-central-1.xata.sh/db/meterreporting",
+    "https://RDBreed-s-workspace-8jibml.eu-west-1.xata.sh/db/auth-meter-report",
 };
 
 export class XataClient extends DatabaseClient<DatabaseSchema> {
