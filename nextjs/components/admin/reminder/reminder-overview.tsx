@@ -29,7 +29,7 @@ export default function RemindersOverview() {
                             <div className="space-y-1">
                                 <p className="text-lg font-semibold">{t('campaignName')}: {reminder.campaignName}</p>
                                 <p>{t('reminderDate')}: {new Date(reminder.reminderDate).toLocaleString()}</p>
-                                <div>
+                                <div className={'max-h-[500px] overflow-y-auto'}>
                                     <p className="font-semibold">{t('emailAddresses')}:</p>
                                     <ul className="list-disc list-inside text-sm">
                                         {reminder.customerEmails.map((email, i) => (

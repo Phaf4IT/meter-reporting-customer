@@ -25,7 +25,8 @@ export default function AdminDashboard() {
     return (
         <div className="min-h-screen mt-10 flex flex-wrap gap-5">
             {customers.length > 0 ? (
-                <div className="w-full max-w-3xl bg-cyan-900 p-6 rounded shadow-md space-y-4 max-h-[500px]">
+                <div
+                    className="w-full max-w-3xl bg-cyan-900 p-6 rounded shadow-md space-y-4 max-h-[500px] overflow-y-auto">
                     <h2 className="text-2xl font-bold">Klantenoverzicht</h2>
                     <ul className="space-y-2">
                         {customers.map((customer) => (

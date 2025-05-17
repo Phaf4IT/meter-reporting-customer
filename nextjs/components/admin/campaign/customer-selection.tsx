@@ -77,7 +77,7 @@ const CustomerSelection = ({
                     <p className="text-gray-400">{t('noResults')}</p>
                 )}
                 {filteredCustomers.map((customer: Customer) => (
-                    <div key={customer.email}
+                    <div key={`${customer.id}`}
                          className="flex items-center space-x-3 bg-gray-700 p-2 rounded-lg hover:bg-gray-600">
                         <input
                             type="checkbox"

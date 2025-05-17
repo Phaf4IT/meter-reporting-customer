@@ -18,9 +18,12 @@ export async function findCampaignsByCompany(company: string) {
         })
         .then(async campaigns => {
                 const customerIds: string[] = Array.from(new Set(campaigns.flatMap(value => value.customerIds)));
-                const customers = await findCustomersByIds(customerIds, company);
-                const configs = await findSimpleCampaignConfigurationsByCompanyAndName(campaigns.map(value => value.campaignConfigurationName), company)
-                return campaigns.map(campaign => mapTableToDomain(campaign, customers, configs));
+                if (customerIds.length > 0) {
+                    const customers = await findCustomersByIds(customerIds, company);
+                    const configs = await findSimpleCampaignConfigurationsByCompanyAndName(campaigns.map(value => value.campaignConfigurationName), company)
+                    return campaigns.map(campaign => mapTableToDomain(campaign, customers, configs));
+                }
+                return [];
             }
         )
 }

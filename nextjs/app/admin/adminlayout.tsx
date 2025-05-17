@@ -39,8 +39,8 @@ export default async function AdminLayout({
     ];
 
     return (
-        <div className="flex h-screen bg-cyan-950 text-white">
-            <nav className="w-64 bg-cyan-900 p-6 flex flex-col justify-between h-screen">
+        <div className="flex h-full bg-cyan-950 text-white">
+            <nav className="w-64 bg-cyan-900 p-6 flex flex-col justify-between">
                 <div>
                     <Image src={'/buitenplaats.jpg'} alt={'buitenplaats'} className={'object-cover'} width={'250'} height={'50'} />
                     <h1 className="text-xl font-bold mb-6">

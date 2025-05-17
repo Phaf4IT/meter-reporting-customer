@@ -199,7 +199,7 @@
       "customerEmails": "Klant-e-mails (optioneel)",
       "title": "Aanhef",
       "selectTitle": "Selecteer een titel",
-      "none": "Geen",
+      "none": "",
       "mr": "Meneer",
       "mrs": "Mevrouw",
       "family": "Familie"
