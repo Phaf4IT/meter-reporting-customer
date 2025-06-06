@@ -55,7 +55,11 @@ export abstract class KyselyEntityManager<T extends Entity> extends EntityManage
             return undefined;
         }
 
-        return new this.EntityClasss(...Object.values(result[0]));
+        const row = result[0];
+
+        const values = fieldNames.map(value => row[value])
+
+        return new this.EntityClasss(...values);
     }
 
 
@@ -69,7 +73,8 @@ export abstract class KyselyEntityManager<T extends Entity> extends EntityManage
             .execute();
 
         return result.map((row: Record<string, any>) => {
-                return new this.EntityClasss(...Object.values(row));
+                const values = columnNames.map(value => row[value])
+                return new this.EntityClasss(...values);
             }
         );
     }
@@ -110,7 +115,9 @@ export abstract class KyselyEntityManager<T extends Entity> extends EntityManage
         const result = await query.execute();
 
         return result.map((row: Record<string, any>) => {
-            const instance = new this.EntityClasss(...Object.values(row));
+            const values = columnNames.map(value => row[value])
+
+            const instance = new this.EntityClasss(...values);
             return instance as T;
         });
     }

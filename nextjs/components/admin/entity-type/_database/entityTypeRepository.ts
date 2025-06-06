@@ -3,15 +3,11 @@ import {EntityTypeTable} from "@/components/admin/entity-type/_database/entityTy
 import {EntityType} from "@/components/admin/entity-type/entityType";
 
 export async function findEntityTypesByCompany(company: string) {
-    console.log("company", company);
     return getEntityManager(EntityTypeTable)
         .findBy({
             company: company
         })
-        .then(entityTypes => entityTypes.map(entityType => {
-            console.log(entityType);
-            return mapTableToDomain(entityType);
-        }));
+        .then(entityTypes => entityTypes.map(entityType => mapTableToDomain(entityType)));
 }
 
 export async function findEntityTypeByCompanyAndName(name: string, company: string): Promise<EntityType | undefined> {
