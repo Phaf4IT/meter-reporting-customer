@@ -17,8 +17,6 @@ export class PlaywrightContainer {
                 })
                 .withWorkingDir("/home/pwuser")
                 .withUser("pwuser")
-                // .withPlatform("linux/arm64")
-                // .withExposedPorts(3000)
                 .withCommand([
                     "/bin/sh",
                     "-c",
