@@ -33,6 +33,7 @@ export class PlaywrightContainer {
                     ipAddress: `${await getDockerHostIP()}`,
                 }])
         }
+        console.log("starting playwright container")
         this.container = await genericContainer
             .start();
 
@@ -40,7 +41,9 @@ export class PlaywrightContainer {
         const host = this.container.getHost();
 
         this.wsEndpoint = `ws://${host}:${port}`;
+        console.log("configuring nginx")
         await this.configureNginx(serverPort);
+        console.log("playwright container succesfully started")
         return this;
     }
 
