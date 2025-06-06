@@ -27,7 +27,6 @@ export default function CustomerForm({
         ...customer,
         title: customer.title || "",
         entityId: customer.entity?.id || "",
-        phoneNumber: customer.phoneNumber || "",
         additionalFields: customer.additionalFields || {},
     });
 
@@ -182,10 +181,7 @@ export default function CustomerForm({
                         {Object.keys(selectedEntity.fieldValues || {}).map(
                             (fieldKey) => {
                                 const fieldLabel =
-                                    getTranslationForLocale(
-                                        selectedEntity.entityType!,
-                                        locale
-                                    )[fieldKey] || fieldKey;
+                                    getTranslationForLocale(locale, selectedEntity.entityType!)![fieldKey] || fieldKey;
 
                                 const fieldValue =
                                     selectedEntity?.fieldValues[fieldKey] ||
@@ -216,22 +212,6 @@ export default function CustomerForm({
                 >
                     {t("selectEntity")}
                 </button>
-            </div>
-
-            <div className="flex flex-wrap -mx-3 mb-6">
-                <div className="w-full px-3">
-                    <label className="block uppercase tracking-wide text-gray-200 text-s font-bold mb-2"
-                           htmlFor="phone-number">
-                        {t('phoneNumber')}
-                    </label>
-                    <input
-                        type="text"
-                        id="phone-number"
-                        value={formData.phoneNumber}
-                        onChange={(e) => setFormData({...formData, phoneNumber: e.target.value})}
-                        className="appearance-none block w-full bg-cyan-800 text-white border border-gray-500 rounded py-3 px-4 leading-tight focus:outline-none focus:border-cyan-400"
-                    />
-                </div>
             </div>
 
 
@@ -350,7 +330,7 @@ export default function CustomerForm({
                                 className="border-b border-gray-700 py-4 flex items-center justify-between">
                                 <div className="mt-2 space-y-2">
                                     {Object.keys(entity.entityType?.fields || {}).map((fieldKey) => {
-                                        const fieldLabel = getTranslationForLocale(entity.entityType!, locale)[fieldKey] || fieldKey;
+                                        const fieldLabel = getTranslationForLocale(locale, entity.entityType!)![fieldKey] || fieldKey;
                                         const fieldValue = entity.fieldValues[fieldKey] || 'N/A';
 
                                         return (

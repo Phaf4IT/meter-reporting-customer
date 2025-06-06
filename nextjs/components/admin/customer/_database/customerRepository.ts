@@ -85,7 +85,6 @@ function mapDomainToTable(customer: ModifiableCustomer, company: string) {
         middleName: customer.middleName || null,
         lastName: customer.lastName,
         entityId: customer.entityId!,
-        phoneNumber: customer.phoneNumber || null,
         additionalFields: customer.additionalFields,
         company
     });
@@ -101,7 +100,6 @@ function mapTableToDomainModifiable(customerTable: CustomerTable): ModifiableCus
         middleName: customerTable.middleName || undefined,
         lastName: customerTable.lastName,
         additionalFields: customerTable.additionalFields,
-        phoneNumber: customerTable.phoneNumber || undefined
     };
 }
 
@@ -114,7 +112,6 @@ function mapTableToDomain(customerTable: CustomerTable, entity: Entity): Custome
         firstName: customerTable.firstName,
         middleName: customerTable.middleName || undefined,
         lastName: customerTable.lastName,
-        phoneNumber: customerTable.phoneNumber || undefined,
         additionalFields: customerTable.additionalFields,
     };
 }

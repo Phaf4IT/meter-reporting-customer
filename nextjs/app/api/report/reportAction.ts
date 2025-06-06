@@ -1,20 +1,25 @@
-import {findCampaignAndCompany} from "@/components/admin/campaign/action/getCampaignAction";
+import {findCampaignAndCompanyByReminderSent} from "@/components/admin/campaign/action/getCampaignAction";
 import {Campaign} from "@/components/report/campaign";
 import {
     createCustomerMeasurement
 } from "@/components/admin/customer-measurement/action/createCustomerMeasurementAction";
 import {CustomerMeasurement} from "@/components/report/customerMeasurement";
-import {findCustomerMeasurement} from "@/components/admin/customer-measurement/action/findCustomerMeasurementAction";
 import {Logger} from "@/lib/logger";
 import {findCustomerByEmail} from "@/components/admin/customer/_database/customerRepository";
+import {findReminderSent} from "@/components/admin/reminder-sent/_database/reminderSentRepository";
+import {ReminderSent} from "@/components/admin/reminder-sent/reminder-sent";
+import {auth} from "@/auth";
 
 export async function report(customerMeasurement: CustomerMeasurement, token: string, email: string): Promise<any> {
-    return findCampaignAndCompany(token)
+    const session = await auth()
+    if (!session) {
+        throw new Error('Niet geautoriseerd.');
+    }
+    return findReminderSent({token: token!, email: email!})
+        .then((reminderSent: { reminderSent?: ReminderSent, company?: string }) => {
+            return findCampaignAndCompanyByReminderSent(session, reminderSent);
+        })
         .then(async campaignAndCompany => {
-            const measurement = await findCustomerMeasurement(campaignAndCompany.campaign.name, email, campaignAndCompany.company)
-            if (measurement != undefined) {
-                throw Error("Already measured")
-            }
             if (!validateCustomerMeasurement(campaignAndCompany.campaign, customerMeasurement)) {
                 throw Error("Invalid data")
             }

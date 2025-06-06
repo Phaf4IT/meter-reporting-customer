@@ -107,6 +107,7 @@ describe('Report API Endpoints', () => {
             await createCustomerMeasurement(request, sessionCookie, {
                 campaign,
                 customerMail: customer.email,
+                customerId: customer.id,
                 campaignConfiguration
             })
         });

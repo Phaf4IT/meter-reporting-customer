@@ -95,13 +95,11 @@ const CustomerSelection = ({
                             <p className="truncate">
                                 <span className="font-semibold">{t('email')}:</span> {customer.email}
                             </p>
-                            <p className="truncate">
-                                <span className="font-semibold">{t('phoneNumber')}:</span> {customer.phoneNumber}
-                            </p>
 
                             {/* Entiteit gerelateerde velden */}
                             {Object.keys(customer.entity?.entityType?.fields || []).map((fieldKey) => {
-                                const fieldLabel = getTranslationForLocale(customer.entity!.entityType!, locale)[fieldKey] || fieldKey;
+                                const translationForLocale = getTranslationForLocale(locale, customer.entity!.entityType!);
+                                const fieldLabel = translationForLocale ? translationForLocale[fieldKey] : fieldKey;
                                 return (
                                     <p key={fieldKey} className="truncate">
                                         <span

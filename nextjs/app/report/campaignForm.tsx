@@ -7,12 +7,14 @@ import ToggleSwitch from '@/components/toggle-switch';
 import {Logger} from "@/lib/logger";
 import {useLocale, useTranslations} from "next-intl";
 import Image from "next/image";
+import {Campaign} from "@/components/report/campaign";
+import {MeasureValue} from "@/components/report/customerMeasurement";
 
 export default function CampaignForm() {
     const t = useTranslations('form');
     const searchParams = useSearchParams();
     const token = searchParams?.get('token');
-    const [campaigns, setCampaigns] = useState<any>(null); // type Campaign | null
+    const [campaign, setCampaign] = useState<Campaign | null>(null);
     const [error, setError] = useState<string | null>(null);
     const router = useRouter();
     const locale = useLocale();
@@ -40,7 +42,7 @@ export default function CampaignForm() {
             getCampaignOptions(token, router)
                 .then((campaign) => {
                     if (campaign) {
-                        setCampaigns(campaign);
+                        setCampaign(campaign);
                     }
                 })
                 .catch((reason) => {
@@ -51,14 +53,14 @@ export default function CampaignForm() {
     }, [token, router]);
 
     useEffect(() => {
-        if (campaigns) {
-            campaigns.measureValues.forEach((measure: DetailedMeasureValue) => {
+        if (campaign) {
+            campaign.measureValues.forEach((measure: DetailedMeasureValue) => {
                 if (!(measure.name in formData)) {
                     formData[measure.name] = measure.defaultValue || '';
                 }
             });
         }
-    }, [campaigns, formData]);
+    }, [campaign, formData]);
 
     const handleSubmit = async (e: React.FormEvent<HTMLFormElement>) => {
         e.preventDefault();
@@ -82,7 +84,7 @@ export default function CampaignForm() {
         }
     }
 
-    const getInput = (measure: DetailedMeasureValue) => {
+    const getInput = (measure: DetailedMeasureValue, previousValue?: MeasureValue) => {
         switch (measure.type) {
             case MeasureValueType.TEXT:
             case MeasureValueType.NUMBER:
@@ -94,6 +96,8 @@ export default function CampaignForm() {
                     onChange={handleChange}
                     required={measure.isEditable}
                     disabled={!measure.isEditable}
+                    // TODO should have validation options, like should be equal or more etc...
+                    min={measure.type === MeasureValueType.NUMBER ? previousValue?.value : undefined}
                     className="border rounded w-full p-2 text-gray-900"
                 />);
             case MeasureValueType.BOOLEAN:
@@ -138,18 +142,26 @@ export default function CampaignForm() {
 
     return (
         <div>
-            {campaigns ? (
+            {campaign ? (
                 <form onSubmit={handleSubmit} className="bg-cyan-900 p-6 rounded shadow-md">
-                    {campaigns.measureValues.map((measure: DetailedMeasureValue) => (
-                        <div key={measure.name} className="mb-4">
-                            <label htmlFor={measure.name} className="block font-medium">
-                                {getTranslationOrDefault(measure)}
-                            </label>
-                            {
-                                getInput(measure)
-                            }
-                        </div>
-                    ))}
+                    {campaign.measureValues.map((measure: DetailedMeasureValue) => {
+                        const previousValue = campaign
+                            .previousMeasureValues?.filter(value => value.name === measure.name)
+                            .find(() => true)
+                        return (
+                            <div key={measure.name} className="mb-4">
+                                {previousValue && measure.type !== MeasureValueType.PHOTO_UPLOAD ? (
+                                    <div key={previousValue.name}>Voorgaande
+                                        waarde: {previousValue.value}</div>) : null}
+                                <label htmlFor={measure.name} className="block font-medium">
+                                    {getTranslationOrDefault(measure)}
+                                </label>
+                                {
+                                    getInput(measure, previousValue)
+                                }
+                            </div>
+                        );
+                    })}
                     <button
                         type="submit"
                         className="bg-blue-500 text-white px-4 py-2 rounded hover:bg-blue-600"

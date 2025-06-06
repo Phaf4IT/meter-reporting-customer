@@ -1,7 +1,9 @@
 import {auth} from "@/auth";
 import {findReminderSent} from "@/components/admin/reminder-sent/_database/reminderSentRepository";
 import {ReminderSent} from "@/components/admin/reminder-sent/reminder-sent";
-import {findCustomerMeasurement} from "@/components/admin/customer-measurement/action/findCustomerMeasurementAction";
+import {
+    findCustomerMeasurementByCustomerId
+} from "@/components/admin/customer-measurement/action/findCustomerMeasurementAction";
 import {findCampaignByCompanyAndName} from "@/components/admin/campaign/_database/campaignRepository";
 import {CustomerMeasurement} from "@/components/report/customerMeasurement";
 import {Campaign} from "@/components/report/campaign";
@@ -15,9 +17,9 @@ export async function findReport(token: string | null): Promise<Report> {
     return findReminderSent({token: token!, email: session.user.email!})
         .then(async (reminderSentAndCompany: { reminderSent?: ReminderSent, company?: string }) => {
             return Promise.all(
-                [findCustomerMeasurement(
+                [findCustomerMeasurementByCustomerId(
                     reminderSentAndCompany.reminderSent!.campaignName!,
-                    reminderSentAndCompany.reminderSent!.customerEmail!,
+                    reminderSentAndCompany.reminderSent!.customerId!,
                     reminderSentAndCompany.company!),
                     findCampaignByCompanyAndName(
                         reminderSentAndCompany.reminderSent!.campaignName,

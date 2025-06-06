@@ -10,9 +10,12 @@ import {CampaignConfiguration} from "@/components/admin/campaign-configuration/c
 import {getCampaignConfigurations, saveCampaignConfiguration} from "@/app/admin/campaign-configuration/client";
 import {ModifiableCampaign} from "@/app/api/admin/campaign/route";
 import CampaignConfigurationFormWizard from "@/components/admin/campaign/campaign-configuration-formwizard";
+import {useSession} from "next-auth/react";
+import {checkPermission} from "@/components/authjs/rbac";
 
 export default function CampaignsPage() {
     const t = useTranslations('admin.campaign');
+    const session = useSession()
 
     const [campaignConfigurations, setCampaignConfigurations] = useState<CampaignConfiguration[]>([]);
     const [campaigns, setCampaigns] = useState<Campaign[]>([]);
@@ -67,12 +70,12 @@ export default function CampaignsPage() {
             <CampaignList campaigns={campaigns} t={t} onDelete={handleDeleteCampaign}
                           campaignConfigurations={campaignConfigurations} openNewCampaign={openNewCampaign}/>
 
-            <button
+            {checkPermission('managePanel', session.data?.user.role) ? (<button
                 onClick={openNewCampaignConfiguration}
                 className="bg-blue-500 text-white px-4 py-2 rounded mt-6"
             >
                 {t('addCampaignConfiguration')}
-            </button>
+            </button>) : null}
 
             <CampaignFormWizard
                 isOpen={isCampaignDialogOpen}

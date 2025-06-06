@@ -24,15 +24,29 @@ export async function findCustomerMeasurementsByCompany(
         .then(measurements => measurements.map(measurement => mapTableToDomain(measurement)));
 }
 
-export async function findCustomerMeasurementByCompanyCampaignAndCustomer(
+export async function findLastCustomerMeasurementByCompanyAndCustomer(
+    customerId: string,
+    company: string
+) {
+    return getEntityManager(CustomerMeasurementTable)
+        .findBy({
+            customer_id: customerId,
+            company: company
+        })
+        .then(measurements => measurements.map(measurement => mapTableToDomain(measurement))
+            .sort((a, b) => a.dateTime.getTime() - b.dateTime.getTime())
+            .find(() => true));
+}
+
+export async function findCustomerMeasurementByCompanyCampaignAndCustomerId(
     campaignName: string,
-    customerMail: string,
+    customerId: string,
     company: string
 ) {
     return getEntityManager(CustomerMeasurementTable)
         .findBy({
             campaign_name: campaignName,
-            customer_mail: customerMail,
+            customer_id: customerId,
             company: company
         })
         .then(measurements => measurements.map(measurement => mapTableToDomain(measurement))

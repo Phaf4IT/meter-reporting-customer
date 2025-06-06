@@ -6,6 +6,7 @@ import {
 
 export async function createCustomerMeasurement(request: any, sessionCookie: string, customerMeasurementFixture: CustomerMeasurementFixture) {
     const customerMeasurement = getNewCustomerMeasurementByParams({
+        customerId: customerMeasurementFixture.customerId,
         customerMail: customerMeasurementFixture.customerMail,
         campaignName: customerMeasurementFixture.campaign.name,
         measurements: customerMeasurementFixture.measurements ? customerMeasurementFixture.measurements : generateRandomMeasurements(customerMeasurementFixture.campaignConfiguration.measureValues)

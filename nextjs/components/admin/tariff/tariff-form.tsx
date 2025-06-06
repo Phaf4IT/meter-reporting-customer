@@ -343,8 +343,9 @@ export const TariffForm: React.FC<TariffFormProps> = ({
                             />
                             <label htmlFor={`customer-${customer.id}`}
                                    className="text-sm">{customer.firstName} {customer.lastName} {Object.keys(customer.entity?.entityType?.fields || []).map((fieldKey) => {
-                                const fieldLabel = getTranslationForLocale(customer.entity!.entityType!, locale)[fieldKey] || fieldKey;
-                                const fieldValue = getTranslationForLocale(customer.entity!.entityType!, locale)[customer.entity!.fieldValues[fieldKey] || 'N/A'] || customer.entity!.fieldValues[fieldKey] || 'N/A';
+                                const translationForLocale = getTranslationForLocale(locale, customer.entity!.entityType!);
+                                const fieldLabel = translationForLocale ? translationForLocale[fieldKey] : fieldKey;
+                                const fieldValue = translationForLocale ? translationForLocale[customer.entity!.fieldValues[fieldKey] || 'N/A'] : customer.entity!.fieldValues[fieldKey] || 'N/A';
                                 return (
                                     <span key={fieldKey}>
                                         {fieldLabel}: {fieldValue}

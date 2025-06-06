@@ -1,17 +1,15 @@
 'use client';
-import React, {useEffect, useRef, useState} from 'react';
+
+import React, {useEffect, useState} from 'react';
 import {useLocale, useTranslations} from "next-intl";
-import {additionalFields, Customer as C, emptyCustomer} from "@/components/admin/customer/customer";
-import ConfirmationDialog from "@/components/admin/confirmation-dialog";
+import {additionalFields, Customer as C} from "@/components/admin/customer/customer";
 import "@/components/dialog-styles.css";
-import {deleteCustomer, getCustomers, getNonActiveCustomers, saveCustomer} from "@/app/admin/customer/client";
-import {ModifiableCustomer} from "@/components/admin/customer/modifiable-customer";
-import {getTranslationForLocale} from "@/components/admin/entity-type/entityType";
-import {Entity} from "@/components/admin/entity/entity";
+import {getCustomers, getNonActiveCustomers, saveCustomer} from "@/app/admin/customer/client";
 import {getAllEntities} from "@/app/admin/entity/client";
-import EditableCustomerRow from "@/components/admin/customer/editable-customer-row";
-import {FaArrowDown, FaArrowUp} from 'react-icons/fa';
-import {FiMoreHorizontal} from 'react-icons/fi';
+import {Entity} from "@/components/admin/entity/entity";
+import {ColumnDef} from "@tanstack/react-table";
+import {DataTable} from "@/components/ui/editable-table";
+import {getTranslationForLocale} from "@/components/admin/entity-type/entityType";
 
 export interface Customer extends C {
     id: string;
@@ -21,48 +19,18 @@ export interface Customer extends C {
     middleName?: string;
     lastName: string;
     entity?: Entity;
-    phoneNumber?: string;
     additionalFields?: any;
-    isNonActive: boolean
+    isNonActive: boolean;
 }
 
 export default function CustomersPage() {
     const t = useTranslations('admin.customer');
-    const [isDialogOpen, setIsDialogOpen] = useState(false);
-    const [customers, setCustomers] = useState<Customer[]>([]);
-    const [isNew, setIsNew] = useState<boolean>(true);
-    const [entities, setEntities] = useState<Entity[]>([]);
-    const [editingCustomer, setEditingCustomer] = useState<Customer & ModifiableCustomer | null>(null);
-    const [customerToDelete, setCustomerToDelete] = useState<Customer | null>(null);
-    const [menuOpenForId, setMenuOpenForId] = useState<string | null>(null);
-    const menuRef = useRef<HTMLDivElement>(null);
     const locale = useLocale();
+    const [customers, setCustomers] = useState<Customer[]>([]);
+    const [entities, setEntities] = useState<Entity[]>([]);
+
     const additionalFieldCustomers = additionalFields();
-    const fieldKeys = Object.keys(additionalFieldCustomers.fields || []);
-    const [isColumnsMenuOpen, setIsColumnsMenuOpen] = useState(false);
-    const columnsMenuRef = useRef<HTMLDivElement>(null);
-    const defaultVisibleColumns: Record<string, boolean> = {
-        email: true,
-        lastName: true,
-        entity: true,
-        phoneNumber: true,
-        ...fieldKeys.reduce((acc, key) => ({...acc, [`additionalFields.${key}`]: true}), {})
-    };
-
-    const [visibleColumns, setVisibleColumns] = useState<Record<string, boolean>>(() => {
-        if (typeof window !== 'undefined') {
-            const saved = localStorage.getItem('visibleCustomerColumns');
-            return saved ? JSON.parse(saved) : defaultVisibleColumns;
-        }
-        return defaultVisibleColumns;
-    });
-
-    useEffect(() => {
-        localStorage.setItem('visibleCustomerColumns', JSON.stringify(visibleColumns));
-    }, [visibleColumns]);
-
-    const [sortColumn, setSortColumn] = useState<string>('');
-    const [sortDirection, setSortDirection] = useState<'asc' | 'desc'>('asc');
+    const fieldKeys = Object.keys(additionalFieldCustomers.fields || {});
 
     useEffect(() => {
         Promise.all([getCustomers(), getNonActiveCustomers()])
@@ -78,94 +46,14 @@ export default function CustomersPage() {
         getAllEntities().then(setEntities);
     }, []);
 
-    useEffect(() => {
-        const handleClickOutside = (event: MouseEvent) => {
-            if (menuRef.current && !menuRef.current.contains(event.target as Node)) {
-                setMenuOpenForId(null);
-            }
-        };
-        document.addEventListener('mousedown', handleClickOutside);
-        return () => document.removeEventListener('mousedown', handleClickOutside);
-    }, []);
-
-    useEffect(() => {
-        const handleClickOutsideColumns = (event: MouseEvent) => {
-            if (columnsMenuRef.current && !columnsMenuRef.current.contains(event.target as Node)) {
-                setIsColumnsMenuOpen(false);
-            }
-        };
-
-        document.addEventListener('mousedown', handleClickOutsideColumns);
-        return () => document.removeEventListener('mousedown', handleClickOutsideColumns);
-    }, []);
-
-    const handleSort = (column: string) => {
-        const direction = sortColumn === column && sortDirection === 'asc' ? 'desc' : 'asc';
-        setSortColumn(column);
-        setSortDirection(direction);
-        setCustomers((prev) => {
-            return [...prev].sort((a, b) => {
-                const getValue = (obj: any, path: string) =>
-                    path.split('.').reduce((acc, part) => acc && acc[part], obj);
-                const valueA = getValue(a, column) ?? '';
-                const valueB = getValue(b, column) ?? '';
-                if (valueA < valueB) return direction === 'asc' ? -1 : 1;
-                if (valueA > valueB) return direction === 'asc' ? 1 : -1;
-                return 0;
-            });
-        });
-    };
-
-    const handleSave = async (customer: ModifiableCustomer & C, isNew: boolean) => {
-        saveCustomer(customer, isNew).then(saved => {
-            const newCustomer = {...saved, entity: customer.entity, isNonActive: false};
-            setCustomers(prev => {
-                const exists = prev.find(c => c.id === newCustomer.id);
-                return exists
-                    ? prev.map(c => c.id === newCustomer.id ? newCustomer : c)
-                    : [...prev, newCustomer];
-            });
-            closeEditor();
-        });
-    };
-
-    const openDialog = (customer: Customer) => {
-        setCustomerToDelete(customer);
-        setIsDialogOpen(true);
-        setMenuOpenForId(null);
-    };
-
-    const closeDialog = () => {
-        setCustomerToDelete(null);
-        setIsDialogOpen(false);
-    };
-
-    const handleDelete = async () => {
-        if (customerToDelete) {
-            const success = await deleteCustomer({...customerToDelete, entityId: customerToDelete.entity?.id});
-            if (success) {
-                setCustomers(prev =>
-                    prev.map(c =>
-                        c.id === customerToDelete.id ? {...c, isNonActive: true} : c
-                    )
-                );
-                closeDialog();
-            } else {
-                console.error('Failed to delete customer');
-            }
-        }
-    };
-
-    const openEditor = (customer: Customer, isNew: boolean) => {
-        if (isNew) setCustomers(prev => [...prev, customer]);
-        setEditingCustomer(customer);
-        setIsNew(isNew);
-        setMenuOpenForId(null);
-    };
-
-    const closeEditor = () => {
-        if (isNew) setCustomers(prev => prev.filter(c => c.id));
-        setEditingCustomer(null);
+    const handleSave = async (updatedData: Customer[]) => {
+        const updatedCustomers = await Promise.all(
+            updatedData.map(async (customer) => {
+                const saved = await saveCustomer(customer, false);
+                return {...saved, entity: customer.entity, isNonActive: false};
+            })
+        );
+        setCustomers(updatedCustomers);
     };
 
     const getTranslationForLocaleFields = (locale: string) => {
@@ -174,178 +62,114 @@ export default function CustomersPage() {
         return key ? additionalFieldCustomers.translations[key] : additionalFieldCustomers.translations['en-US'];
     };
 
+    const columns: ColumnDef<Customer>[] = [
+        {
+            accessorKey: 'email',
+            header: t('email'),
+            cell: info => info.getValue()
+        },
+        {
+            accessorKey: 'title',
+            header: t('title'),
+            cell: info => info.getValue(),
+            meta: {
+                type: 'select',
+                options: [
+                    {value: 'none', label: t('none')},
+                    {value: 'mr', label: t('mr')},
+                    {value: 'mrs', label: t('mrs')},
+                    {value: 'family', label: t('family')}
+                ]
+            }
+        },
+        {
+            accessorKey: 'firstName',
+            header: t('firstName'),
+            cell: info => info.getValue()
+        },
+        {
+            accessorKey: 'middleName',
+            header: t('middleName'),
+            cell: info => info.getValue()
+        },
+        {
+            accessorKey: 'lastName',
+            header: t('lastName'),
+            cell: info => info.getValue()
+        },
+        ...(Object.keys(customers[0]?.entity?.entityType?.fields || {}).map((fieldKey) =>
+            ({
+                id: `entity.fieldValues.${fieldKey}`,
+                accessorFn: (row: Customer) => row.entity?.fieldValues?.[fieldKey] ?? '',
+                header: getTranslationForLocale(locale, customers[0]?.entity?.entityType)?.[fieldKey] || fieldKey,
+                meta: {
+                    type: 'select',
+                    options: entities.map(entity => ({
+                        value: `${
+                            Object.keys(entity.entityType?.fields || []).map((fieldKey) => {
+                                const fieldValue = getTranslationForLocale(locale, entity.entityType!)![entity.fieldValues[fieldKey] || 'N/A'] || entity.fieldValues[fieldKey] || 'N/A';
+                                return `${fieldValue}`
+                            })
+                        }`,
+                        label: `${
+                            Object.keys(entity.entityType?.fields || []).map((fieldKey) => {
+                                const fieldValue = getTranslationForLocale(locale, entity.entityType!)![entity.fieldValues[fieldKey] || 'N/A'] || entity.fieldValues[fieldKey] || 'N/A';
+                                return `${fieldValue}`
+                            })
+                        }`
+                    }))
+                },
+                cell: (info: any) => {
+                    const rawValue = info.getValue();
+                    const translations = getTranslationForLocale(locale, info.row.original.entity?.entityType);
+                    return translations?.[rawValue] || rawValue || 'N/A';
+                }
+            })) as ColumnDef<Customer>[])
+        ,
+        ...fieldKeys.map((key) => {
+            const field = additionalFieldCustomers.fields[key];
+            const translation = getTranslationForLocaleFields(locale)?.[key] || key;
+
+            const meta: any = {type: 'text', required: field.required};
+
+            switch (field.type) {
+                case 'text[]':
+                    meta.type = 'textarea';
+                    break;
+                case 'numeric':
+                    meta.type = 'number';
+                    break;
+                case 'boolean':
+                    meta.type = 'checkbox';
+                    break;
+                case 'date':
+                    meta.type = 'date';
+                    break;
+            }
+
+            return {
+                id: `additionalFields.${key}`,
+                accessorKey: `additionalFields.${key}`,
+                header: translation,
+                cell: (info: any) => {
+                    const value = info.getValue();
+                    if (field.type === 'boolean') {
+                        return value ? '✓' : '✗';
+                    }
+                    if (Array.isArray(value)) {
+                        return value.join(', ');
+                    }
+                    return value ?? '';
+                },
+                meta
+            } satisfies ColumnDef<Customer>;
+        })
+    ];
+
     return (
         <div className="min-h-screen p-8 bg-cyan-950 text-white">
             <h1 className="text-2xl font-bold mb-6">{t('manageCustomers')}</h1>
-            <button
-                onClick={() => openEditor({...emptyCustomer(), isNonActive: false}, true)}
-                className="bg-blue-500 text-white px-4 py-2 mb-4 rounded hover:bg-blue-600"
-            >
-                {t('newCustomer')}
-            </button>
-
-            {/* Kolomkiezer */}
-            <div className="relative inline-block text-left mb-4">
-                <button
-                    onClick={() => setIsColumnsMenuOpen(prev => !prev)}
-                    className="bg-gray-600 text-white px-4 py-2 rounded hover:bg-gray-700"
-                >
-                    {t('chooseColumns')}
-                </button>
-                {isColumnsMenuOpen && (
-                    <div ref={columnsMenuRef}
-                         className="absolute z-10 mt-2 w-64 bg-white text-black rounded shadow-lg p-4 space-y-2">
-                        {Object.entries(visibleColumns).map(([key, isVisible]) => (
-                            <label key={key} className="flex items-center space-x-2">
-                                <input
-                                    type="checkbox"
-                                    checked={isVisible}
-                                    onChange={() => setVisibleColumns(prev => ({
-                                        ...prev,
-                                        [key]: !prev[key],
-                                    }))}
-                                />
-                                <span>
-                                    {(() => {
-                                        if (key === 'email') return t('email');
-                                        if (key === 'lastName') return t('name');
-                                        if (key === 'entity') return t('entity');
-                                        if (key === 'phoneNumber') return t('phoneNumber');
-                                        const extraKey = key.replace('additionalFields.', '');
-                                        const translationForLocale = getTranslationForLocaleFields(locale);
-                                        return translationForLocale?.[extraKey] || extraKey;
-                                    })()}
-                                </span>
-                            </label>
-                        ))}
-                    </div>
-                )}
-            </div>
-            <table className="table-auto min-w-full border-collapse bg-cyan-900 text-white rounded shadow-lg">
-                <thead>
-                <tr className="border-b border-cyan-700">
-                    {visibleColumns['email'] && (
-                        <th className="py-2 px-4 text-left cursor-pointer" onClick={() => handleSort('email')}>
-                            {t('email')}{sortColumn === 'email' && (sortDirection === 'asc' ?
-                            <FaArrowUp className="inline ml-2"/> : <FaArrowDown className="inline ml-2"/>)}
-                        </th>
-                    )}
-                    {visibleColumns['lastName'] && (
-                        <th className="py-2 px-4 text-left cursor-pointer" onClick={() => handleSort('lastName')}>
-                            {t('name')}{sortColumn === 'lastName' && (sortDirection === 'asc' ?
-                            <FaArrowUp className="inline ml-2"/> : <FaArrowDown className="inline ml-2"/>)}
-                        </th>
-                    )}
-                    {visibleColumns['entity'] && (
-                        <th className="py-2 px-4 text-left cursor-pointer" onClick={() => handleSort('entity')}>
-                            {t('entity')}{sortColumn === 'entity' && (sortDirection === 'asc' ?
-                            <FaArrowUp className="inline ml-2"/> : <FaArrowDown className="inline ml-2"/>)}
-                        </th>
-                    )}
-                    {visibleColumns['phoneNumber'] && (
-                        <th className="py-2 px-4 text-left cursor-pointer"
-                            onClick={() => handleSort('phoneNumber')}>
-                            {t('phoneNumber')}{sortColumn === 'phoneNumber' && (sortDirection === 'asc' ?
-                            <FaArrowUp className="inline ml-2"/> : <FaArrowDown className="inline ml-2"/>)}
-                        </th>
-                    )}
-                    {fieldKeys.map((fieldKey) => {
-                        const fullKey = `additionalFields.${fieldKey}`;
-                        if (!visibleColumns[fullKey]) return null;
-                        const label = getTranslationForLocaleFields(locale)?.[fieldKey] || fieldKey;
-                        return (
-                            <th key={fieldKey} className="px-4 py-2 text-left cursor-pointer"
-                                onClick={() => handleSort(fullKey)}>
-                                {label}
-                                {sortColumn === fullKey && (sortDirection === 'asc' ?
-                                    <FaArrowUp className="inline ml-2"/> : <FaArrowDown className="inline ml-2"/>)}
-                            </th>
-                        );
-                    })}
-                    <th className="py-2 px-4 text-left">{t('actions')}</th>
-                </tr>
-                </thead>
-                <tbody>
-                {customers.map((customer) => (
-                    <tr key={customer.id}
-                        className={`border-b border-cyan-700 ${customer.isNonActive ? 'bg-gray-500' : 'bg-cyan-900'}`}>
-                        {editingCustomer?.id === customer.id ? (
-                            <EditableCustomerRow key={customer.id} customer={editingCustomer} isNew={isNew}
-                                                 onSave={handleSave} onCancel={closeEditor} entities={entities}/>
-                        ) : (
-                            <>
-                                {visibleColumns['email'] && <td className="py-2 px-4">{customer.email}</td>}
-                                {visibleColumns['lastName'] && (
-                                    <td className="py-2 px-4">
-                                        {customer.title ? t(customer.title) + ' ' : ''}
-                                        {customer.firstName} {customer.middleName || ''} {customer.lastName}
-                                    </td>
-                                )}
-                                {visibleColumns['entity'] && (
-                                    <td className="py-2 px-4">
-                                        {Object.keys(customer.entity?.entityType?.fields || {}).map((fieldKey) => {
-                                            const label = getTranslationForLocale(customer.entity!.entityType!, locale)[fieldKey] || fieldKey;
-                                            const value = getTranslationForLocale(customer.entity!.entityType!, locale)[customer.entity!.fieldValues[fieldKey] || ''] || customer.entity!.fieldValues[fieldKey] || 'N/A';
-                                            return <p key={fieldKey}>{label}: {value}</p>;
-                                        })}
-                                    </td>
-                                )}
-                                {visibleColumns['phoneNumber'] &&
-                                    <td className="py-2 px-4">{customer.phoneNumber}</td>}
-                                {fieldKeys.map((key) =>
-                                    visibleColumns[`additionalFields.${key}`] ? (
-                                        <td key={`${customer.id}-${key}`} className="px-4 py-2">
-                                            {customer.additionalFields?.[key] || 'N/A'}
-                                        </td>
-                                    ) : null
-                                )}
-                                <td className="py-2 px-4 space-x-2">
-                                    {customer.isNonActive && <>Inactief</>}
-                                    {!customer.isNonActive && (
-                                        <div className="relative inline-block text-left">
-                                            <button
-                                                type="button"
-                                                className="inline-flex items-center justify-center w-12 h-12 bg-transparent text-gray-600 rounded-full hover:bg-gray-200"
-                                                onClick={() => setMenuOpenForId(prev => (prev === customer.id ? null : customer.id))}
-                                            >
-                                                <FiMoreHorizontal className="text-white"/>
-                                            </button>
-                                            {menuOpenForId === customer.id && (
-                                                <div
-                                                    className="origin-top-right absolute right-0 mt-2 w-48 rounded-md shadow-lg bg-white ring-1 ring-black ring-opacity-5"
-                                                    ref={menuRef}
-                                                >
-                                                    <div className="py-1">
-                                                        <button onClick={() => openEditor(customer, false)}
-                                                                className="block px-4 py-2 text-sm text-gray-700 hover:bg-yellow-100 w-full">
-                                                            {t('edit')}
-                                                        </button>
-                                                        <button onClick={() => openDialog(customer)}
-                                                                className="block px-4 py-2 text-sm text-gray-700 hover:bg-red-100 w-full">
-                                                            {t('delete')}
-                                                        </button>
-                                                    </div>
-                                                </div>
-                                            )}
-                                        </div>
-                                    )}
-                                </td>
-                            </>
-                        )}
-                    </tr>
-                ))}
-                </tbody>
-            </table>
-
-            <ConfirmationDialog
-                isOpen={isDialogOpen}
-                onClose={closeDialog}
-                onConfirm={handleDelete}
-                title={t("deleteConfirmationTitle")}
-                message={t("deleteConfirmationMessage")}
-                confirmText={t("confirmDeleteButton")}
-                cancelText={t("cancelButton")}
-            />
+            <DataTable columns={columns} data={customers} onSaveAction={handleSave}/>
         </div>
     );
 }
