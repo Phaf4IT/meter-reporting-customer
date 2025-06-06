@@ -73,8 +73,11 @@ export async function updateEntity(entity: Entity, company: string) {
 }
 
 async function getEntities(entities: EntityTable[], company: string) {
-    const entityTypes = await findEntityTypesByCompanyAndNames(entities.map(value => value.entityType), company);
-    return entities.map(entity => mapTableToDomain(entity, entityTypes.find(value => value.name === entity.entityType)!));
+    if (entities.length > 0) {
+        const entityTypes = await findEntityTypesByCompanyAndNames(entities.map(value => value.entityType), company);
+        return entities.map(entity => mapTableToDomain(entity, entityTypes.find(value => value.name === entity.entityType)!));
+    }
+    return [];
 }
 
 function mapTableToDomain(entity: EntityTable, entityType?: EntityType): Entity {

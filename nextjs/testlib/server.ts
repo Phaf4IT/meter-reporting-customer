@@ -6,14 +6,14 @@ import {retry} from "ts-retry";
 
 export async function startServer(env: EnvironmentConfiguration) {
     const port = await detectPort();
-    const command = `${getEnv(env)} ${process.env.NYC_ENABLED === 'true' ? 'nyc ' : ''}npm run dev -- -p ${port}`;
+    const command = `${getEnv(env)} ${process.env.NYC_ENABLED === 'true' ? 'nyc ' : ''}npm run dev -- -H 0.0.0.0 -p ${port}`;
     Logger.info(`Running cmd "${command}"`)
     const server = await setup({
         command: command,
         launchTimeout: 500000,
         port: port
     });
-    await waitOnServer(`http://localhost:${port}`);
+    await waitOnServer(`http://0.0.0.0:${port}`);
 
     return {port, server};
 }

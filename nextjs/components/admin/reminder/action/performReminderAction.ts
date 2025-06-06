@@ -7,7 +7,9 @@ import {Provider} from "@auth/core/providers";
 import {randomUUID} from "node:crypto";
 import {createReminderSent} from "@/components/admin/reminder-sent/action/createReminderSentAction";
 import {signIn} from "@/node_modules/@auth/core/lib/actions";
-import {findCustomerMeasurement} from "@/components/admin/customer-measurement/action/findCustomerMeasurementAction";
+import {
+    findCustomerMeasurementByCustomerId
+} from "@/components/admin/customer-measurement/action/findCustomerMeasurementAction";
 import {Reminder} from "@/components/admin/reminder/reminder";
 import {findCustomersByIds} from "@/components/admin/customer/_database/customerRepository";
 
@@ -20,7 +22,7 @@ export async function performReminder(reminder: Reminder, company: string, host:
 
 export async function handleReminder(adapter: Adapter, provider: Provider, host: string, reminder: GenericReminder) {
     for (const customer of reminder.customers) {
-        if (!await hasAlreadyCustomerMeasurement(reminder, customer.email)) {
+        if (!await hasAlreadyCustomerMeasurement(reminder, customer.id)) {
             const customerToken: string = randomUUID()
             await signIn({
                 headers: [],
@@ -58,6 +60,6 @@ export async function handleReminder(adapter: Adapter, provider: Provider, host:
     }, reminder.company)
 }
 
-async function hasAlreadyCustomerMeasurement(reminder: GenericReminder, customerEmail: string) {
-    return await findCustomerMeasurement(reminder.campaignName, customerEmail, reminder.company);
+async function hasAlreadyCustomerMeasurement(reminder: GenericReminder, customerId: string) {
+    return await findCustomerMeasurementByCustomerId(reminder.campaignName, customerId, reminder.company);
 }

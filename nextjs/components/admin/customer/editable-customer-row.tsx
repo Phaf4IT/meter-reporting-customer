@@ -26,7 +26,6 @@ export default function EditableCustomerRow({
         ...customer,
         title: customer.title || "",
         entityId: customer.entity?.id || "",
-        phoneNumber: customer.phoneNumber || "",
         additionalFields: customer.additionalFields || {},
     });
     const t = useTranslations('admin.customer');
@@ -166,8 +165,8 @@ export default function EditableCustomerRow({
                     return (
                         <option key={`${customer.id}-${entity.id}`} value={entity.id}>
                             {Object.keys(entity.entityType?.fields || []).map((fieldKey) => {
-                                const fieldLabel = getTranslationForLocale(entity.entityType!, locale)[fieldKey] || fieldKey;
-                                const fieldValue = getTranslationForLocale(entity.entityType!, locale)[entity.fieldValues[fieldKey] || 'N/A'] || entity.fieldValues[fieldKey] || 'N/A';
+                                const fieldLabel = getTranslationForLocale(locale, entity.entityType!)![fieldKey] || fieldKey;
+                                const fieldValue = getTranslationForLocale(locale, entity.entityType!)![entity.fieldValues[fieldKey] || 'N/A'] || entity.fieldValues[fieldKey] || 'N/A';
                                 return (
                                     <React.Fragment key={fieldValue}>
                                         {fieldLabel}: {fieldValue}&nbsp;
@@ -178,19 +177,6 @@ export default function EditableCustomerRow({
                     );
                 })}
             </select>
-        </td>
-        <td className="py-0 px-0">
-            <input
-                type="text"
-                id="phone-number"
-                value={editingCustomer.phoneNumber}
-                onChange={(e) => setEditingCustomer({
-                    ...editingCustomer,
-                    phoneNumber: e.target.value
-                })}
-                className="appearance-none block w-full bg-cyan-800 text-white border border-gray-500 rounded-sm py-1 px-2 focus:outline-none focus:border-cyan-400"
-                form="customer-form"
-            />
         </td>
         {Object.entries(additionalFieldCustomers.fields).map(([fieldKey, field]) => {
             const fieldType = field.type;

@@ -88,7 +88,7 @@ CREATE TABLE IF NOT EXISTS campaign_reminder_sent
     customer_email text         NOT NULL,
     token          text         NOT NULL,
     company        varchar(255) NOT NULL,
-    PRIMARY KEY (campaign_name, reminder_date, customer_email, company)
+    PRIMARY KEY (campaign_name, reminder_date, customer_id, customer_email, company)
 );
 
 CREATE INDEX if not exists campaign_reminder_sent_idx ON campaign_reminder_sent USING btree (customer_email, token);
@@ -101,7 +101,6 @@ CREATE TABLE IF NOT EXISTS customer
     first_name        varchar(255) NOT NULL,
     middle_name       varchar(255) NULL,
     last_name         varchar(255) NOT NULL,
-    phone_number      varchar(255) NULL,
     company           varchar(255) NOT NULL,
     entity_id         uuid         NOT NULL,
     additional_fields jsonb        NULL,
@@ -118,7 +117,6 @@ CREATE TABLE IF NOT EXISTS non_active_customer
     first_name   varchar(255) NOT NULL,
     middle_name  varchar(255) NULL,
     last_name    varchar(255) NOT NULL,
-    phone_number      varchar(255) NULL,
     company      varchar(255) NOT NULL,
     entity_id    uuid         NOT NULL,
     additional_fields jsonb        NULL,

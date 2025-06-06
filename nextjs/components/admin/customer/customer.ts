@@ -10,7 +10,6 @@ export interface Customer {
     middleName?: string;
     lastName: string;
     entity?: Entity;
-    phoneNumber?: string;
     additionalFields?: any;
 }
 
@@ -23,7 +22,6 @@ export function customerFromJson(json: any): Customer {
         middleName: json.middleName,
         entity: json.entity,
         lastName: json.lastName,
-        phoneNumber: json.phoneNumber,
         additionalFields: json.additionalFields
     };
 }
@@ -36,7 +34,6 @@ export function emptyCustomer(): Customer & ModifiableCustomer {
         firstName: '',
         middleName: '',
         lastName: '',
-        phoneNumber: '',
         entityId: ''
     }
 }
@@ -46,10 +43,18 @@ interface AdditionalFields {
     translations: Record<string, any>;
 }
 
-// TODO should become configurable
+// TODO!!! should become configurable
 export function additionalFields(): AdditionalFields {
     return {
         fields: {
+            "location-postfix":
+                {
+                    "type":
+                        "text",
+                    "required":
+                        true
+                }
+            ,
             "streetLines":
                 {
                     "type":
@@ -82,13 +87,13 @@ export function additionalFields(): AdditionalFields {
                         true
                 }
             ,
-            "stateOrProvinceCode":
-                {
-                    "type":
-                        "text",
-                    "required":
-                        true
-                }
+            // "stateOrProvinceCode":
+            //     {
+            //         "type":
+            //             "text",
+            //         "required":
+            //             true
+            //     }
         },
         translations: {
             "nl-NL": {
@@ -97,6 +102,7 @@ export function additionalFields(): AdditionalFields {
                 "postalCode": "Postcode",
                 "city": "Stad",
                 "country": "Land",
+                "location-postfix": "Kavel additief",
                 "stateOrProvinceCode": "Provincie"
             },
             "en-US": {
@@ -105,6 +111,7 @@ export function additionalFields(): AdditionalFields {
                 "postalCode": "Postal code",
                 "city": "City",
                 "country": "Country",
+                "location-postfix": "Location postfix",
                 "stateOrProvinceCode": "Province"
             }
         }

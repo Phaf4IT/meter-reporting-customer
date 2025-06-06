@@ -67,7 +67,8 @@ const EntitySelection = ({
                         />
                         <label htmlFor={entity.id} className="text-white w-full">
                             {Object.keys(entity.entityType?.fields || []).map((fieldKey) => {
-                                const fieldLabel = getTranslationForLocale(entity.entityType!, locale)[fieldKey] || fieldKey;
+                                const translationForLocale = getTranslationForLocale(locale, entity.entityType!);
+                                const fieldLabel = translationForLocale ? translationForLocale[fieldKey] : fieldKey;
                                 return (
                                     <p key={fieldKey} className="truncate">
                                         <span className="font-semibold">{fieldLabel}:</span> {entity.fieldValues[fieldKey] || 'N/A'}

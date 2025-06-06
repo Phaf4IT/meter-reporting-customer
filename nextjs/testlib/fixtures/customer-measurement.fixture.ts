@@ -37,6 +37,7 @@ export function getValue(measurement: any) {
 }
 
 export function getNewCustomerMeasurementByParams({
+                                                      customerId,
                                                       customerMail,
                                                       campaignName,
                                                       measurements
@@ -48,12 +49,14 @@ export function getNewCustomerMeasurementByParams({
         ...defaultMeasurement,
         ...(campaignName && {campaignName}),
         ...(customerMail && {customerMail}),
+        ...(customerId && {customerId}),
         ...(measurements && {measurements})
     };
 }
 
 export interface CustomerMeasurementFixture {
     customerMail?: string,
+    customerId?: string,
     campaign?: any,
     campaignConfiguration?: any,
     campaignName?: string,

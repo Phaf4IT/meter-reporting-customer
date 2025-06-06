@@ -5,7 +5,6 @@ export function getNewCustomer(entityId?: string) {
         email: getRandomEmail(),
         firstName: 'John',
         lastName: 'Doe',
-        phoneNumber: '123-456-7890',
         entityId,
         additionalFields: {
             streetLines: "blabla",

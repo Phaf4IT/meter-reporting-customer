@@ -20,3 +20,10 @@ export interface MeasureValue {
     readonly name: string;
     readonly value?: string;
 }
+
+export function customerMeasureValueFromJson(json: any): MeasureValue {
+    return {
+        name: json.name,
+        value: json.value,
+    }
+}

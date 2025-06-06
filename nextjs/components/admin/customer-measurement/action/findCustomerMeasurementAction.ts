@@ -1,7 +1,7 @@
 import {
-    findCustomerMeasurementByCompanyCampaignAndCustomer
+    findCustomerMeasurementByCompanyCampaignAndCustomerId
 } from "@/components/admin/customer-measurement/_database/customerMeasurementRepository";
 
-export function findCustomerMeasurement(campaignName: string, email: string, company: string) {
-    return findCustomerMeasurementByCompanyCampaignAndCustomer(campaignName, email, company)
+export function findCustomerMeasurementByCustomerId(campaignName: string, customerId: string, company: string) {
+    return findCustomerMeasurementByCompanyCampaignAndCustomerId(campaignName, customerId, company)
 }

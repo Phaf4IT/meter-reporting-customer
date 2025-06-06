@@ -21,8 +21,6 @@ export class NonActiveCustomerTable extends Entity implements NonActiveCustomer 
     lastName: string;
     @Field("entity_id")
     entityId: string;
-    @Field("phone_number")
-    phoneNumber: string | null;
     @PrimaryKey
     @Field("company")
     company: string;
@@ -39,7 +37,6 @@ export class NonActiveCustomerTable extends Entity implements NonActiveCustomer 
         middleName: string | undefined,
         lastName: string,
         entityId: string,
-        phoneNumber: string | undefined,
         company: string,
         additionalFields: any,
         archiveDate: Date
@@ -52,7 +49,6 @@ export class NonActiveCustomerTable extends Entity implements NonActiveCustomer 
         this.middleName = middleName || null;
         this.lastName = lastName;
         this.entityId = entityId;
-        this.phoneNumber = phoneNumber || null;
         this.company = company;
         this.additionalFields = additionalFields;
         this.archiveDate = archiveDate;
@@ -66,7 +62,6 @@ export class NonActiveCustomerTable extends Entity implements NonActiveCustomer 
                   middleName,
                   lastName,
                   entityId,
-                  phoneNumber,
                   company,
                   archiveDate,
                   additionalFields
@@ -79,7 +74,6 @@ export class NonActiveCustomerTable extends Entity implements NonActiveCustomer 
             middleName || undefined,
             lastName,
             entityId,
-            phoneNumber || undefined,
             company,
             additionalFields,
             archiveDate

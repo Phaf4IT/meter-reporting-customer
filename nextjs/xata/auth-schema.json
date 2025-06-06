@@ -356,10 +356,6 @@
           "type": "string"
         },
         {
-          "name": "phone_number",
-          "type": "string"
-        },
-        {
           "name": "company",
           "type": "string"
         },
@@ -398,10 +394,6 @@
         },
         {
           "name": "last_name",
-          "type": "string"
-        },
-        {
-          "name": "phone_number",
           "type": "string"
         },
         {

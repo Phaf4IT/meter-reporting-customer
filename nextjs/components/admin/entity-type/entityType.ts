@@ -18,7 +18,10 @@ export interface Field {
     options?: string[]
 }
 
-export function getTranslationForLocale(entityType: EntityType, locale: string) {
+export function getTranslationForLocale(locale: string, entityType?: EntityType) {
+    if (!entityType) {
+        return undefined;
+    }
     const languageCode = locale.split('-')[0];
     const translationKey = Object.keys(entityType.translations).find(key => key.startsWith(languageCode));
     return translationKey ? entityType?.translations[translationKey] : entityType.translations['en-US'];  // Fallback naar Engels als geen vertaling gevonden

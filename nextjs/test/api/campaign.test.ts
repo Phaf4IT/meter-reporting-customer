@@ -87,6 +87,7 @@ describe('Campaign API Endpoints', () => {
             })
             reminderSent = await createReminderSent(request, sessionCookie, {campaign, customer});
             const customerMeasurement = getNewCustomerMeasurementByParams({
+                customerId: customer.id,
                 customerMail: customerEmail,
                 campaignName: campaign.name
             });

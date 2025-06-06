@@ -26,7 +26,6 @@ export async function saveCustomer(customer: ModifiableCustomer, company: string
             middleName: customer.middleName || null,
             lastName: customer.lastName,
             entityId: customer.entityId!,
-            phoneNumber: customer.phoneNumber || null,
             company,
             archiveDate: new Date(),
             additionalFields: customer.additionalFields
@@ -54,7 +53,6 @@ function mapTableToDomain(customerTable: NonActiveCustomerTable, entityTable: En
         middleName: customerTable.middleName || undefined,
         lastName: customerTable.lastName,
         entity: entityTable,
-        phoneNumber: customerTable.phoneNumber || undefined,
         additionalFields: customerTable.additionalFields
     };
 }

@@ -9,70 +9,64 @@ export type CustomerCompany = string;
 
 /** Represents the table public.customer */
 export default interface Customer {
-  id: CustomerId;
+    id: CustomerId;
 
-  company: CustomerCompany;
+    company: CustomerCompany;
 
-  email: string;
+    email: string;
 
-  title: string | null;
+    title: string | null;
 
-  firstName: string;
+    firstName: string;
 
-  middleName: string | null;
+    middleName: string | null;
 
-  lastName: string;
+    lastName: string;
 
-  phoneNumber: string | null;
+    entityId: string;
 
-  entityId: string;
-
-  additionalFields: unknown | null;
+    additionalFields: unknown | null;
 }
 
 /** Represents the initializer for the table public.customer */
 export interface CustomerInitializer {
-  /** Default value: uuidv7_sub_ms() */
-  id?: CustomerId;
+    /** Default value: uuidv7_sub_ms() */
+    id?: CustomerId;
 
-  company: CustomerCompany;
+    company: CustomerCompany;
 
-  email: string;
+    email: string;
 
-  title?: string | null;
+    title?: string | null;
 
-  firstName: string;
+    firstName: string;
 
-  middleName?: string | null;
+    middleName?: string | null;
 
-  lastName: string;
+    lastName: string;
 
-  phoneNumber?: string | null;
+    entityId: string;
 
-  entityId: string;
-
-  additionalFields?: unknown | null;
+    additionalFields?: unknown | null;
 }
 
 /** Represents the mutator for the table public.customer */
 export interface CustomerMutator {
-  id?: CustomerId;
+    id?: CustomerId;
 
-  company?: CustomerCompany;
+    company?: CustomerCompany;
 
-  email?: string;
+    email?: string;
 
-  title?: string | null;
+    title?: string | null;
 
-  firstName?: string;
+    firstName?: string;
 
-  middleName?: string | null;
+    middleName?: string | null;
 
-  lastName?: string;
+    lastName?: string;
 
-  phoneNumber?: string | null;
+    entityId?: string;
 
-  entityId?: string;
-
-  additionalFields?: unknown | null;
+    additionalFields?: unknown | null;
 }

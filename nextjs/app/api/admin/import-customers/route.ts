@@ -56,13 +56,12 @@ export async function POST(request: NextRequest): Promise<Response> {
                 firstName: row["Voornaam"] || null,
                 middleName: row["Middelnaam"] || null,
                 lastName: row["Achternaam"] || null,
-                phoneNumber: row["Telefoonnumer"] || null,
                 additionalFields: {
                     streetLines: row["Adresregels"] ? row["Adresregels"].split('|') : [],
                     postalCode: row["Postcode"] || null,
                     city: row["Stad"] || null,
                     country: row["Land"] || null,
-                    stateOrProvinceCode: row["Provincie"] || null
+                    // stateOrProvinceCode: row["Provincie"] || null
                 }
             };
 

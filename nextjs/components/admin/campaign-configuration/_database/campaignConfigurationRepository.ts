@@ -20,9 +20,12 @@ export async function findCampaignConfigurationsByCompany(company: string) {
         })
         .then(async campaigns => {
                 const entityIds: string[] = Array.from(new Set(campaigns.flatMap(value => value.entityIds)));
-                const entities = await findEntitiesByCompanyAndIds(entityIds, company);
-                const measureValues = await findMeasureValuesByNames(campaigns.flatMap(value => value.measureValueNames), company);
-                return campaigns.map(campaign => mapTableToDomain(campaign, entities, measureValues));
+                if (entityIds.length > 0) {
+                    const entities = await findEntitiesByCompanyAndIds(entityIds, company);
+                    const measureValues = await findMeasureValuesByNames(campaigns.flatMap(value => value.measureValueNames), company);
+                    return campaigns.map(campaign => mapTableToDomain(campaign, entities, measureValues));
+                }
+                return [];
             }
         )
 }

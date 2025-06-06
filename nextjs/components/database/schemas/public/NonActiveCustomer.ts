@@ -15,8 +15,6 @@ export default interface NonActiveCustomer {
 
   lastName: string;
 
-  phoneNumber: string | null;
-
   company: string;
 
   entityId: string;
@@ -39,8 +37,6 @@ export interface NonActiveCustomerInitializer {
   middleName?: string | null;
 
   lastName: string;
-
-  phoneNumber?: string | null;
 
   company: string;
 
@@ -65,8 +61,6 @@ export interface NonActiveCustomerMutator {
   middleName?: string | null;
 
   lastName?: string;
-
-  phoneNumber?: string | null;
 
   company?: string;
 

@@ -21,8 +21,6 @@ export class CustomerTable extends Entity implements Customer {
     lastName: string;
     @Field("entity_id")
     entityId: string;
-    @Field("phone_number")
-    phoneNumber: string | null;
     @PrimaryKey
     @Field("company")
     company: string;
@@ -37,7 +35,6 @@ export class CustomerTable extends Entity implements Customer {
         middleName: string | undefined,
         lastName: string,
         entityId: string,
-        phoneNumber: string | undefined,
         company: string,
         additionalFields: any
     ) {
@@ -49,7 +46,6 @@ export class CustomerTable extends Entity implements Customer {
         this.middleName = middleName || null;
         this.lastName = lastName;
         this.entityId = entityId;
-        this.phoneNumber = phoneNumber || null;
         this.company = company;
         this.additionalFields = additionalFields;
     }
@@ -62,7 +58,6 @@ export class CustomerTable extends Entity implements Customer {
                   middleName,
                   lastName,
                   entityId,
-                  phoneNumber,
                   company,
                   additionalFields
               }: Customer) {
@@ -74,7 +69,6 @@ export class CustomerTable extends Entity implements Customer {
             middleName || undefined,
             lastName,
             entityId,
-            phoneNumber || undefined,
             company,
             additionalFields);
     }

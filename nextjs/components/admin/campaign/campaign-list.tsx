@@ -130,14 +130,11 @@ const CampaignList = ({campaigns, campaignConfigurations, t, onDelete, openNewCa
                                                             <span
                                                                 className="font-semibold">{t('email')}:</span> {campaign.customers[0].email}
                                                         </p>
-                                                        <p className="truncate">
-                                                            <span
-                                                                className="font-semibold">{t('phoneNumber')}:</span> {campaign.customers[0].phoneNumber}
-                                                        </p>
 
                                                         {/* Entiteit gerelateerde velden */}
                                                         {Object.keys(campaign.customers[0].entity?.entityType?.fields || []).map((fieldKey) => {
-                                                            const fieldLabel = getTranslationForLocale(campaign.customers[0].entity!.entityType!, locale)[fieldKey] || fieldKey;
+                                                            const translationForLocale = getTranslationForLocale(locale, campaign.customers[0].entity!.entityType!);
+                                                            const fieldLabel = translationForLocale ? translationForLocale[fieldKey] : fieldKey;
                                                             return (
                                                                 <p key={fieldKey} className="truncate">
                                         <span
@@ -195,7 +192,8 @@ const CampaignList = ({campaigns, campaignConfigurations, t, onDelete, openNewCa
                             <h4 className="text-white font-semibold">{t('entity')} {idx + 1}</h4>
                             <div className="entity-details text-sm text-gray-300">
                                 {Object.keys(entity.entityType?.fields || []).map((fieldKey) => {
-                                    const fieldLabel = getTranslationForLocale(entity.entityType!, locale)[fieldKey] || fieldKey;
+                                    const translationForLocale = getTranslationForLocale(locale, entity.entityType!);
+                                    const fieldLabel = translationForLocale ? translationForLocale[fieldKey] : fieldKey;
                                     return (
                                         <p key={fieldKey} className="truncate">
                                             <span
@@ -238,11 +236,9 @@ const CampaignList = ({campaigns, campaignConfigurations, t, onDelete, openNewCa
                                 <p className="truncate">
                                     <span className="font-semibold">{t('email')}:</span> {customer.email}
                                 </p>
-                                <p className="truncate">
-                                    <span className="font-semibold">{t('phoneNumber')}:</span> {customer.phoneNumber}
-                                </p>
                                 {Object.keys(customer.entity!.entityType?.fields || []).map((fieldKey) => {
-                                    const fieldLabel = getTranslationForLocale(customer.entity!.entityType!, locale)[fieldKey] || fieldKey;
+                                    const translationForLocale = getTranslationForLocale(locale, customer.entity!.entityType!);
+                                    const fieldLabel = translationForLocale ? translationForLocale[fieldKey] : fieldKey;
                                     return (
                                         <p key={fieldKey} className="truncate">
                                             <span

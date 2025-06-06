@@ -33,7 +33,7 @@ export async function mochaGlobalSetup() {
         AUTH_SECRET: '123abc',
         IS_TEST_SERVER: true
     });
-    const serverBaseUrl = `http://localhost:${port}`;
+    const serverBaseUrl = `http://0.0.0.0:${port}`;
     const request = supertest(serverBaseUrl);
     const adminEmail = await createAdminUser(companyName, databaseUrl, neonUrl);
     const sessionCookie = await loginAndGetSession(adminEmail, new WireMock(wiremockUrl), serverBaseUrl, request);

@@ -42,7 +42,7 @@ const ReminderPage = () => {
                             <div className="flex flex-col">
                                 <span className="text-lg">{t('campaignName')}: {reminder.campaignName}</span>
                                 <span>{t('reminderDate')}: {reminder.reminderDate.toLocaleString()}</span>
-                                <div className="mt-2">
+                                <div className="mt-2 overflow-y-scroll border border-gray-500 max-h-[200px]">
                                     <span className="font-semibold">{t('emailAddresses')}:</span>
                                     <ul>
                                         {reminder.customerEmails.map((email, i) => (

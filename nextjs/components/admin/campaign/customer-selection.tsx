@@ -77,7 +77,7 @@ const CustomerSelection = ({
                     <p className="text-gray-400">{t('noResults')}</p>
                 )}
                 {filteredCustomers.map((customer: Customer) => (
-                    <div key={customer.email}
+                    <div key={`${customer.id}`}
                          className="flex items-center space-x-3 bg-gray-700 p-2 rounded-lg hover:bg-gray-600">
                         <input
                             type="checkbox"
@@ -95,13 +95,11 @@ const CustomerSelection = ({
                             <p className="truncate">
                                 <span className="font-semibold">{t('email')}:</span> {customer.email}
                             </p>
-                            <p className="truncate">
-                                <span className="font-semibold">{t('phoneNumber')}:</span> {customer.phoneNumber}
-                            </p>
 
                             {/* Entiteit gerelateerde velden */}
                             {Object.keys(customer.entity?.entityType?.fields || []).map((fieldKey) => {
-                                const fieldLabel = getTranslationForLocale(customer.entity!.entityType!, locale)[fieldKey] || fieldKey;
+                                const translationForLocale = getTranslationForLocale(locale, customer.entity!.entityType!);
+                                const fieldLabel = translationForLocale ? translationForLocale[fieldKey] : fieldKey;
                                 return (
                                     <p key={fieldKey} className="truncate">
                                         <span

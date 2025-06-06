@@ -37,10 +37,9 @@ export default async function AdminLayout({
         {name: t('meter.pageTitle'), href: '/admin/customer-measurement', permission_level: 'read'},
         {name: 'Tarieven', href: '/admin/tariff', permission_level: 'managePanel'},
     ];
-
     return (
-        <div className="flex h-screen bg-cyan-950 text-white">
-            <nav className="w-64 bg-cyan-900 p-6 flex flex-col justify-between h-screen">
+        <div className="flex h-full bg-cyan-950 text-white">
+            <nav className="w-64 bg-cyan-900 p-6 flex flex-col justify-between">
                 <div>
                     <Image src={'/buitenplaats.jpg'} alt={'buitenplaats'} className={'object-cover'} width={'250'} height={'50'} />
                     <h1 className="text-xl font-bold mb-6">
@@ -92,7 +91,7 @@ export default async function AdminLayout({
             </nav>
 
 
-            <main className="flex-1 px-8 pt-8">
+            <main className="flex-1 p-8 overflow-x-hidden">
                 <ToastingProvider>
                     {children}
                 </ToastingProvider>
